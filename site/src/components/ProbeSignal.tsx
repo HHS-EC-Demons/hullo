@@ -154,6 +154,7 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
       )}
 
       <div className={`ps-act${aside ? ' has-aside' : ''}`}>
+      <div className="ps-main">
       <form className="ps-form" onSubmit={send} noValidate>
         <label htmlFor={`${uid}-msg`}>Message to {info.name}</label>
         <div className="ps-row">
@@ -181,9 +182,6 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
               : `${info.name} no longer answers, but your message still gets there. Saved only on this device.`)}
         </p>
       </form>
-      {aside && <p className="ps-aside">{aside}</p>}
-      </div>
-
       {mine.length > 0 && now && (
         <ol className="trail" aria-label={`Messages to ${info.name}`}>
           {mine.map((m) => {
@@ -207,7 +205,7 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
                   </span>
                   {!done && (
                     <>
-                      {' '}in <span className="mono trail-left">{hmsText((m.arrives - now) / 1000)}</span>
+                      , in <span className="mono trail-left">{hmsText((m.arrives - now) / 1000)}</span>
                     </>
                   )}
                   <span className="sr-only">. {Math.round(frac * 100)} percent of the way.</span>
@@ -217,6 +215,9 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
           })}
         </ol>
       )}
+      </div>
+      {aside && <p className="ps-aside">{aside}</p>}
+      </div>
 
       {chart && data && <LightTimeChart data={data} probe={probe} name={info.name} now={now} />}
     </div>

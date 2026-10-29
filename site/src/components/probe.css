@@ -23,7 +23,7 @@
 
 .ps-big {
   display: block;
-  font-size: clamp(2.6rem, 14.6vw, 11.5rem);
+  font-size: clamp(2.6rem, 15.6vw, 11.5rem);
   line-height: 0.98;
   font-weight: 700;
   letter-spacing: -0.045em;
@@ -89,10 +89,14 @@
   justify-content: space-between;
 }
 
+.ps-act {
+  align-items: start;
+}
+
 .ps-aside {
   color: var(--ink-2);
   font-size: var(--fs-md);
-  padding-bottom: 32px;
+  padding-top: 30px;
   text-wrap: pretty;
 }
 
@@ -135,7 +139,6 @@
 
 .trail {
   margin-top: clamp(24px, 3vw, 36px);
-  max-width: 40rem;
   display: grid;
   gap: 0;
 }
@@ -191,6 +194,7 @@
 
 .trail-when .mono {
   color: var(--ink);
+  white-space: nowrap;
 }
 
 .ltc {
