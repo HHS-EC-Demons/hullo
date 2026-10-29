@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { loadJson, km, useJson, useNow, useReducedMotion, utcTime, localDate } from '../lib/client';
+import { loadJson, km, useJson, useNow, useReducedMotion, utcTime, utcDay } from '../lib/client';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth, type Shot } from '../lib/ranging';
 import './laser.css';
 
@@ -189,16 +189,16 @@ export default function LaserShot() {
         )}
         <p className="ls-what">
           {shown && refl && st
-            ? `Round trip from ${st.name} to the ${refl.name} mirror and back, for a pulse fired ${
-                shown.waited ? `on ${localDate(shown.ms)} at ${utcTime(shown.ms)}` : `at ${utcTime(shown.ms)}`
+            ? `Time for a pulse to go from ${st.name} to the ${refl.name} mirror and back, fired ${
+                shown.waited ? `on ${utcDay(shown.ms)} at ${utcTime(shown.ms)}` : `at ${utcTime(shown.ms)}`
               }.`
             : flying
-              ? 'The pulse is travelling at the speed of light.'
+              ? 'The pulse is traveling at the speed of light.'
               : 'Pick a mirror and a station, then fire.'}
         </p>
         {shown?.waited && st && (
           <p className="note">
-            The Moon is below {minEl}° at {st.name} right now, so the shot is timed for the next moonrise there.
+            The Moon is below {minEl}° at {st.name} right now, so the shot is timed for when it climbs past {minEl}° there.
           </p>
         )}
       </div>

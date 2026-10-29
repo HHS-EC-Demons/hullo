@@ -91,6 +91,12 @@ export function utcTime(ms: number): string {
 
 const utcDateFmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 
+const utcDayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+export function utcDay(ms: number): string {
+  return utcDayFmt.format(ms);
+}
+
 export function utcDate(ms: number): string {
   return utcDateFmt.format(ms);
 }
