@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import ProbeSignal from '../components/ProbeSignal';
+import { readData } from '../lib/build-data';
+import { href } from '../lib/paths';
+
+const deep = readData<{ probes: { voyager1: { light_day_utc: string } } }>('deep-space.json');
+const crossing = deep.probes.voyager1.light_day_utc.slice(11, 19);
+---
+
+<Base title="Deep space" current="deep-space" description="Light time and message travel time to Voyager 1 and 2, New Horizons and Pioneer 10 and 11, from JPL Horizons.">
+  <header class="wrap page-head">
+    <h1>Deep space</h1>
+    <p>Five probes are on their way out of the solar system. Pick one and send it a message.</p>
+  </header>
+
+  <section class="wrap" aria-label="Light time">
+    <ProbeSignal client:load picker status chart />
+  </section>
+
+  <section class="wrap section">
+    <div class="facts">
+      <p class="fact">
+        <span class="fact-n mono">18 Nov 2026, 10:16:07 UTC</span>
+        <span>
+          NASA's date for Voyager 1 reaching one light-day from Earth. The daily table on this site crosses 86,400 s of light
+          time at {crossing} UTC.
+        </span>
+      </p>
+      <p class="note">
+        Light time here is the straight line distance from Earth's center at this instant, divided by the speed of light. That is
+        the convention behind NASA's one light-day date. Horizons observer tables print a few seconds less, because they give
+        the probe's position when the light now arriving left it. A message takes a few seconds more, because the probe keeps
+        moving while the message travels. Pioneer positions are extrapolated from old tracking. <a href={href('sources/')}
+          >Sources</a
+        >
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .facts {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: 32px 64px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+  }
+  .fact {
+    display: grid;
+    gap: 10px;
+    max-width: 36rem;
+  }
+  .fact-n {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  @media (max-width: 860px) {
+    .facts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
