@@ -19,9 +19,9 @@ CACHE = Path(__file__).resolve().parent / "cache" / "images"
 API = "https://images-api.nasa.gov"
 
 ITEMS = [
-    {"id": "as14-67-09386", "slug": "apollo14-reflector", "width": 1400, "credit": "NASA"},
-    {"id": "as11-37-5551", "slug": "apollo11-reflector", "width": 1400, "credit": "NASA"},
-    {"id": "PIA24648", "slug": "ingenuity-flight5", "width": 1600, "credit": "NASA/JPL-Caltech/ASU/MSSS"},
+    {"id": "as14-67-09386", "slug": "apollo14-reflector", "width": 1100, "credit": "NASA"},
+    {"id": "PIA24648", "slug": "ingenuity-flight5", "width": 1200, "credit": "NASA/JPL-Caltech/ASU/MSSS",
+     "crop": (0.0, 0.3, 0.5, 0.8)},
 ]
 
 
@@ -44,9 +44,13 @@ def build(site_public: Path) -> list[dict]:
         data = search["collection"]["items"][0]["data"][0]
         assets = json.loads(get(f"{API}/asset/{item['id']}", CACHE / f"{item['id']}.asset.json"))
         hrefs = [a["href"] for a in assets["collection"]["items"]]
-        pick = next((h for h in hrefs if "~large" in h), None) or next(h for h in hrefs if "~orig" in h)
-        raw = get(pick, CACHE / f"{item['id']}.jpg")
+        order = ["~orig", "~large"] if "crop" in item else ["~large", "~orig"]
+        pick = next(h for tag in order for h in hrefs if tag in h)
+        raw = get(pick, CACHE / f"{item['id']}{pick.rsplit('~', 1)[1].split('.')[0]}.jpg")
         img = Image.open(io.BytesIO(raw)).convert("RGB")
+        if "crop" in item:
+            l, t, r, b = item["crop"]
+            img = img.crop((round(l * img.width), round(t * img.height), round(r * img.width), round(b * img.height)))
         if img.width > item["width"]:
             img = img.resize((item["width"], round(img.height * item["width"] / img.width)), Image.LANCZOS)
         dest = out_dir / f"{item['slug']}.jpg"
@@ -61,6 +65,7 @@ def build(site_public: Path) -> list[dict]:
             "width": img.width,
             "height": img.height,
             "page": f"https://images.nasa.gov/details/{item['id']}",
+            "cropped": "crop" in item,
         })
     (site_public / "data" / "images.json").write_text(json.dumps(meta, indent=1))
     return meta

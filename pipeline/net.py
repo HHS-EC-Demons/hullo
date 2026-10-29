@@ -8,7 +8,7 @@ import urllib.request
 import certifi
 
 _CTX = ssl.create_default_context(cafile=certifi.where())
-AGENT = "hullo-space-apps-pipeline"
+AGENT = "hullo-pipeline/1.0 (NASA Space Apps Challenge 2026 entry; +https://sohan-bhat.github.io/)"
 
 
 def get(url: str, timeout: int = 300) -> bytes:
