@@ -1,10 +1,139 @@
 ---
+import Base from '../layouts/Base.astro';
+import ProbeSignal from '../components/ProbeSignal';
+import { BRAND_LINE } from '../brand';
+import { href } from '../lib/paths';
+import { readData } from '../lib/build-data';
+
+const moon = readData<{ round_trip_s: { min: number; max: number } }>('moon/index.json');
+const mars = readData<{ totals: { flights: number } }>('ingenuity.json');
+const deep = readData<{ probes: Record<string, unknown> }>('deep-space.json');
+
+const chapters = [
+  {
+    path: 'deep-space/',
+    name: 'Deep space',
+    value: String(Object.keys(deep.probes).length),
+    unit: 'probes',
+    line: 'Send a message to one of five probes on their way out of the solar system.',
+  },
+  {
+    path: 'moon/',
+    name: 'Moon',
+    value: `${moon.round_trip_s.min.toFixed(1)} to ${moon.round_trip_s.max.toFixed(1)}`,
+    unit: 's',
+    line: 'Fire a laser at a mirror an Apollo crew left and time the echo.',
+  },
+  {
+    path: 'mars/',
+    name: 'Mars',
+    value: String(mars.totals.flights),
+    unit: 'flights',
+    line: "Fly Ingenuity's flights over Jezero crater, one at a time.",
+  },
+];
 ---
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Scaffold</title>
-  </head>
-  <body></body>
-</html>
+
+<Base>
+  <section class="wrap hero">
+    <ProbeSignal client:load headline="h1" aside={BRAND_LINE} />
+  </section>
+
+  <section class="wrap chapters" aria-label="Chapters">
+    <ul>
+      {
+        chapters.map((c) => (
+          <li>
+            <a href={href(c.path)} class="chapter">
+              <span class="ch-num">
+                {c.value}
+                <span class="ch-unit">{c.unit}</span>
+              </span>
+              <span class="ch-name">{c.name}</span>
+              <span class="ch-line">{c.line}</span>
+              <span class="ch-go" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding-top: clamp(32px, 6vw, 80px);
+    padding-bottom: clamp(56px, 9vw, 128px);
+  }
+  .chapters ul {
+    border-bottom: 1px solid var(--rule);
+  }
+  .chapter {
+    display: grid;
+    grid-template-columns: minmax(0, 4.5fr) minmax(0, 2.5fr) minmax(0, 4fr) 40px;
+    gap: 8px 24px;
+    align-items: baseline;
+    padding-block: clamp(24px, 3.2vw, 40px);
+    border-top: 1px solid var(--rule);
+    text-decoration: none;
+  }
+  .ch-num {
+    font-size: var(--fs-xl);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .ch-unit {
+    font-size: 0.42em;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink-2);
+    margin-left: 0.25em;
+  }
+  .ch-name {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .ch-line {
+    color: var(--ink-2);
+    max-width: 28rem;
+  }
+  .ch-go {
+    justify-self: end;
+    font-size: var(--fs-lg);
+    transition: transform 160ms var(--ease);
+  }
+  .chapter:hover .ch-go,
+  .chapter:focus-visible .ch-go {
+    transform: translateX(6px);
+  }
+  .chapter:hover .ch-name {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--signal);
+    text-underline-offset: 0.22em;
+  }
+  @media (max-width: 860px) {
+    .chapter {
+      grid-template-columns: minmax(0, 1fr) 32px;
+    }
+    .ch-num {
+      grid-column: 1 / -1;
+      margin-bottom: 6px;
+    }
+    .ch-name {
+      grid-column: 1;
+    }
+    .ch-line {
+      grid-column: 1;
+    }
+    .ch-go {
+      grid-column: 2;
+      grid-row: 2;
+    }
+  }
+</style>
