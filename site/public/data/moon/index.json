@@ -1,0 +1,105 @@
+{
+ "generated_utc": "2026-10-29T22:04Z",
+ "source": "JPL Horizons API, OBSERVER tables, quantities 4 and 20, target pole MEAN_ME",
+ "c_km_s": 299792.458,
+ "months": [
+  "2026-01",
+  "2026-02",
+  "2026-03",
+  "2026-04",
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10",
+  "2026-11",
+  "2026-12",
+  "2027-01",
+  "2027-02",
+  "2027-03",
+  "2027-04",
+  "2027-05",
+  "2027-06",
+  "2027-07",
+  "2027-08",
+  "2027-09",
+  "2027-10",
+  "2027-11",
+  "2027-12"
+ ],
+ "min_elevation_deg": 20,
+ "round_trip_s": {
+  "min": 2.3261,
+  "max": 2.6878
+ },
+ "reflectors": [
+  {
+   "id": "a11",
+   "name": "Apollo 11",
+   "lat": 0.67345,
+   "lon": 23.47307,
+   "nasa": true,
+   "placed": "1969-07-21",
+   "source": "nssdca-lunar-sites"
+  },
+  {
+   "id": "a14",
+   "name": "Apollo 14",
+   "lat": -3.64417,
+   "lon": -17.47865,
+   "nasa": true,
+   "placed": "1971-02-05",
+   "source": "nssdca-lunar-sites"
+  },
+  {
+   "id": "a15",
+   "name": "Apollo 15",
+   "lat": 26.13341,
+   "lon": 3.6285,
+   "nasa": true,
+   "placed": "1971-07-31",
+   "source": "nssdca-lunar-sites"
+  },
+  {
+   "id": "l1",
+   "name": "Lunokhod 1",
+   "lat": 38.315,
+   "lon": -35.0081,
+   "nasa": false,
+   "placed": "1970-11-17",
+   "source": "nssdca-artifacts"
+  },
+  {
+   "id": "l2",
+   "name": "Lunokhod 2",
+   "lat": 25.8323,
+   "lon": 30.9222,
+   "nasa": false,
+   "placed": "1973-01-15",
+   "source": "nssdca-artifacts"
+  }
+ ],
+ "stations": [
+  {
+   "id": "apache",
+   "name": "Apache Point",
+   "place": "New Mexico, USA",
+   "code": "705",
+   "laser": "APOLLO",
+   "center_site": "Apache Point",
+   "center_geodetic": "254.1794, 32.7805613, 2.79488   {E-lon(deg),Lat(deg),Alt(km)}",
+   "target_pole": "MEAN_ME (high precision)        {East-longitude positive}"
+  },
+  {
+   "id": "grasse",
+   "name": "Grasse",
+   "place": "France",
+   "code": "010",
+   "laser": "MeO",
+   "center_site": "Caussols",
+   "center_geodetic": "6.9212, 43.7509454, 1.26963     {E-lon(deg),Lat(deg),Alt(km)}",
+   "target_pole": "MEAN_ME (high precision)        {East-longitude positive}"
+  }
+ ]
+}
