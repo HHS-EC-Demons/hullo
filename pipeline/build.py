@@ -9,6 +9,7 @@ import json
 import sys
 from pathlib import Path
 
+import brand
 import deep_space
 import images
 import mars
@@ -31,7 +32,7 @@ def write(path: Path, payload: dict | list, compact: bool = True) -> None:
 
 
 def main(steps: list[str]) -> None:
-    run = set(steps) or {"deep", "moon", "mars", "images", "fixtures"}
+    run = set(steps) or {"deep", "moon", "mars", "images", "fixtures", "brand"}
     if "deep" in run:
         write(DATA / "deep-space.json", deep_space.build())
     if "moon" in run:
@@ -41,6 +42,10 @@ def main(steps: list[str]) -> None:
     if "images" in run:
         for item in images.build(PUBLIC):
             print(f"image {item['slug']} {item['width']}x{item['height']}")
+    if "brand" in run:
+        for page in brand.build():
+            print(f"brand page {page.name}")
+        print("run ./rasterize.sh to turn the brand pages into PNG icons and the og image")
     if "fixtures" in run:
         write(FIXTURES / "horizons-deep-space.json", deep_space.fixtures(), compact=False)
         write(FIXTURES / "horizons-moon.json", moon.fixtures(), compact=False)
