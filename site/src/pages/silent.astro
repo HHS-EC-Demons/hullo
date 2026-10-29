@@ -1,0 +1,125 @@
+---
+import Base from '../layouts/Base.astro';
+import { SILENT } from '../data/silent';
+import { sourceById } from '../data/sources';
+
+const fmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const rows = SILENT.map((s) => ({
+  ...s,
+  when: fmt.format(Date.parse(`${s.date}T12:00:00Z`)),
+  links: s.sources
+    .map((id) => sourceById(id))
+    .filter((x) => x !== undefined)
+    .map((l) => ({ url: l.url, text: linkText(l.publisher, l.title) })),
+}));
+
+function linkText(publisher: string, title: string): string {
+  if (publisher !== 'NASA NSSDCA') return publisher;
+  const code = title.match(/\((\d{4}-\d{3}[A-Z])\)/);
+  return code ? `NSSDCA ${code[1]}` : 'NSSDCA Apollo locations';
+}
+---
+
+<Base title="The silent ones" current="silent" description="NASA hardware that no longer answers, with what each one found and the last date it was heard from.">
+  <header class="wrap page-head">
+    <h1>The silent ones</h1>
+    <p>Hardware that no longer answers, with what it found and the last date anyone heard from it.</p>
+  </header>
+
+  <section class="wrap" aria-label="Silent hardware">
+    <ol class="silent">
+      {
+        rows.map((r) => (
+          <li class="row">
+            <p class="when">
+              <time class="mono" datetime={r.date}>
+                {r.when}
+              </time>
+              <span class="status">{r.status}</span>
+            </p>
+            <div class="who">
+              <h2>{r.name}</h2>
+              <p class="what">
+                {r.what}, {r.place}
+              </p>
+            </div>
+            <div class="found">
+              <p>{r.found}</p>
+              <p class="line">
+                {r.statusLine}.
+                {r.links.map((l, i) => (
+                  <Fragment>
+                    {i > 0 ? ', ' : ' '}<a href={l.url} rel="external noopener">{l.text}</a>
+                  </Fragment>
+                ))}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</Base>
+
+<style>
+  .silent {
+    border-bottom: 1px solid var(--rule);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 2.4fr) minmax(0, 3fr) minmax(0, 6fr);
+    gap: 8px 32px;
+    padding-block: 26px;
+    border-top: 1px solid var(--rule);
+  }
+  .when {
+    display: grid;
+    gap: 4px;
+    align-content: start;
+  }
+  .when time {
+    font-size: var(--fs-md);
+    font-weight: 600;
+  }
+  .status {
+    color: var(--silent);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+  }
+  .who h2 {
+    font-size: var(--fs-lg);
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .what {
+    margin-top: 4px;
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  .found {
+    display: grid;
+    gap: 8px;
+    max-width: 40rem;
+  }
+  .found p:first-child {
+    font-size: var(--fs-md);
+    text-wrap: pretty;
+  }
+  .line {
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  @media (max-width: 860px) {
+    .row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+    .when {
+      grid-auto-flow: column;
+      justify-content: start;
+      gap: 16px;
+      align-items: baseline;
+    }
+  }
+</style>
