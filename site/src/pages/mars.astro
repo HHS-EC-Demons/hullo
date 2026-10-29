@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import IngenuityMap from '../components/IngenuityMap';
+import { readData } from '../lib/build-data';
+import { asset, href } from '../lib/paths';
+
+const ing = readData<{ totals: { flights: number; distance_m: number; air_time_s: number } }>('ingenuity.json');
+const images = readData<{ slug: string; nasa_id: string; credit: string; width: number; height: number }[]>('images.json');
+const photo = images.find((i) => i.slug === 'ingenuity-flight5')!;
+const km = (ing.totals.distance_m / 1000).toFixed(1);
+const minutes = (ing.totals.air_time_s / 60).toFixed(1);
+---
+
+<Base title="Mars" current="mars" description="Every one of Ingenuity's 72 flights over Jezero crater on JPL's own map data, one flight at a time.">
+  <header class="wrap page-head">
+    <h1>Mars</h1>
+    <p>Ingenuity was built for five test flights. It flew {ing.totals.flights} times over Jezero crater between April 2021 and January 2024.</p>
+  </header>
+
+  <section class="wrap" aria-label="Ingenuity flights">
+    <div class="map-slot">
+      <IngenuityMap client:only="react" />
+    </div>
+    <p class="credit map-credit">
+      Map is the HiRISE and CTX color mosaic from JPL's Mars 2020 map, NASA/JPL-Caltech/University of Arizona/MSSS. Paths and
+      numbers are from the same map's Ingenuity layers. North is up.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <div class="mars-more">
+      <div class="mars-text">
+        <p class="big-claim"><span class="n">{km}</span> km in {minutes} minutes of flying</p>
+        <p>
+          One or more rotor blades were damaged when flight 72 landed on 18 Jan 2024, and NASA ended the mission on 25 Jan 2024. Ingenuity
+          still stands at its last airfield. Since April 2024 it wakes each day, takes a photo and logs temperatures, and keeps
+          the data on board now that Perseverance has driven out of radio range.
+        </p>
+        <p class="note">Status from NASA on 25 Jan 2024 and JPL on 16 Apr 2024. <a href={href('sources/')}>Sources</a></p>
+      </div>
+      <figure class="photo">
+        <img
+          src={asset(`img/${photo.slug}.jpg`)}
+          width={photo.width}
+          height={photo.height}
+          loading="lazy"
+          decoding="async"
+          alt="Ingenuity, a small helicopter with two long rotor blades on four thin legs, standing on reddish sand and rocks."
+        />
+        <figcaption class="credit">Ingenuity after its fifth flight, seen by Perseverance. {photo.nasa_id}, {photo.credit}.</figcaption>
+      </figure>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .map-slot {
+    min-height: calc(clamp(420px, 50vw, 600px) + 236px);
+  }
+  .map-credit {
+    margin-top: 14px;
+    max-width: 44rem;
+  }
+  .mars-more {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: 40px 64px;
+    align-items: start;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+  }
+  .mars-text {
+    display: grid;
+    gap: 18px;
+    max-width: 34rem;
+  }
+  .big-claim {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .big-claim .n {
+    display: block;
+    font-size: var(--fs-xl);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+  .photo figcaption {
+    margin-top: 10px;
+  }
+  @media (max-width: 860px) {
+    .mars-more {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .map-slot {
+      min-height: calc(clamp(420px, 50vw, 600px) + 512px);
+    }
+  }
+</style>
