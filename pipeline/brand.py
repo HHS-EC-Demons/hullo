@@ -1,7 +1,7 @@
 """Brand assets that match the nav wordmark.
 
-Writes `favicon.svg` (the initial as an outline from Atkinson Hyperlegible
-Next at weight 800, so it needs no web font) and three HTML pages that
+Writes `favicon.svg` (the initial as an outline from Gabarito at weight
+800, so it needs no web font) and three HTML pages that
 `rasterize.sh` serves on localhost and turns into the 32 px favicon, the 180 px touch icon and the
 1200 x 630 og image with a headless browser, using the same font files the
 site loads.
@@ -22,8 +22,8 @@ from fontTools.varLib import instancer
 ROOT = Path(__file__).resolve().parent
 SITE = ROOT.parent / "site"
 FONTS = SITE / "node_modules" / "@fontsource-variable"
-NEXT = FONTS / "atkinson-hyperlegible-next" / "files" / "atkinson-hyperlegible-next-latin-wght-normal.woff2"
-MONO = FONTS / "atkinson-hyperlegible-mono" / "files" / "atkinson-hyperlegible-mono-latin-wght-normal.woff2"
+NEXT = FONTS / "gabarito" / "files" / "gabarito-latin-wght-normal.woff2"
+MONO = FONTS / "spline-sans-mono" / "files" / "spline-sans-mono-latin-wght-normal.woff2"
 OUT = ROOT / "cache" / "brand"
 
 PAPER = "#f2f0e9"
@@ -63,8 +63,8 @@ def favicon_svg(initial: str) -> str:
 
 def page(width: int, height: int, body: str) -> str:
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
-@font-face {{ font-family: 'Next'; src: url('next.woff2') format('woff2'); font-weight: 200 800; }}
-@font-face {{ font-family: 'Mono'; src: url('mono.woff2') format('woff2'); font-weight: 200 800; }}
+@font-face {{ font-family: 'Next'; src: url('next.woff2') format('woff2'); font-weight: 400 900; }}
+@font-face {{ font-family: 'Mono'; src: url('mono.woff2') format('woff2'); font-weight: 300 700; }}
 html, body {{ margin: 0; width: {width}px; height: {height}px; overflow: hidden; background: {PAPER}; color: {INK}; }}
 body {{ font-family: 'Next', sans-serif; }}
 </style></head><body>{body}</body></html>
@@ -81,11 +81,11 @@ def build() -> list[Path]:
 
     icon = lambda px: page(px, px, f"""
 <div style="width:{px}px;height:{px}px;display:grid;place-items:center;">
-<span style="font-weight:800;font-size:{px * 0.9:.1f}px;letter-spacing:-0.07em;line-height:1;transform:translateY(-{px * 0.035:.1f}px)">{word[0]}</span>
+<span style="font-weight:800;font-size:{px * 0.9:.1f}px;letter-spacing:-0.05em;line-height:1;transform:translateY(-{px * 0.035:.1f}px)">{word[0]}</span>
 </div>""")
     og = page(1200, 630, f"""
 <div style="position:absolute;inset:0;padding:72px 84px;display:grid;grid-template-rows:auto 1fr auto;">
-<div style="font-weight:800;font-size:76px;letter-spacing:-0.07em;line-height:1">{word}</div>
+<div style="font-weight:800;font-size:76px;letter-spacing:-0.05em;line-height:1">{word}</div>
 <div style="align-self:end;font-weight:800;font-size:92px;letter-spacing:-0.045em;line-height:0.98;max-width:1000px">Voyager 1 is about a day of light away from you.</div>
 <div style="margin-top:36px;padding-top:26px;border-top:2px solid {SIGNAL};font-size:34px;line-height:1.3;color:{INK_2};max-width:940px">{line}</div>
 </div>""")
