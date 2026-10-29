@@ -26,6 +26,7 @@
 .ig-n {
   display: inline-block;
   min-width: 2ch;
+  text-align: right;
   font-size: clamp(4rem, 13vw, 9rem);
   font-weight: 700;
   line-height: 0.9;
@@ -73,6 +74,13 @@
   font-weight: 600;
   white-space: nowrap;
   min-width: 6.5ch;
+}
+
+.ig-na {
+  font-family: var(--sans);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  color: var(--ink-2);
 }
 
 .ig-map {
