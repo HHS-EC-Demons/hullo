@@ -170,7 +170,7 @@ export default function LaserShot() {
               <span>
                 {s.name}, {s.place}
                 <span className="sr-only">, </span>
-                <small>{elevationWord(elNow(s.id), minEl) || ' '}</small>
+                <small>{elevationWord(elNow(s.id), minEl) || '\u2007'}</small>
               </span>
             </label>
           ))}

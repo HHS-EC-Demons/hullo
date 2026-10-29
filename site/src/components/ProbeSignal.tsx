@@ -134,13 +134,13 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
       </Head>
 
       <p className="ps-km">
-        <span className="mono ps-km-n">{range ? `${km.format(range.rg_km)} km` : ' '}</span>
+        <span className="mono ps-km-n">{range ? `${km.format(range.rg_km)} km` : '\u2007'}</span>
         <span className="ps-km-l">
           {range
             ? `from Earth's center, ${Math.abs(range.rr_km_s).toFixed(2)} km ${range.rr_km_s >= 0 ? 'farther' : 'closer'} each second`
             : error
               ? 'Distance data did not load. Reload the page to try again.'
-              : ' '}
+              : '\u2007'}
         </span>
       </p>
 
