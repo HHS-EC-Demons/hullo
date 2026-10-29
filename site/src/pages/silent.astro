@@ -46,12 +46,7 @@ function linkText(publisher: string, title: string): string {
             <div class="found">
               <p>{r.found}</p>
               <p class="line">
-                {r.statusLine}.
-                {r.links.map((l, i) => (
-                  <Fragment>
-                    {i > 0 ? ', ' : ' '}<a href={l.url} rel="external noopener">{l.text}</a>
-                  </Fragment>
-                ))}
+                {r.statusLine}.{r.links.map((l, i) => [i > 0 ? ', ' : ' ', <a href={l.url} rel="external noopener">{l.text}</a>])}
               </p>
             </div>
           </li>
