@@ -11,8 +11,8 @@
   --silent: #55555a;
   --map-ground: #8a7a68;
 
-  --sans: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next', ui-sans-serif, sans-serif;
-  --mono: 'Atkinson Hyperlegible Mono Variable', 'Atkinson Hyperlegible Mono', ui-monospace, monospace;
+  --sans: 'Gabarito Variable', 'Gabarito', ui-sans-serif, sans-serif;
+  --mono: 'Spline Sans Mono Variable', 'Spline Sans Mono', ui-monospace, monospace;
 
   --fs-mega: clamp(3rem, 10.2vw, 9.75rem);
   --fs-display: clamp(2.75rem, 7.4vw, 6.25rem);
@@ -185,7 +185,7 @@ summary {
 
 .mono {
   font-family: var(--mono);
-  font-variant-numeric: tabular-nums slashed-zero;
+  font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
 }
 
@@ -197,7 +197,7 @@ summary {
   font-size: var(--fs-display);
   line-height: 0.95;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
