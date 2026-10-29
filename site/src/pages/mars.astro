@@ -11,10 +11,10 @@ const km = (ing.totals.distance_m / 1000).toFixed(1);
 const minutes = (ing.totals.air_time_s / 60).toFixed(1);
 ---
 
-<Base title="Mars" current="mars" description="Every one of Ingenuity's 72 flights over Jezero crater on JPL's own map data, one flight at a time.">
+<Base title="Mars" current="mars" description="Every one of Ingenuity’s 72 flights over Jezero crater on JPL’s own map data, one flight at a time.">
   <header class="wrap page-head">
     <h1>Mars</h1>
-    <p>Ingenuity was built for five test flights. It flew {ing.totals.flights} times over Jezero crater between April 2021 and January 2024.</p>
+    <p>Ingenuity was built for 5 test flights. It flew {ing.totals.flights} times over Jezero crater between April 2021 and January 2024.</p>
   </header>
 
   <section class="wrap" aria-label="Ingenuity flights">
@@ -22,8 +22,8 @@ const minutes = (ing.totals.air_time_s / 60).toFixed(1);
       <IngenuityMap client:only="react" />
     </div>
     <p class="credit map-credit">
-      Map is the HiRISE and CTX color mosaic from JPL's Mars 2020 map, NASA/JPL-Caltech/University of Arizona/MSSS. Paths and
-      numbers are from the same map's Ingenuity layers. North is up.
+      Map is the HiRISE and CTX color mosaic from JPL’s Mars 2020 map, NASA/JPL-Caltech/University of Arizona/MSSS. Paths and
+      numbers are from the same map’s Ingenuity layers. North is up.
     </p>
   </section>
 

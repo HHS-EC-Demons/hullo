@@ -74,7 +74,10 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
       setNote('Type a message first.');
       return;
     }
-    if (!data) return;
+    if (!data) {
+      setNote('The distance table is still loading. Try again in a moment.');
+      return;
+    }
     const sent = Date.now();
     const arrives = arrivalAt(data, probe, sent);
     if (arrives === null) {
@@ -137,7 +140,7 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
         <span className="mono ps-km-n">{range ? `${km.format(range.rg_km)} km` : '\u2007'}</span>
         <span className="ps-km-l">
           {range
-            ? `from Earth's center, ${Math.abs(range.rr_km_s).toFixed(2)} km ${range.rr_km_s >= 0 ? 'farther' : 'closer'} each second`
+            ? `from Earth’s center, ${Math.abs(range.rr_km_s).toFixed(2)} km ${range.rr_km_s >= 0 ? 'farther' : 'closer'} each second`
             : error
               ? 'Distance data did not load. Reload the page to try again.'
               : '\u2007'}
@@ -160,6 +163,7 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
         <div className="ps-row">
           <input
             id={`${uid}-msg`}
+            name="message"
             type="text"
             value={draft}
             maxLength={MAX_LEN}
@@ -171,7 +175,7 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
               if (note) setNote('');
             }}
           />
-          <button className="btn" type="submit" disabled={!data}>
+          <button className="btn" type="submit">
             Send
           </button>
         </div>

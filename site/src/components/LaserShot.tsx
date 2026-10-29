@@ -176,7 +176,7 @@ export default function LaserShot() {
           ))}
         </fieldset>
         <button className="btn ls-fire" type="button" onClick={fire} disabled={!loaded || flying}>
-          {flying ? 'Pulse on its way' : 'Fire the laser'}
+          {flying ? 'Pulse on its way…' : 'Fire the laser'}
         </button>
         {error && <p className="note">Ranging data did not load. Reload the page to try again.</p>}
       </div>

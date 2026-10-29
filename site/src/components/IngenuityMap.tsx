@@ -173,7 +173,7 @@ export default function IngenuityMap() {
           </button>
         </div>
       </div>
-      <div className="ig-map" ref={box} role="region" aria-label="Map of Jezero crater with Ingenuity's flight paths" />
+      <div className="ig-map" ref={box} role="region" aria-label="Map of Jezero crater with Ingenuity’s flight paths" />
       {error && <p className="note">Flight data did not load. Reload the page to try again.</p>}
     </div>
   );

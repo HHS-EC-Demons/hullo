@@ -4,7 +4,7 @@
   --paper-2: #e9e6dd;
   --ink: #17181b;
   --ink-2: #55555a;
-  --ink-3: #8e8c85;
+  --ink-3: #7f7d76;
   --rule: #d6d3c9;
   --signal: #0a6b4b;
   --on-signal: #f2f0e9;
@@ -21,7 +21,7 @@
   --fs-md: 1.1875rem;
   --fs-base: 1.0625rem;
   --fs-sm: 1rem;
-  --fs-xs: 0.875rem;
+  --fs-xs: 0.9375rem;
 
   --gutter: clamp(16px, 4vw, 56px);
   --measure: 34rem;
@@ -52,6 +52,7 @@
 }
 
 html {
+  -webkit-tap-highlight-color: transparent;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
@@ -129,6 +130,14 @@ input,
 select {
   font: inherit;
   color: inherit;
+}
+
+a,
+button,
+input,
+label,
+summary {
+  touch-action: manipulation;
 }
 
 :focus-visible {
@@ -239,6 +248,9 @@ select {
   white-space: nowrap;
   transition: transform 120ms var(--ease), opacity 120ms var(--ease);
 }
+.btn:hover {
+  background: color-mix(in oklab, var(--signal) 84%, var(--ink));
+}
 .btn:active {
   transform: translateY(1px);
 }
@@ -250,6 +262,17 @@ select {
 .btn-quiet {
   background: transparent;
   color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink-3);
+}
+.btn-quiet:hover {
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.btn[disabled]:hover {
+  background: var(--signal);
+}
+.btn-quiet[disabled]:hover {
+  background: transparent;
   box-shadow: inset 0 0 0 1px var(--ink-3);
 }
 
@@ -291,6 +314,10 @@ select {
 .choice span {
   border-bottom: 2px solid transparent;
   padding-block: 4px;
+}
+
+.choice:hover span {
+  color: var(--ink);
 }
 
 .choice input:checked + span {

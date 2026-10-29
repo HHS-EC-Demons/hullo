@@ -46,7 +46,7 @@ export const DATASETS: Source[] = [
     url: 'https://mars.nasa.gov/maps/location/?mission=M20',
     dated: 'Copied 29 Oct 2026',
     license: 'JPL image use policy, any purpose without prior permission. Courtesy NASA/JPL-Caltech. Basemap NASA/JPL-Caltech/University of Arizona/MSSS.',
-    used: "Ingenuity's 72 flight paths and waypoints (m20_heli_flight_path.json, m20_heli_waypoints.json) and the HiRISE and CTX color basemap, baked at zoom 13 to 16.",
+    used: "Ingenuity’s 72 flight paths and waypoints (m20_heli_flight_path.json, m20_heli_waypoints.json) and the HiRISE and CTX color basemap, baked at zoom 13 to 16.",
   },
   {
     id: 'nasa-images',
@@ -71,7 +71,7 @@ export const FACTS: Source[] = [
   },
   {
     id: 'nasa-new-horizons-wake',
-    title: "NASA's New Horizons Spacecraft Wakes from Hibernation in Good Health",
+    title: "NASA’s New Horizons Spacecraft Wakes from Hibernation in Good Health",
     publisher: 'NASA',
     url: 'https://science.nasa.gov/missions/new-horizons/nasas-new-horizons-spacecraft-wakes-from-hibernation-in-good-health/',
     dated: '7 Jul 2026',
@@ -107,7 +107,7 @@ export const FACTS: Source[] = [
   },
   {
     id: 'nasa-ingenuity-end',
-    title: "After Three Years on Mars, NASA's Ingenuity Helicopter Mission Ends",
+    title: "After Three Years on Mars, NASA’s Ingenuity Helicopter Mission Ends",
     publisher: 'NASA',
     url: 'https://www.nasa.gov/news-release/after-three-years-on-mars-nasas-ingenuity-helicopter-mission-ends/',
     dated: '25 Jan 2024',
@@ -116,7 +116,7 @@ export const FACTS: Source[] = [
   },
   {
     id: 'jpl-ingenuity-goodbye',
-    title: "NASA's Ingenuity Mars Helicopter Team Says Goodbye for Now",
+    title: "NASA’s Ingenuity Mars Helicopter Team Says Goodbye for Now",
     publisher: 'NASA JPL',
     url: 'https://www.jpl.nasa.gov/news/nasas-ingenuity-mars-helicopter-team-says-goodbye-for-now/',
     dated: '16 Apr 2024',
@@ -134,7 +134,7 @@ export const FACTS: Source[] = [
   },
   {
     id: 'nasa-opportunity-end',
-    title: "NASA's Opportunity Rover Mission on Mars Comes to End",
+    title: "NASA’s Opportunity Rover Mission on Mars Comes to End",
     publisher: 'NASA',
     url: 'https://science.nasa.gov/missions/mer/nasas-opportunity-rover-mission-on-mars-comes-to-end/',
     dated: '13 Feb 2019',
@@ -143,7 +143,7 @@ export const FACTS: Source[] = [
   },
   {
     id: 'nasa-cassini-end',
-    title: "NASA's Cassini Spacecraft Ends Its Historic Exploration of Saturn",
+    title: "NASA’s Cassini Spacecraft Ends Its Historic Exploration of Saturn",
     publisher: 'NASA',
     url: 'https://www.nasa.gov/news-release/nasas-cassini-spacecraft-ends-its-historic-exploration-of-saturn/',
     dated: '15 Sep 2017',
