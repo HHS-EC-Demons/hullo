@@ -24,6 +24,7 @@
 }
 
 .ig-n {
+  color: var(--laser);
   display: inline-block;
   min-width: 2ch;
   text-align: right;
@@ -34,18 +35,18 @@
 }
 
 .ig-of {
-  color: var(--ink-2);
+  color: var(--muted);
   font-size: var(--fs-md);
 }
 
 .ig-when {
-  color: var(--ink-2);
+  color: var(--muted);
   font-size: var(--fs-md);
   min-height: 1.55em;
 }
 
 .ig-when .mono {
-  color: var(--ink);
+  color: var(--text);
 }
 
 .ig-stats {
@@ -65,7 +66,7 @@
 
 .ig-stats dt {
   font-size: var(--fs-xs);
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .ig-stats dd {
@@ -80,18 +81,18 @@
   font-family: var(--sans);
   font-size: var(--fs-sm);
   font-weight: 400;
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .ig-map {
   height: clamp(420px, 50vw, 600px);
-  background: var(--map-ground);
+  background: var(--raised);
   border-radius: 2px;
   z-index: 0;
 }
 
 .ig-map:focus-visible {
-  outline: 3px solid var(--signal);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -109,7 +110,7 @@
 .ig-control input[type='range'] {
   width: 100%;
   min-height: 44px;
-  accent-color: var(--signal);
+  accent-color: var(--lilac);
   cursor: pointer;
 }
 
@@ -120,7 +121,7 @@
 
 .ig .leaflet-container {
   font-family: var(--sans);
-  background: var(--map-ground);
+  background: var(--raised);
 }
 
 .ig .leaflet-bar {
@@ -134,8 +135,8 @@
   height: 40px;
   line-height: 40px;
   font-size: 20px;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--text);
   border-bottom: 1px solid var(--rule);
 }
 
@@ -149,8 +150,8 @@
 }
 
 .ig .leaflet-bar a.leaflet-disabled {
-  color: var(--ink-3);
-  background: var(--paper-2);
+  color: var(--edge);
+  background: var(--raised);
 }
 
 @media (max-width: 860px) {

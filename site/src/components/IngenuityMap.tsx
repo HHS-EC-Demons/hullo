@@ -82,20 +82,21 @@ export default function IngenuityMap() {
     const lg = layers.current;
     if (!data || !m || !lg) return;
     const flight = data.flights[n - 1];
-    const ink = css('--ink') || '#17181b';
-    const paper = '#f2f0e9';
-    const signal = '#4cc994';
+    const violet = css('--violet') || '#0d0a18';
+    const lilac = css('--lilac') || '#b6a6ff';
+    const laser = css('--laser') || '#3df58c';
+    const text = css('--ink-text') || '#eeeaf9';
     lg.past.clearLayers();
     lg.now.clearLayers();
     for (const f of data.flights.slice(0, n - 1)) {
-      if (f.path.length > 1) L.polyline(f.path, { color: paper, weight: 1.5, opacity: 0.75, interactive: false }).addTo(lg.past);
+      if (f.path.length > 1) L.polyline(f.path, { color: lilac, weight: 1.5, opacity: 0.9, interactive: false }).addTo(lg.past);
     }
-    L.circleMarker([data.start.lat, data.start.lon], { radius: 4, color: ink, weight: 2, fillColor: paper, fillOpacity: 1, interactive: false }).addTo(lg.past);
+    L.circleMarker([data.start.lat, data.start.lon], { radius: 4, color: violet, weight: 2, fillColor: text, fillOpacity: 1, interactive: false }).addTo(lg.past);
     if (flight.path.length > 1) {
-      L.polyline(flight.path, { color: '#121315', weight: 6, opacity: 0.85, interactive: false }).addTo(lg.now);
-      L.polyline(flight.path, { color: signal, weight: 3, opacity: 1, interactive: false }).addTo(lg.now);
+      L.polyline(flight.path, { color: violet, weight: 6, opacity: 0.85, interactive: false }).addTo(lg.now);
+      L.polyline(flight.path, { color: laser, weight: 3, opacity: 1, interactive: false }).addTo(lg.now);
     }
-    L.circleMarker(flight.end, { radius: 6, color: '#121315', weight: 2, fillColor: signal, fillOpacity: 1, interactive: false }).addTo(lg.now);
+    L.circleMarker(flight.end, { radius: 6, color: violet, weight: 2, fillColor: laser, fillOpacity: 1, interactive: false }).addTo(lg.now);
     const pts = flight.path.length > 1 ? flight.path : [flight.end];
     const b = L.latLngBounds(pts);
     m.flyToBounds(b, { padding: [48, 48], maxZoom: 17, animate: !reduced, duration: 0.6 });

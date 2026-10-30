@@ -71,11 +71,12 @@ const chapters = [
     align-items: baseline;
     padding-block: clamp(24px, 3.2vw, 40px);
     border-top: 1px solid var(--rule);
+    color: var(--text);
     text-decoration: none;
   }
   .chapter:hover,
   .chapter:focus-visible {
-    box-shadow: inset 0 2px 0 var(--ink);
+    box-shadow: inset 0 2px 0 var(--text);
   }
   .chapter:focus-visible {
     outline-offset: 6px;
@@ -91,7 +92,7 @@ const chapters = [
     font-size: max(1rem, 0.42em);
     font-weight: 600;
     letter-spacing: -0.01em;
-    color: var(--ink-2);
+    color: var(--muted);
     margin-left: 0.22em;
   }
   .ch-name {
@@ -100,18 +101,18 @@ const chapters = [
     letter-spacing: -0.02em;
   }
   .ch-line {
-    color: var(--ink-2);
+    color: var(--muted);
     max-width: 28rem;
   }
   .chapter:hover .ch-line,
   .chapter:focus-visible .ch-line {
-    color: var(--ink);
+    color: var(--text);
   }
   .chapter:hover .ch-name,
   .chapter:focus-visible .ch-name {
     text-decoration: underline;
     text-decoration-thickness: 2px;
-    text-decoration-color: var(--signal);
+    text-decoration-color: var(--line);
     text-underline-offset: 0.22em;
   }
   @media (max-width: 860px) {
