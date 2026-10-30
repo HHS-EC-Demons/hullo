@@ -55,7 +55,7 @@ export default function SkyChart({ highlight, now }: Props) {
   const narrow = w < 640;
   const margin = narrow ? 6 : 14;
   const k = (w - margin * 2) / (4 * Math.SQRT2);
-  const h = Math.round(k * 2 * Math.SQRT2 + margin * 2);
+  const h = Math.round(w / 2);
   const cx = w / 2;
   const cy = h / 2;
   const rx = 2 * Math.SQRT2 * k;
@@ -173,7 +173,7 @@ export default function SkyChart({ highlight, now }: Props) {
           {index ? index.star_count.toLocaleString('en-US') : '2,847'} stars brighter than magnitude {sky?.mag_limit ?? 5.5}.
         </p>
       </figcaption>
-      <div className="sky-plot" ref={box} style={{ minHeight: width ? h : undefined }}>
+      <div className="sky-plot" ref={box}>
         {width > 0 && layers && (
           <svg
             width={w}
@@ -234,6 +234,14 @@ export default function SkyChart({ highlight, now }: Props) {
         {error && <p className="note">The star chart did not load. Reload the page to try again.</p>}
       </div>
       <ul className="sky-key">
+        {positions.length === 0 &&
+          Array.from({ length: bodies.length || 8 }, (_, i) => (
+            <li key={i} aria-hidden="true">
+              <span className="sky-key-name">{'\u2007'}</span>
+              <span className="sky-key-where">{'\u2007'}</span>
+              <span className="mono sky-key-pos">{'\u2007'}</span>
+            </li>
+          ))}
         {positions.map((p) => {
           const b = bodies.find((x) => x.key === p.key)!;
           const on = p.key === highlight;
