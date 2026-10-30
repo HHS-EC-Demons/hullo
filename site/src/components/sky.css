@@ -1,0 +1,172 @@
+.sky {
+  margin: clamp(56px, 8vw, 104px) 0 0;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+}
+
+.sky-cap {
+  display: grid;
+  gap: 6px;
+  margin-bottom: clamp(20px, 3vw, 32px);
+}
+
+.sky-title {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.sky-sub {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  max-width: 52rem;
+  text-wrap: pretty;
+}
+
+.sky-sub .mono {
+  color: var(--text);
+}
+
+.sky-plot {
+  position: relative;
+}
+
+.sky-plot svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.sky-edge {
+  fill: var(--raised);
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.sky-grid {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.sky-equator {
+  fill: none;
+  stroke: color-mix(in oklab, var(--rule) 70%, var(--lilac));
+  stroke-width: 1;
+}
+
+.sky-figures {
+  fill: none;
+  stroke: var(--lilac);
+  stroke-opacity: 0.34;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.sky-stars {
+  fill: none;
+  stroke: var(--text);
+  stroke-linecap: round;
+}
+
+.sky-tick {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.sky-ring {
+  fill: var(--raised);
+  stroke: var(--lilac);
+  stroke-width: 2;
+}
+
+.sky-mark.on .sky-ring {
+  stroke: var(--laser);
+}
+
+.sky-core {
+  fill: var(--laser);
+}
+
+.sky-world {
+  fill: var(--muted);
+  stroke: var(--raised);
+  stroke-width: 2;
+}
+
+.sky-label {
+  fill: var(--text);
+  font-family: var(--sans);
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--raised);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.sky-mark.on .sky-label {
+  font-weight: 800;
+}
+
+.sky-key {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px 32px;
+  margin-top: clamp(20px, 3vw, 32px);
+}
+
+.sky-key li {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+}
+
+.sky-key-name {
+  font-weight: 700;
+}
+
+.sky-key li.on .sky-key-name {
+  font-weight: 800;
+}
+
+.sky-key-short {
+  display: inline-block;
+  min-width: 3.4ch;
+  margin-right: 8px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.sky-key-where {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.sky-key-pos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+}
+
+.sky-key-pos span {
+  white-space: nowrap;
+}
+
+@media (max-width: 1000px) {
+  .sky-key {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .sky-plot {
+    margin-inline: calc(var(--gutter) * -1 + 4px);
+  }
+  .sky-key {
+    gap: 18px 20px;
+  }
+}
