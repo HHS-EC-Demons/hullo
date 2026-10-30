@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-30T22:48Z",
+ "generated_utc": "2026-10-30T22:55Z",
  "source": "JPL Horizons observer tables, center 500@399, quantities 1 (astrometric RA and Dec, ICRF) and 29, daily at 00:00 UT",
  "stars_source": "Yale Bright Star Catalogue 5th revised ed. (VizieR V/50), V < 5.5, J2000",
  "lines_source": "d3-celestial constellations.lines.json, Olaf Frohn, BSD 3-Clause",
