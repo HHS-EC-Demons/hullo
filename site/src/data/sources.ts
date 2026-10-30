@@ -19,7 +19,26 @@ export const DATASETS: Source[] = [
     url: 'https://ssd.jpl.nasa.gov/horizons/',
     dated: 'Queried 29 Oct 2026, one request at a time',
     license: 'Public service under the SSD API fair use policy. Results are cached and shipped as files, never fetched from the browser.',
-    used: 'Daily geometric distance for Voyager 1 and 2, New Horizons and Pioneer 10 and 11 from Earth, 2026 to 2027. Hourly range and elevation from Apache Point (site 705) and Caussols near Grasse (site 010) to five lunar reflectors.',
+    used: 'Daily geometric distance for Voyager 1 and 2, New Horizons and Pioneer 10 and 11 from Earth, 2026 to 2027. Hourly range and elevation from Apache Point (site 705) and Caussols near Grasse (site 010) to five lunar reflectors. Daily astrometric right ascension, declination and constellation of the five probes, the Moon, Mars and Eros seen from Earth’s center, for the sky chart.',
+  },
+  {
+    id: 'bsc5',
+    title: 'Bright Star Catalogue, 5th Revised Ed. (VizieR V/50)',
+    publisher: 'D. Hoffleit and W. H. Warren Jr., Yale University Observatory and NASA Astronomical Data Center, 1991, via VizieR',
+    url: 'https://vizier.cfa.harvard.edu/viz-bin/VizieR?-source=V/50',
+    dated: 'Downloaded 30 Oct 2026 from the VizieR mirror at the Center for Astrophysics',
+    license:
+      'The catalogue ReadMe notes no copyright, and the VizieR usage rules tie rights to the origin of the data. Credit as CDS asks. This research has made use of the VizieR catalogue access tool, CDS, Strasbourg, France (DOI 10.26093/cds/vizier).',
+    used: 'Position and brightness of all 2,847 stars brighter than magnitude 5.5 on the sky chart, at their J2000 catalog positions.',
+  },
+  {
+    id: 'd3-celestial',
+    title: 'd3-celestial constellation lines',
+    publisher: 'Olaf Frohn',
+    url: 'https://github.com/ofrohn/d3-celestial',
+    dated: 'Copied 30 Oct 2026',
+    license: 'BSD 3-Clause license, Copyright (c) 2015, Olaf Frohn. The full licence ships with the data as data/sky/d3-celestial-LICENSE.txt.',
+    used: 'The lines that join stars into the 88 constellation figures on the sky chart, and the constellation names.',
   },
   {
     id: 'nssdca-lunar-sites',
@@ -55,11 +74,20 @@ export const DATASETS: Source[] = [
     url: 'https://images.nasa.gov/',
     dated: 'Downloaded 29 Oct 2026',
     license: `${NASA_MEDIA} No logos or insignia are used.`,
-    used: 'Photo AS14-67-9386 of the Apollo 14 reflector (NASA) and PIA24648 of Ingenuity, cropped (NASA/JPL-Caltech/ASU/MSSS).',
+    used: 'Photos AS14-67-9386 of the Apollo 14 reflector and AS11-37-5551 of the Apollo 11 reflector (NASA), PIA24648 of Ingenuity (NASA/JPL-Caltech/ASU/MSSS) and PIA23645, the Pale Blue Dot (NASA/JPL-Caltech). Each is shown unaltered apart from crop and scale.',
   },
 ];
 
 export const FACTS: Source[] = [
+  {
+    id: 'jpl-pale-blue-dot',
+    title: 'Pale Blue Dot Revisited (PIA23645)',
+    publisher: 'NASA JPL Photojournal',
+    url: 'https://photojournal.jpl.nasa.gov/catalog/PIA23645',
+    dated: 'Image added 12 Feb 2020',
+    license: NASA_MEDIA,
+    used: 'Voyager 1 took the frames on 14 Feb 1990 from about 6 billion km, and the credit NASA/JPL-Caltech.',
+  },
   {
     id: 'nasa-voyager-status',
     title: 'Where are Voyager 1 and Voyager 2 now?',
