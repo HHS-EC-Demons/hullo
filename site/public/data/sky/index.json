@@ -1,0 +1,132 @@
+{
+ "generated_utc": "2026-10-30T22:44Z",
+ "source": "JPL Horizons observer tables, center 500@399, quantities 1 (astrometric RA and Dec, ICRF) and 29, daily at 00:00 UT",
+ "stars_source": "Yale Bright Star Catalogue 5th revised ed. (VizieR V/50), V < 5.5, J2000",
+ "lines_source": "d3-celestial constellations.lines.json, Olaf Frohn, BSD 3-Clause",
+ "star_count": 2847,
+ "months": [
+  "2026-01",
+  "2026-02",
+  "2026-03",
+  "2026-04",
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10",
+  "2026-11",
+  "2026-12",
+  "2027-01",
+  "2027-02",
+  "2027-03",
+  "2027-04",
+  "2027-05",
+  "2027-06",
+  "2027-07",
+  "2027-08",
+  "2027-09",
+  "2027-10",
+  "2027-11",
+  "2027-12",
+  "2028-01"
+ ],
+ "bodies": [
+  {
+   "key": "voyager1",
+   "name": "Voyager 1",
+   "short": "V1",
+   "command": "-31",
+   "kind": "probe",
+   "horizons_target": "Voyager 1 (spacecraft) (-31)    {source: Voyager_1_ST+refit2022_m}"
+  },
+  {
+   "key": "voyager2",
+   "name": "Voyager 2",
+   "short": "V2",
+   "command": "-32",
+   "kind": "probe",
+   "horizons_target": "Voyager 2 (spacecraft) (-32)    {source: Voyager_2_ST+refit2022_m}"
+  },
+  {
+   "key": "newhorizons",
+   "name": "New Horizons",
+   "short": "NH",
+   "command": "-98",
+   "kind": "probe",
+   "horizons_target": "New Horizons (spacecraft) (-98) {source: NH_merged}"
+  },
+  {
+   "key": "pioneer10",
+   "name": "Pioneer 10",
+   "short": "P10",
+   "command": "-23",
+   "kind": "probe",
+   "horizons_target": "Pioneer 10 (spacecraft) (-23)   {source: pioneer_10_merged}"
+  },
+  {
+   "key": "pioneer11",
+   "name": "Pioneer 11",
+   "short": "P11",
+   "command": "-24",
+   "kind": "probe",
+   "horizons_target": "Pioneer 11 (spacecraft) (-24)   {source: pioneer_11_merged}"
+  },
+  {
+   "key": "moon",
+   "name": "Moon",
+   "short": "Moon",
+   "command": "301",
+   "kind": "world",
+   "holds": "Apollo mirrors, Surveyor 3, Lunar Prospector, LCROSS",
+   "horizons_target": "Moon (301)                      {source: DE441}"
+  },
+  {
+   "key": "mars",
+   "name": "Mars",
+   "short": "Mars",
+   "command": "499",
+   "kind": "world",
+   "holds": "Ingenuity, Viking 1 and 2, Pathfinder, Spirit, Opportunity, Phoenix, InSight",
+   "horizons_target": "Mars (499)                      {source: mar099}"
+  },
+  {
+   "key": "eros",
+   "name": "Eros",
+   "short": "Eros",
+   "command": "433;",
+   "kind": "world",
+   "holds": "NEAR Shoemaker",
+   "horizons_target": "433 Eros (A898 PA)              {source: JPL#659}"
+  }
+ ],
+ "constellations": {
+  "Aql": "Aquila",
+  "Aqr": "Aquarius",
+  "Ari": "Aries",
+  "Aur": "Auriga",
+  "CMi": "Canis Minor",
+  "Cap": "Capricornus",
+  "Cet": "Cetus",
+  "Cnc": "Cancer",
+  "Crt": "Crater",
+  "Crv": "Corvus",
+  "Gem": "Gemini",
+  "Hya": "Hydra",
+  "Leo": "Leo",
+  "Lib": "Libra",
+  "Mon": "Monoceros",
+  "Oph": "Ophiuchus",
+  "Ori": "Orion",
+  "Pav": "Pavo",
+  "Per": "Perseus",
+  "Psc": "Pisces",
+  "Sco": "Scorpius",
+  "Sct": "Scutum",
+  "Sex": "Sextans",
+  "Sgr": "Sagittarius",
+  "Tau": "Taurus",
+  "Tri": "Triangulum",
+  "Vir": "Virgo"
+ }
+}
