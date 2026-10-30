@@ -13,7 +13,7 @@
   --rule: var(--violet-rule);
   --text: var(--ink-text);
   --muted: var(--ink-muted);
-  --edge: color-mix(in oklab, var(--ink-muted) 52%, var(--violet));
+  --edge: color-mix(in oklab, var(--ink-muted) 62%, var(--violet));
   --line: var(--lilac);
   --thumb: color-mix(in oklab, var(--lilac) 38%, var(--violet));
   --focus: var(--lilac);
