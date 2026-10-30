@@ -110,8 +110,50 @@
 .ig-control input[type='range'] {
   width: 100%;
   min-height: 44px;
+  margin: 0;
+  background: transparent;
   accent-color: var(--lilac);
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ig-control input[type='range']::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--edge);
+}
+
+.ig-control input[type='range']::-moz-range-track {
+  height: 2px;
+  background: var(--edge);
+}
+
+.ig-control input[type='range']::-moz-range-progress {
+  height: 2px;
+  background: var(--lilac);
+}
+
+.ig-control input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -10px;
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+  background: var(--lilac);
+}
+
+.ig-control input[type='range']::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+  background: var(--lilac);
+}
+
+.ig-control input[type='range']:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .ig-steps {
