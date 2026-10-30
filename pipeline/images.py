@@ -23,7 +23,7 @@ ITEMS = [
     {"id": "PIA24648", "slug": "ingenuity-flight5", "width": 1200, "credit": "NASA/JPL-Caltech/ASU/MSSS",
      "crop": (0.0, 0.3, 0.5, 0.8)},
     {"id": "PIA23645", "slug": "pale-blue-dot", "width": 900, "credit": "NASA/JPL-Caltech",
-     "crop": (0.346, 0.288, 0.805, 0.867)},
+     "crop": (0.48, 0.4037, 0.7094, 0.6935)},
     {"id": "as11-37-5551", "slug": "apollo11-reflector", "width": 900, "credit": "NASA",
      "crop": (0.35, 0.03, 0.85, 0.405)},
 ]
