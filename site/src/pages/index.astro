@@ -2,8 +2,18 @@
 import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
 import { BRAND_LINE } from '../brand';
-import { href } from '../lib/paths';
+import { asset, href } from '../lib/paths';
 import { readData } from '../lib/build-data';
+
+interface Photo {
+  slug: string;
+  nasa_id: string;
+  credit: string;
+  width: number;
+  height: number;
+}
+const photos = readData<Photo[]>('images.json');
+const photo = (slug: string) => photos.find((p) => p.slug === slug)!;
 
 const moon = readData<{ round_trip_s: { min: number; max: number } }>('moon/index.json');
 const mars = readData<{ totals: { flights: number } }>('ingenuity.json');
@@ -16,6 +26,10 @@ const chapters = [
     value: String(Object.keys(deep.probes).length),
     unit: 'probes',
     line: 'Send a message to one of 5 probes on their way out of the solar system.',
+    photo: photo('pale-blue-dot'),
+    focus: '50% 40%',
+    what: 'Earth from Voyager 1, 1990',
+    alt: 'A tiny pale blue dot of light inside a faint band of sunlight against dark space.',
   },
   {
     path: 'moon/',
@@ -23,6 +37,10 @@ const chapters = [
     value: `${moon.round_trip_s.min.toFixed(1)} to ${moon.round_trip_s.max.toFixed(1)}`,
     unit: 's',
     line: 'Fire a laser at a mirror an Apollo crew left and time the echo.',
+    photo: photo('apollo11-reflector'),
+    focus: '36% 70%',
+    what: 'Apollo 11 mirror, 1969',
+    alt: 'The Apollo 11 laser mirror, a small tilted box on grey lunar soil, with a seismometer behind it.',
   },
   {
     path: 'mars/',
@@ -30,6 +48,10 @@ const chapters = [
     value: String(mars.totals.flights),
     unit: 'flights',
     line: "Fly Ingenuity’s flights over Jezero crater, one at a time.",
+    photo: photo('ingenuity-flight5'),
+    focus: '25% 50%',
+    what: 'Ingenuity on Mars, 2021',
+    alt: 'Ingenuity, a small helicopter with two long rotor blades, standing on reddish sand and rocks.',
   },
 ];
 ---
@@ -46,8 +68,22 @@ const chapters = [
           <li>
             <a href={href(c.path)} class="chapter">
               <span class="ch-num">{c.value}<span class="ch-unit">{c.unit}</span></span>
-              <span class="ch-name">{c.name}</span>
-              <span class="ch-line">{c.line}</span>
+              <span class="ch-text">
+                <span class="ch-name">{c.name}</span>
+                <span class="ch-line">{c.line}</span>
+              </span>
+              <figure class="ch-photo">
+                <img
+                  src={asset(`img/${c.photo.slug}.jpg`)}
+                  width={c.photo.width}
+                  height={c.photo.height}
+                  loading="lazy"
+                  decoding="async"
+                  alt={c.alt}
+                  style={`object-position: ${c.focus}`}
+                />
+                <figcaption class="credit">{c.what}. {c.photo.nasa_id.toUpperCase()}, {c.photo.credit.replaceAll('/', '/\u200b')}.</figcaption>
+              </figure>
             </a>
           </li>
         ))
@@ -66,9 +102,9 @@ const chapters = [
   }
   .chapter {
     display: grid;
-    grid-template-columns: minmax(0, 4.5fr) minmax(0, 2.5fr) minmax(0, 4fr);
-    gap: 8px 24px;
-    align-items: baseline;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 5fr) minmax(0, 3fr);
+    gap: 12px 32px;
+    align-items: start;
     padding-block: clamp(24px, 3.2vw, 40px);
     border-top: 1px solid var(--rule);
     color: var(--text);
@@ -76,7 +112,7 @@ const chapters = [
   }
   .chapter:hover,
   .chapter:focus-visible {
-    box-shadow: inset 0 2px 0 var(--text);
+    box-shadow: inset 0 2px 0 var(--line);
   }
   .chapter:focus-visible {
     outline-offset: 6px;
@@ -95,10 +131,17 @@ const chapters = [
     color: var(--muted);
     margin-left: 0.22em;
   }
+  .ch-text {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    padding-top: 6px;
+  }
   .ch-name {
     font-size: var(--fs-lg);
     font-weight: 700;
     letter-spacing: -0.02em;
+    line-height: 1.15;
   }
   .ch-line {
     color: var(--muted);
@@ -115,12 +158,35 @@ const chapters = [
     text-decoration-color: var(--line);
     text-underline-offset: 0.22em;
   }
+  .ch-photo {
+    display: grid;
+    gap: 8px;
+  }
+  .ch-photo img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    background: var(--raised);
+    border-radius: 2px;
+  }
   @media (max-width: 860px) {
     .chapter {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 9.5rem);
+      grid-template-areas: 'num photo' 'text photo';
+      gap: 10px 20px;
     }
     .ch-num {
-      margin-bottom: 6px;
+      grid-area: num;
+    }
+    .ch-text {
+      grid-area: text;
+      padding-top: 0;
+    }
+    .ch-photo {
+      grid-area: photo;
+    }
+    .ch-photo img {
+      aspect-ratio: 1;
     }
   }
 </style>
