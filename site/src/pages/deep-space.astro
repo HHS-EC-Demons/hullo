@@ -2,10 +2,12 @@
 import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
 import { readData } from '../lib/build-data';
-import { href } from '../lib/paths';
+import { asset, href } from '../lib/paths';
 
 const deep = readData<{ probes: { voyager1: { light_day_utc: string } } }>('deep-space.json');
 const crossing = deep.probes.voyager1.light_day_utc.slice(11, 19);
+const images = readData<{ slug: string; nasa_id: string; credit: string; width: number; height: number }[]>('images.json');
+const photo = images.find((i) => i.slug === 'pale-blue-dot')!;
 ---
 
 <Base title="Deep space" current="deep-space" description="Light time and message travel time to Voyager 1 and 2, New Horizons and Pioneer 10 and 11, from JPL Horizons.">
@@ -20,21 +22,37 @@ const crossing = deep.probes.voyager1.light_day_utc.slice(11, 19);
 
   <section class="wrap section">
     <div class="facts">
-      <p class="fact">
-        <span class="fact-n mono">18 Nov 2026, 10:16:07 UTC</span>
-        <span>
-          NASA’s date for Voyager 1 reaching one light-day from Earth. The daily table on this site crosses 86,400 s of light
-          time at {crossing} UTC.
-        </span>
-      </p>
-      <p class="note">
-        Light time here is the straight line distance from Earth’s center at this instant, divided by the speed of light. That is
-        the convention behind NASA’s one light-day date. Horizons observer tables print a few seconds less, because they give
-        the probe’s position when the light now arriving left it. A message takes a few seconds more, because the probe keeps
-        moving while the message travels. Pioneer positions are extrapolated from old tracking. <a href={href('sources/')}
-          >Sources</a
-        >
-      </p>
+      <figure class="photo">
+        <img
+          src={asset(`img/${photo.slug}.jpg`)}
+          width={photo.width}
+          height={photo.height}
+          loading="lazy"
+          decoding="async"
+          alt="A tiny pale blue dot of light inside a faint band of sunlight against dark space."
+        />
+        <figcaption class="credit">
+          Earth, the speck in the sunbeam, seen by Voyager 1 from about 6 billion km on 14 Feb 1990. {photo.nasa_id},
+          {photo.credit}.
+        </figcaption>
+      </figure>
+      <div class="facts-text">
+        <p class="fact">
+          <span class="fact-n mono">18 Nov 2026, 10:16:07 UTC</span>
+          <span>
+            NASA’s date for Voyager 1 reaching one light-day from Earth. The daily table on this site crosses 86,400 s of light
+            time at {crossing} UTC.
+          </span>
+        </p>
+        <p class="note">
+          Light time here is the straight line distance from Earth’s center at this instant, divided by the speed of light. That is
+          the convention behind NASA’s one light-day date. Horizons observer tables print a few seconds less, because they give
+          the probe’s position when the light now arriving left it. A message takes a few seconds more, because the probe keeps
+          moving while the message travels. Pioneer positions are extrapolated from old tracking. <a href={href('sources/')}
+            >Sources</a
+          >
+        </p>
+      </div>
     </div>
   </section>
 </Base>
@@ -42,10 +60,27 @@ const crossing = deep.probes.voyager1.light_day_utc.slice(11, 19);
 <style>
   .facts {
     display: grid;
-    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
     gap: 32px 64px;
+    align-items: start;
     padding-top: 28px;
     border-top: 1px solid var(--rule);
+  }
+  .photo {
+    display: grid;
+    gap: 10px;
+  }
+  .photo img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    background: var(--raised);
+    border-radius: 2px;
+  }
+  .facts-text {
+    display: grid;
+    gap: 28px;
+    align-content: start;
   }
   .fact {
     display: grid;
@@ -60,6 +95,9 @@ const crossing = deep.probes.voyager1.light_day_utc.slice(11, 19);
   @media (max-width: 860px) {
     .facts {
       grid-template-columns: minmax(0, 1fr);
+    }
+    .photo {
+      max-width: 26rem;
     }
   }
 </style>
