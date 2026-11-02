@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { animate, type AnimationPlaybackControls } from 'motion/react';
+import type { AnimationPlaybackControls } from 'motion';
 import { loadJson, km, useJson, useNow, useReducedMotion, utcTime, utcDay } from '../lib/client';
 import { stamp } from '../lib/passport';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth, type Shot } from '../lib/ranging';
@@ -30,6 +30,13 @@ function useMonths(keys: string[]): Record<string, MoonMonth> {
     };
   }, [wanted]);
   return months;
+}
+
+let motion: Promise<typeof import('motion')> | null = null;
+
+function loadMotion() {
+  motion ??= import('motion');
+  return motion;
 }
 
 function elevationWord(el: number | null, min: number): string {
@@ -110,10 +117,14 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
     const travel = Math.max(0, track.getBoundingClientRect().width - el.getBoundingClientRect().width);
     const duration = shot.round_trip_s;
     const edge = Math.min(0.04, 0.12 / duration);
-    const move = animate(el, { x: [0, travel, 0] }, { duration, ease: 'linear', times: [0, 0.5, 1] });
-    const glow = animate(el, { opacity: [0, 1, 1, 0] }, { duration, ease: 'linear', times: [0, edge, 1 - edge, 1] });
-    flight.current = [move, glow];
-    move.then(land);
+    loadMotion()
+      .then(({ animate }) => {
+        const move = animate(el, { x: [0, travel, 0] }, { duration, ease: 'linear', times: [0, 0.5, 1] });
+        const glow = animate(el, { opacity: [0, 1, 1, 0] }, { duration, ease: 'linear', times: [0, edge, 1 - edge, 1] });
+        flight.current = [move, glow];
+        return move.finished;
+      })
+      .then(land, land);
   }
 
   const refl = index?.reflectors.find((r) => r.id === reflector);
@@ -180,7 +191,7 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
             </label>
           ))}
         </fieldset>
-        <button className="btn ls-fire" type="button" onClick={fire} disabled={!loaded || flying}>
+        <button className="btn ls-fire" type="button" onClick={fire} onPointerEnter={loadMotion} onFocus={loadMotion} disabled={!loaded || flying}>
           {flying ? 'Pulse on its way…' : 'Fire the laser'}
         </button>
         {error && <p className="note">Ranging data did not load. Reload the page to try again.</p>}
