@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useState, type FormEvent } from 'react';
+import { lazy, Suspense, useEffect, useId, useMemo, useState, type FormEvent } from 'react';
 import { arrivalAt, hmsText, lightTimeAt, replyAt, type DeepSpaceData } from '../lib/lighttime';
 import { longDate, useJson, useNow } from '../lib/client';
 import { stamp } from '../lib/passport';
@@ -7,11 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import LiveLight from './LiveLight';
 import LightDay from './LightDay';
-import MessageFlight, { type Message } from './MessageFlight';
+import type { Message } from './MessageFlight';
 import LightTimeChart from './LightTimeChart';
 import SkyChart from './SkyChart';
 import './probe.css';
 
+const MessageFlight = lazy(() => import('./MessageFlight'));
 const STORE = 'hullo.messages.v1';
 const MAX_LEN = 80;
 
@@ -184,10 +185,14 @@ export default function ProbeSignal({
               <Button type="submit">Send</Button>
             </div>
             <p className="ps-hint" id={`${uid}-hint`} aria-live="polite">
-              {note || `Up to ${MAX_LEN} characters. Nothing is transmitted. The message stays on this device.`}
+              {note || `Up to ${MAX_LEN} characters. Nothing is sent anywhere, and the message stays on this device.`}
             </p>
           </form>
-          {data && <MessageFlight data={data} messages={mine} />}
+          {data && mine.length > 0 && (
+            <Suspense fallback={null}>
+              <MessageFlight data={data} messages={mine} />
+            </Suspense>
+          )}
         </div>
         {aside && <p className="ps-aside">{aside}</p>}
         {!aside && photo && (

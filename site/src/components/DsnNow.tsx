@@ -89,8 +89,8 @@ export default function DsnNow() {
         NASA’s Deep Space Network this minute
       </h2>
       <p className="dsn-sub">
-        Big dishes in California, Spain and Australia, read from NASA’s DSN Now feed every {POLL_MS / 1000} s while this part of
-        the page is on screen.
+        Antennas in California, Spain and Australia, from NASA’s DSN Now feed, updated every {POLL_MS / 1000} s while this
+        section is on screen.
       </p>
 
       <div className="dsn-story">
@@ -111,7 +111,7 @@ export default function DsnNow() {
           })}
         {feed && story.length === 0 && (
           <p className="dsn-big">
-            None of the probes on this site is in contact right now. Below is what each dish is doing instead.
+            None of the probes on this site is in contact right now. The list shows what each dish is doing.
           </p>
         )}
       </div>
