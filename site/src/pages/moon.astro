@@ -14,18 +14,18 @@ const mirrors = [
     slug: 'moon-a11-reflector',
     name: 'Apollo 11',
     note: 'The reflector stands beyond the seismometer, with the lunar module on the right.',
-    alt: 'An astronaut on the grey surface beside the Apollo 11 seismometer, with the small laser reflector behind it and the lunar module in the distance.',
+    alt: 'An astronaut on the grey surface beside the Apollo 11 seismometer, with the small laser reflector behind the seismometer and the lunar module in the distance.',
   },
   {
     slug: 'moon-a14-reflector',
     name: 'Apollo 14',
-    note: 'The reflector set up on the surface, with boot prints around it.',
-    alt: 'The Apollo 14 laser reflector on the grey surface, a tilted panel of glass corner cubes with boot prints around it.',
+    note: 'The reflector set up on the surface, with boot prints all around.',
+    alt: 'The Apollo 14 laser reflector on the grey surface, a tilted panel of glass corner cubes with boot prints around the panel.',
   },
   {
     slug: 'moon-a15-reflector',
     name: 'Apollo 15',
-    note: 'The reflector still folded on the lunar module’s storage bay, before the crew set it up.',
+    note: 'The reflector still folded on the lunar module’s storage bay, before the crew set the reflector up.',
     alt: 'The side of the Apollo 15 lunar module, with the folded laser reflector on top of a foil wrapped storage bay and boot prints in front.',
   },
 ].map((m) => ({ ...m, meta: meta(m.slug), image: image(m.slug) }));
@@ -34,7 +34,7 @@ const mirrors = [
 <Base title="Moon" current="moon" description="Fire a laser from Apache Point or Grasse at an Apollo retroreflector and see the round trip time for this moment, from JPL Horizons.">
   <header class="wrap page-head">
     <h1>Moon</h1>
-    <p>Apollo 11, 14 and 15 left mirrors that need no power. Observatories on Earth still bounce lasers off them.</p>
+    <p>Observatories on Earth still bounce lasers off the unpowered mirrors that the Apollo 11, 14 and 15 crews left on the Moon.</p>
   </header>
 
   <section class="wrap" aria-label="Laser ranging">
@@ -50,8 +50,8 @@ const mirrors = [
           show the Moon moving away from Earth by about 3.8 cm a year.
         </p>
         <p class="note">
-          Each mirror is a panel of glass corner cubes that sends light straight back the way it came. Round trips here are twice
-          the station to mirror distance from JPL Horizons, divided by the speed of light. Lunokhod 1 and 2 are Soviet rovers whose
+          Each mirror is a panel of glass corner cubes, which send light straight back toward the source. Round trips here are twice
+          the station-to-mirror distance from JPL Horizons, divided by the speed of light. Lunokhod 1 and 2 are Soviet rovers whose
           reflectors are also ranged. <a href={href('sources/')}>Sources</a>
         </p>
       </div>
