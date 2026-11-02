@@ -84,7 +84,7 @@ function linkText(publisher: string, title: string): string {
 
   <section class="wrap timeline" aria-labelledby="quiet">
     <h2 id="quiet" class="section-title">When they went quiet</h2>
-    <QuietTimeline client:visible lines={lines} photos={photos} builtMs={builtMs} first="insight" />
+    <QuietTimeline client:idle lines={lines} photos={photos} builtMs={builtMs} first="insight" />
   </section>
 
   <section class="wrap" aria-labelledby="list">
@@ -167,7 +167,6 @@ function linkText(publisher: string, title: string): string {
     font-weight: 700;
   }
   .who h3 {
-    text-wrap: balance;
     font-size: var(--fs-lg);
     line-height: 1.15;
     font-weight: 800;
@@ -186,7 +185,6 @@ function linkText(publisher: string, title: string): string {
   }
   .found p:first-child {
     font-size: var(--fs-md);
-    text-wrap: pretty;
   }
   .line {
     color: var(--muted);
