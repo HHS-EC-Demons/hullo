@@ -7,7 +7,7 @@ const directives = {
   name: 'hullo-directives',
   hooks: {
     'astro:config:setup': ({ addClientDirective }) => {
-      addClientDirective({ name: 'idlemedia', entrypoint: fileURLToPath(new URL('./src/directives/idle-media.js', import.meta.url)) });
+      addClientDirective({ name: 'press', entrypoint: fileURLToPath(new URL('./src/directives/press.js', import.meta.url)) });
     },
   },
 };
