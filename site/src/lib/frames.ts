@@ -1,13 +1,16 @@
 import { useEffect, useRef, type RefObject } from 'react';
 
 /**
- * Calls `tick` every animation frame while the page is visible and `el` is on
- * screen, or once a second when the reader prefers reduced motion or `slow`
- * is set. Ticks write to the DOM directly, so React never re-renders per frame.
+ * Calls `tick` on animation frames, at most `fps` times a second, while the
+ * page is visible and `el` is on screen, or once a second when the reader
+ * prefers reduced motion or `slow` is set. Ticks write to the DOM directly,
+ * so React never re-renders per frame.
  */
-export function runFrames(el: Element | null, tick: (now: number) => void, slow = false): () => void {
+export function runFrames(el: Element | null, tick: (now: number) => void, slow = false, fps = 30): () => void {
   let onScreen = true;
   let raf = 0;
+  let last = 0;
+  const gap = 1000 / fps - 2;
   let timer = 0;
   let stopped = false;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -19,10 +22,13 @@ export function runFrames(el: Element | null, tick: (now: number) => void, slow 
     timer = 0;
   };
 
-  const frame = () => {
+  const frame = (ts: number) => {
     raf = 0;
     if (stopped || !onScreen || document.visibilityState === 'hidden') return;
-    tick(Date.now());
+    if (ts - last >= gap) {
+      last = ts;
+      tick(Date.now());
+    }
     raf = requestAnimationFrame(frame);
   };
 

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { DeepSpaceData } from '../lib/lighttime';
 import { localDate, localTime } from '../lib/client';
 import { setText, useFrames } from '../lib/frames';
@@ -32,8 +32,10 @@ export default function LightDay({ data }: Props) {
   const after = useRef<HTMLSpanElement>(null);
   const said = useRef<HTMLSpanElement>(null);
 
+  const [local, setLocal] = useState<string | null>(null);
+  useEffect(() => setLocal(`${localDate(Date.parse(NASA_LIGHT_DAY_UTC))}, ${localTime(Date.parse(NASA_LIGHT_DAY_UTC))}`), []);
+
   const crossing = data?.probes.voyager1.light_day_utc ? Date.parse(data.probes.voyager1.light_day_utc) : null;
-  const nasa = Date.parse(NASA_LIGHT_DAY_UTC);
 
   useFrames(
     root,
@@ -89,13 +91,11 @@ export default function LightDay({ data }: Props) {
         a few days
       </span>
       <p className="ld-note">
-        On <span className="mono">18 Nov 2026, 10:16:07 UTC</span>, the time NASA gives
-        {data ? (
-          <>
-            , which is <span className="mono">{localDate(nasa)}, {localTime(nasa)}</span> where you are
-          </>
-        ) : null}
-        . At that second Voyager 1’s light time reads exactly 24 h.
+        On <span className="mono">18 Nov 2026, 10:16:07 UTC</span>, the time NASA gives, which is{' '}
+        <span className="mono" style={local ? undefined : { visibility: 'hidden' }}>
+          {local ?? 'Wed 18 Nov, 00:00:00 UTC+0'}
+        </span>{' '}
+        where you are. At that second Voyager 1’s light time reads exactly 24 h.
       </p>
     </div>
   );
