@@ -395,7 +395,7 @@
   pointer-events: none;
 }
 
-.sc {
+.shc {
   width: 1200px;
   height: 630px;
   padding: 64px 72px 56px;
@@ -408,25 +408,25 @@
   border: 1px solid #241e38;
 }
 
-.sc-top {
+.shc-top {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
 }
 
-.sc-word {
+.shc-word {
   font-size: 46px;
   font-weight: 800;
   letter-spacing: -0.05em;
   line-height: 1;
 }
 
-.sc-to {
+.shc-to {
   font-size: 26px;
   color: #a69fc0;
 }
 
-.sc-msg {
+.shc-msg {
   align-self: center;
   font-size: 60px;
   line-height: 1.1;
@@ -437,7 +437,7 @@
   overflow: hidden;
 }
 
-.sc-line {
+.shc-line {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -446,13 +446,13 @@
   font-weight: 600;
 }
 
-.sc-rule {
+.shc-rule {
   position: relative;
   height: 2px;
   background: #b6a6ff;
 }
 
-.sc-pulse {
+.shc-pulse {
   position: absolute;
   left: 0;
   top: -6px;
@@ -462,27 +462,27 @@
   background: #3df58c;
 }
 
-.sc-trip {
+.shc-trip {
   font-size: 40px;
   font-weight: 700;
   color: #3df58c;
   letter-spacing: -0.03em;
 }
 
-.sc-silent {
+.shc-silent {
   font-size: 24px;
   font-weight: 700;
   color: #eeeaf9;
 }
 
-.sc-times {
+.shc-times {
   display: flex;
   gap: 40px;
   font-size: 20px;
   color: #eeeaf9;
 }
 
-.sc-foot {
+.shc-foot {
   font-size: 18px;
   color: #a69fc0;
 }

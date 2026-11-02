@@ -28,28 +28,28 @@ const SITE = 'hhs-ec-demons.github.io/hullo';
 export default function ShareCard({ msg, ref }: { msg: CardMessage; ref: Ref<HTMLDivElement> }) {
   const trip = hmsText((msg.arrives - msg.sent) / 1000);
   return (
-    <div ref={ref} className="sc">
-      <div className="sc-top">
-        <span className="sc-word" translate="no">
+    <div ref={ref} className="shc">
+      <div className="shc-top">
+        <span className="shc-word" translate="no">
           {WORDMARK}
         </span>
-        <span className="sc-to">Message to {msg.name}</span>
+        <span className="shc-to">Message to {msg.name}</span>
       </div>
-      <p className="sc-msg">{msg.text}</p>
-      <div className="sc-line">
+      <p className="shc-msg">{msg.text}</p>
+      <div className="shc-line">
         <span>Earth</span>
-        <span className="sc-rule">
-          <span className="sc-pulse" />
+        <span className="shc-rule">
+          <span className="shc-pulse" />
         </span>
         <span>{msg.name}</span>
       </div>
-      <p className="sc-trip mono">{trip} at the speed of light</p>
-      {msg.silent && <p className="sc-silent">{msg.silent}</p>}
-      <div className="sc-times mono">
+      <p className="shc-trip mono">{trip} at the speed of light</p>
+      {msg.silent && <p className="shc-silent">{msg.silent}</p>}
+      <div className="shc-times mono">
         <span>Sent {stamp.format(msg.sent)} UTC</span>
         <span>Arrives {stamp.format(msg.arrives)} UTC</span>
       </div>
-      <p className="sc-foot">
+      <p className="shc-foot">
         Distance from JPL Horizons. Not transmitted, kept on one device. {SITE}
       </p>
     </div>
