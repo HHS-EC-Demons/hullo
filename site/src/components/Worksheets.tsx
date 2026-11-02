@@ -40,7 +40,7 @@ const three = fmt(3);
 export const six = fmt(6);
 export const dayFmt = { format: utcDate };
 
-export function stamp(ms: number): string {
+export function atText(ms: number): string {
   return `${utcTime(ms)} on ${utcDate(ms)}`;
 }
 
@@ -53,7 +53,7 @@ function Sheet({ title, printedAt, intro, numbers, questions, answers, source }:
             {WORDMARK}
           </p>
           <p className="ws-name">Name</p>
-          <p className="ws-date">Printed {stamp(printedAt)}</p>
+          <p className="ws-date">Printed {atText(printedAt)}</p>
         </header>
         <h1 className="ws-title">{title}</h1>
         <p className="ws-intro">{intro}</p>
@@ -78,7 +78,7 @@ function Sheet({ title, printedAt, intro, numbers, questions, answers, source }:
           <p className="ws-mark" translate="no">
             {WORDMARK}
           </p>
-          <p className="ws-date">Answer key, printed {stamp(printedAt)}</p>
+          <p className="ws-date">Answer key, printed {atText(printedAt)}</p>
         </header>
         <h1 className="ws-title">{title}</h1>
         <ol className="ws-answers">
@@ -102,7 +102,7 @@ export const MoonSheet = forwardRef<HTMLDivElement, { m: MoonShot; printedAt: nu
       <Sheet
         title="How far away is the Moon?"
         printedAt={printedAt}
-        intro={`At ${stamp(m.shot.ms)}, the ${m.stationName} Observatory in New Mexico fires a laser pulse at the mirror that the ${m.reflectorName} crew left on the Moon. The light bounces off the mirror and comes back to the telescope.`}
+        intro={`At ${atText(m.shot.ms)}, the ${m.stationName} Observatory in New Mexico fires a laser pulse at the mirror that the ${m.reflectorName} crew left on the Moon. The light bounces off the mirror and comes back to the telescope.`}
         numbers={[
           `Time for the pulse to go and come back is ${six.format(t)} s.`,
           `Light travels ${three.format(C_KM_S)} km every second.`,
@@ -145,7 +145,7 @@ export const VoyagerSheet = forwardRef<HTMLDivElement, { seconds: number; printe
       <Sheet
         title="How far away is Voyager 1?"
         printedAt={printedAt}
-        intro={`Voyager 1 was launched in 1977 and still sends radio signals home. At ${stamp(printedAt)}, its signal takes ${h} h ${m} min ${s} s to reach Earth.`}
+        intro={`Voyager 1 was launched in 1977 and still sends radio signals home. At ${atText(printedAt)}, its signal takes ${h} h ${m} min ${s} s to reach Earth.`}
         numbers={[
           `Light and radio travel ${three.format(C_KM_S)} km every second.`,
           `1 astronomical unit (au) is ${one.format(AU_KM)} km, the average distance from Earth to the Sun.`,

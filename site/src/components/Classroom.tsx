@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { hmsText, lightTimeAt, type DeepSpaceData } from '../lib/lighttime';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth } from '../lib/ranging';
-import { FlightSheet, MoonSheet, VoyagerSheet, dayFmt, int, one, six, stamp, type Flight, type MoonShot } from './Worksheets';
+import { FlightSheet, MoonSheet, VoyagerSheet, dayFmt, int, one, six, atText, type Flight, type MoonShot } from './Worksheets';
 import { loadJson, useJson } from '../lib/client';
 import sansFont from '@fontsource-variable/gabarito/files/gabarito-latin-wght-normal.woff2?url';
 import monoFont from '@fontsource-variable/spline-sans-mono/files/spline-sans-mono-latin-wght-normal.woff2?url';
@@ -90,7 +90,7 @@ export default function Classroom() {
         facts={
           moon
             ? [
-                ['Laser shot', stamp(moon.shot.ms), true],
+                ['Laser shot', atText(moon.shot.ms), true],
                 ['From', `${moon.stationName}, New Mexico`, false],
                 ['Aimed at', `The ${moon.reflectorName} reflector`, false],
                 ['Round trip', `${six.format(moon.shot.round_trip_s)} s`, true],
@@ -103,7 +103,7 @@ export default function Classroom() {
       <Activity
         title="How far away is Voyager 1?"
         line="Turn the time light takes to cross from Voyager 1 to Earth into kilometres and astronomical units."
-        facts={voyagerS !== null ? [['Light time', hmsText(voyagerS), true], ['At', stamp(at), true]] : null}
+        facts={voyagerS !== null ? [['Light time', hmsText(voyagerS), true], ['At', atText(at), true]] : null}
         rows={['Light time', 'At']}
         onPrint={() => printNow(voyagerSheet.print)}
       />
