@@ -162,6 +162,9 @@
   padding-block: 4px;
   border-radius: var(--radius);
   cursor: pointer;
+  touch-action: manipulation;
+  scroll-margin-top: calc(var(--qt-top) + 13rem + 100px);
+  scroll-margin-bottom: 24px;
   -webkit-tap-highlight-color: transparent;
 }
 .qt-row:hover,
@@ -322,6 +325,7 @@
     padding-bottom: 2px;
   }
   .qt-row {
+    scroll-margin-top: calc(var(--qt-top) + 11rem + 110px);
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       'name state'

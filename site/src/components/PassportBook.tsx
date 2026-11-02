@@ -69,6 +69,8 @@ export default function PassportBook({ site }: Props) {
             <label htmlFor={nameId}>Name on the certificate</label>
             <Input
               id={nameId}
+              name="certificate-name"
+              spellCheck={false}
               value={name}
               maxLength={60}
               autoComplete="off"
