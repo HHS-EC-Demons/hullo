@@ -8,7 +8,7 @@ import { useJson, useReducedMotion, utcDate } from '../lib/client';
 import type { Pic } from '../lib/photos';
 import './ingenuity.css';
 
-interface Flight {
+export interface Flight {
   n: number;
   sol: number;
   date: string;
@@ -72,7 +72,7 @@ function where(f: Flight): string {
 
 let protocolReady = false;
 
-export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
+export default function IngenuityMap({ photos, opening, flights }: { photos: FlightPhoto[]; opening: Flight; flights: number }) {
   const { data, error } = useJson<Ingenuity>('data/ingenuity.json');
   const reduced = useReducedMotion();
   const [n, setN] = useState(1);
@@ -240,8 +240,8 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
     stamp('ingenuity', f.hover ? `Flight ${f.n}, a hover at ${num.format(f.max_alt_m)} m for ${one.format(f.duration_s)} s` : `Flight ${f.n}, ${num.format(f.dist_m)} m in ${num.format(f.duration_s)} s`);
   }
 
-  const flight = data?.flights[n - 1];
-  const count = data?.flights.length ?? 72;
+  const flight = data ? data.flights[n - 1] : n === opening.n ? opening : undefined;
+  const count = data?.flights.length ?? flights;
   const shot = photos.find((p) => p.n === n);
   const blank = ' ';
 
