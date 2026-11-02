@@ -15,9 +15,10 @@ interface Props {
   title?: string;
   description?: string;
   current?: string;
+  preload?: string[];
 }
 
-const { title, description = BRAND_LINE, current = '' } = Astro.props;
+const { title, description = BRAND_LINE, current = '', preload = [] } = Astro.props;
 const orbitData = Object.values(import.meta.glob<{ ORBIT_SITES?: unknown[] }>('../data/orbit-sites.ts', { eager: true }))[0];
 const ORBIT_FIGURE = orbitData?.ORBIT_SITES ? `${orbitData.ORBIT_SITES.length} sites` : '';
 const pageTitle = title ? `${title} · ${BRAND}` : BRAND;
@@ -54,6 +55,7 @@ const extra = [
     <meta name="description" content={description} />
     <link rel="preload" href={sansFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={monoFont} as="font" type="font/woff2" crossorigin />
+    {preload.map((path) => <link rel="preload" href={asset(path)} as="fetch" crossorigin="anonymous" />)}
     <meta name="theme-color" content="#0D0A18" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href={asset('favicon.svg?v=3')} type="image/svg+xml" />
