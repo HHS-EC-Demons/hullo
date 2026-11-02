@@ -181,7 +181,7 @@ export default function SkyChart({ highlight, now }: Props) {
   return (
     <figure className="sky">
       <figcaption className="sky-cap">
-        <h2 className="sky-title">Where they are in our sky</h2>
+        <h2 className="sky-title">The probes in our sky</h2>
         <p className="sky-sub">
           Seen from Earth on <span className="mono">{shownMs ? `${utcDate(shownMs)}, 00:00 UTC` : ' '}</span>, among the{' '}
           {index ? groupInt(index.star_count) : '2,847'} stars brighter than magnitude {sky?.mag_limit ?? 5.5}.
