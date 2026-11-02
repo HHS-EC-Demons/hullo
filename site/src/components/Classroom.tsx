@@ -97,12 +97,14 @@ export default function Classroom() {
               ]
             : null
         }
+        rows={['Laser shot', 'From', 'Aimed at', 'Round trip']}
         onPrint={() => printNow(moonSheet.print)}
       />
       <Activity
         title="How far away is Voyager 1?"
         line="Turn the time light takes to cross from Voyager 1 to Earth into kilometres and astronomical units."
         facts={voyagerS !== null ? [['Light time', hmsText(voyagerS), true], ['At', stamp(at), true]] : null}
+        rows={['Light time', 'At']}
         onPrint={() => printNow(voyagerSheet.print)}
       />
       <Activity
@@ -117,9 +119,10 @@ export default function Classroom() {
               ]
             : null
         }
+        rows={['Flown on', 'Distance', 'Time in the air']}
         onPrint={() => printNow(flightSheet.print)}
       >
-        {flights.length > 0 && <FlightPicker flights={flights} value={flight?.n ?? 9} onChange={setFlightN} />}
+        <FlightPicker flights={flights} value={flight?.n ?? flightN} onChange={setFlightN} />
       </Activity>
 
       <div className="cr-sheets" aria-hidden="true">
@@ -131,7 +134,7 @@ export default function Classroom() {
   );
 }
 
-function Activity({ title, line, facts, onPrint, children }: { title: string; line: string; facts: [string, string, boolean][] | null; onPrint: () => void; children?: ReactNode }) {
+function Activity({ title, line, facts, rows, onPrint, children }: { title: string; line: string; facts: [string, string, boolean][] | null; rows: string[]; onPrint: () => void; children?: ReactNode }) {
   const id = useId();
   return (
     <section className="cr-activity" aria-labelledby={id}>
@@ -142,7 +145,7 @@ function Activity({ title, line, facts, onPrint, children }: { title: string; li
       <div className="cr-body">
         {children}
         <dl className="cr-facts">
-          {(facts ?? [['Numbers', 'Loading the data', false]]).map(([k, v, mono]) => (
+          {(facts ?? rows.map((k): [string, string, boolean] => [k, 'Loading', false])).map(([k, v, mono]) => (
             <div key={k}>
               <dt>{k}</dt>
               <dd className={mono ? 'mono' : undefined}>{v}</dd>
@@ -160,18 +163,25 @@ function Activity({ title, line, facts, onPrint, children }: { title: string; li
 function FlightPicker({ flights, value, onChange }: { flights: Flight[]; value: number; onChange: (n: number) => void }) {
   const index = Math.max(0, flights.findIndex((f) => f.n === value));
   const labelId = useId();
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const thumb = box.current?.querySelector('[role="slider"]');
+    thumb?.setAttribute('aria-label', 'Flight');
+    thumb?.setAttribute('aria-valuetext', `Flight ${value}`);
+  }, [value]);
   return (
-    <div className="cr-pick">
+    <div className="cr-pick" ref={box}>
       <p id={labelId} className="cr-pick-label">
         Flight <span className="mono">{value}</span>
       </p>
       <Slider
         aria-labelledby={labelId}
         min={0}
-        max={flights.length - 1}
+        max={Math.max(flights.length - 1, 1)}
         step={1}
         value={[index]}
-        onValueChange={([i]) => onChange(flights[i].n)}
+        disabled={flights.length === 0}
+        onValueChange={([i]) => flights[i] && onChange(flights[i].n)}
       />
     </div>
   );
