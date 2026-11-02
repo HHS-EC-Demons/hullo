@@ -302,10 +302,10 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
           onValueChange={([v]) => pick(v)}
         />
         <div className="ig-steps">
-          <Button type="button" variant="quiet" onClick={() => pick(n - 1)} disabled={!data || n <= 1}>
+          <Button type="button" variant="secondary" onClick={() => pick(n - 1)} disabled={!data || n <= 1}>
             Previous flight
           </Button>
-          <Button type="button" variant="quiet" onClick={() => pick(n + 1)} disabled={!data || n >= count}>
+          <Button type="button" variant="secondary" onClick={() => pick(n + 1)} disabled={!data || n >= count}>
             Next flight
           </Button>
         </div>
@@ -314,7 +314,7 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
       <div className="ig-stage">
         <div className="ig-mapwrap">
           <div className="ig-map" ref={box} role="region" aria-label="Map of Jezero crater" />
-          <p className="ig-hint">Pinch to zoom. With a mouse, hold Ctrl or ⌘ and scroll. On a phone, drag the map with two fingers.</p>
+          <p className="ig-hint">Pinch, or hold Ctrl or ⌘ and scroll, to zoom.</p>
         </div>
         <aside className="ig-photo" aria-label="Photos from Ingenuity’s own cameras">
           <div className="ig-frame" style={{ aspectRatio: shot ? `${shot.pic.width} / ${shot.pic.height}` : '4 / 3' }}>
@@ -325,7 +325,7 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
                 <img src={shot.pic.src} width={shot.pic.width} height={shot.pic.height} alt={shot.alt} loading="lazy" decoding="async" />
               </picture>
             ) : (
-              <p className="ig-nophoto">No photo from flight {n}. Pick a flight below for a photo from Ingenuity’s cameras.</p>
+              <p className="ig-nophoto">No photo from flight {n}.</p>
             )}
           </div>
           <p className="credit ig-caption">{shot ? shot.caption : blank}</p>
@@ -334,7 +334,7 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
           </p>
           <div className="ig-picks" role="group" aria-labelledby={picksId}>
             {photos.map((p) => (
-              <Button key={p.n} type="button" size="sm" variant={p.n === n ? 'line' : 'ghost'} aria-pressed={p.n === n} aria-label={`Flight ${p.n}`} onClick={() => pick(p.n)} className="mono">
+              <Button key={p.n} type="button" size="sm" variant="secondary" aria-pressed={p.n === n} aria-label={`Flight ${p.n}`} onClick={() => pick(p.n)} className="mono">
                 {p.n}
               </Button>
             ))}

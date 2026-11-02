@@ -1,12 +1,15 @@
 ---
-import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import IngenuityMap, { type Flight, type FlightPhoto } from '../components/IngenuityMap';
+import PlanetFigure from '../components/PlanetFigure.astro';
 import SoundClip from '../components/SoundClip';
 import { readData } from '../lib/build-data';
-import { href } from '../lib/paths';
-import { dated, image, meta, pic } from '../lib/photos';
+import { utcDate } from '../lib/client';
+import { meta, pic } from '../lib/photos';
+import photoData from '../data/photos.json';
 import sounds from '../data/sounds.json';
+
+const dated = (iso: string): string => utcDate(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`));
 
 const ing = readData<{ totals: { flights: number; nasa_km: number; nasa_minutes: number }; mission_page: string; flights: Flight[] }>('ingenuity.json');
 const opening = { ...ing.flights[0], path: [] };
@@ -30,20 +33,39 @@ const photos: FlightPhoto[] = await Promise.all(
     return {
       n: s.n,
       alt: s.alt,
-      caption: `${m.id}, ${dated(m.date)}, ${m.credit}.`,
+      caption: `${m.id}, ${dated(m.date!)}, ${m.credit}.`,
       pic: await pic(s.slug, [400, 640, 960], '(max-width: 860px) 92vw, 30vw'),
     };
   }),
 );
 
+const hero = meta('mars-two-years');
+const vanZyl = photoData['mars-van-zyl'];
 const selfie = meta('mars-selfie');
-const final = meta('mars-final-airfield');
+const valinor = photoData['mars-valinor'];
+const mark = valinor.mark as [number, number];
+
+function span(from: string, to: string): string {
+  const [a, b] = [dated(from), dated(to)];
+  return from.slice(0, 7) === to.slice(0, 7) ? `${a.split(' ')[0]} to ${b}` : `${a} to ${b}`;
+}
 ---
 
 <Base title="Mars" current="mars" description="Every one of Ingenuity’s 72 flights over Jezero crater on JPL’s map, with NASA’s flight log and photos from the helicopter.">
-  <header class="wrap page-head">
-    <h1>Mars</h1>
-    <p>Ingenuity was built for 5 test flights and flew {ing.totals.flights} times over Jezero crater between April 2021 and January 2024.</p>
+  <header class="wrap page-head mars-hero">
+    <div class="mars-hero-text">
+      <h1>Mars</h1>
+      <p>Ingenuity was built for 5 test flights and flew {ing.totals.flights} times over Jezero crater.</p>
+    </div>
+    <PlanetFigure
+      slug="mars-two-years"
+      class="mars-hero-photo"
+      eager
+      sizes="(max-width: 860px) 92vw, 46vw"
+      alt="Ingenuity standing on rocky ground, its two stacked rotors, dusty solar panel and four thin legs in sharp detail."
+    >
+      Ingenuity seen by Perseverance from 23 m away, enhanced color, {dated(hero.date!)}. {hero.id}, {hero.credit}.
+    </PlanetFigure>
   </header>
 
   <section class="wrap" aria-label="Ingenuity flights">
@@ -51,25 +73,31 @@ const final = meta('mars-final-airfield');
       <IngenuityMap client:visible photos={photos} opening={opening} flights={ing.totals.flights} />
     </div>
     <p class="credit map-credit">
-      The map is the HiRISE and CTX color mosaic from JPL’s Mars 2020 map, NASA/JPL-Caltech/University of Arizona/MSSS. Paths are from
-      the same map. Dates, distances, heights, speeds and times are from NASA’s Ingenuity flight log. A flight the log lists with 0 m and
-      0 m/s is shown as a hover. North is up.
+      HiRISE and CTX color mosaic from JPL’s Mars 2020 map, NASA/JPL-Caltech/University of Arizona/MSSS. Flight figures from NASA’s
+      Ingenuity flight log. North is up.
     </p>
   </section>
 
-  <section class="wrap section">
-    <div class="mars-more">
-      <div class="mars-text">
-        <p class="big-claim"><span class="n mono">{ing.totals.nasa_km.toFixed(1)} km</span> in {ing.totals.nasa_minutes.toFixed(1)} minutes of flying</p>
-        <p>
-          One or more rotor blades were damaged when flight 72 landed on 18 Jan 2024, and NASA ended the mission on 25 Jan 2024. Ingenuity
-          still stands at its last airfield. Since April 2024 the helicopter switches on each day, takes a photo, logs temperatures and
-          keeps the data on board, because Perseverance has driven out of radio range.
-        </p>
-        <p class="note">Totals from NASA’s Ingenuity flight log. Status from NASA on 25 Jan 2024 and JPL on 16 Apr 2024. <a href={href('sources/')}>Sources</a></p>
-      </div>
+  <section class="mars-seen section" aria-labelledby="seen-h">
+    <h2 id="seen-h" class="wrap mars-h2">Seen by Perseverance</h2>
+    <PlanetFigure
+      slug="mars-van-zyl"
+      class="mars-wide"
+      sizes="100vw"
+      alt="A wide panorama of Jezero crater’s floor, reddish sand scattered with pale rocks under a butterscotch sky, with low hills along the horizon."
+    >
+      Van Zyl Overlook, where Perseverance parked during Ingenuity’s first flights, {span(vanZyl.date, vanZyl.until)}. {vanZyl.id}, {vanZyl.credit}.
+    </PlanetFigure>
+    <div class="wrap mars-pair">
+      <PlanetFigure
+        slug="mars-selfie"
+        sizes="(max-width: 860px) 92vw, 54vw"
+        alt="Perseverance’s selfie on Mars, with Ingenuity standing on the ground about 3.9 m in front of the rover."
+      >
+        Perseverance’s selfie with Ingenuity, {dated(selfie.date!)}. {selfie.id}, {selfie.credit}.
+      </PlanetFigure>
       <div class="mars-sound">
-        <h2 class="mars-h2">Ingenuity’s rotors, recorded from 80 m away</h2>
+        <h3 class="mars-h3">Ingenuity’s rotors, recorded from 80 m away</h3>
         <SoundClip
           client:visible
           src={rotors.file}
@@ -79,46 +107,40 @@ const final = meta('mars-final-airfield');
           stampId="ingenuity"
           stampDetail="Heard flight 4, recorded 30 Apr 2021 from 80 m away"
         >
-          Perseverance’s SuperCam microphone recorded flight 4 on 30 Apr 2021. NASA boosted the 84 Hz hum of the blades and cut other
-          frequencies so the hum is easier to hear over the wind. Full clip, {Math.round(rotors.duration_s)} s. Released {dated(rotors.released)},
-          {rotors.credit}.
+          Flight 4, recorded by Perseverance’s SuperCam microphone on 30 Apr 2021, with the 84 Hz blade hum boosted by NASA. Full clip,
+          {Math.round(rotors.duration_s)} s. Released {dated(rotors.released)}, {rotors.credit}.
         </SoundClip>
       </div>
     </div>
   </section>
 
-  <section class="wrap section rule-top" aria-labelledby="seen-by">
-    <h2 id="seen-by" class="mars-h2">Seen by Perseverance</h2>
-    <div class="mars-photos">
-      <figure class="photo wide">
-        <Picture
-          src={image('mars-selfie')}
-          formats={['avif', 'webp']}
-          widths={[480, 800, 1200]}
-          sizes="(max-width: 860px) 92vw, 58vw"
-          alt="Perseverance’s selfie on Mars, with Ingenuity standing on the ground about 3.9 m in front of the rover."
-          loading="lazy"
-          decoding="async"
-        />
-        <figcaption class="credit">The rover’s selfie with Ingenuity, {dated(selfie.date)}. {selfie.id}, {selfie.credit}.</figcaption>
-      </figure>
-      <figure class="photo">
-        <Picture
-          src={image('mars-final-airfield')}
-          formats={['avif', 'webp']}
-          widths={[480, 800, 1200]}
-          sizes="(max-width: 860px) 92vw, 34vw"
-          alt="Ingenuity at its final airfield, seen across the crater floor from 450 m away in enhanced color."
-          loading="lazy"
-          decoding="async"
-        />
-        <figcaption class="credit">Ingenuity at its final airfield from 450 m away, enhanced color, {dated(final.date)}. {final.id}, {final.credit}.</figcaption>
-      </figure>
+  <section class="mars-end" aria-labelledby="end-h">
+    <div class="wrap mars-claim">
+      <h2 id="end-h" class="big-claim"><span class="n mono">{ing.totals.nasa_km.toFixed(1)} km</span> in {ing.totals.nasa_minutes.toFixed(1)} minutes of flying</h2>
+      <p>Flight 72 damaged one or more rotor blades on 18 Jan 2024. Ingenuity still stands where it landed.</p>
     </div>
+    <PlanetFigure
+      slug="mars-valinor"
+      class="mars-wide"
+      sizes="100vw"
+      mark={mark}
+      alt="Rippled orange sand dunes with a few rocks, and Ingenuity as a tiny dark speck inside a lilac ring left of center."
+    >
+      Ingenuity inside the ring, at its last airfield, from 415 m away, {dated(valinor.date)}. Crop of {valinor.id}, {valinor.credit}.
+    </PlanetFigure>
   </section>
 </Base>
 
 <style>
+  .mars-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    gap: 32px 64px;
+    align-items: end;
+  }
+  .mars-hero-text {
+    padding-bottom: 56px;
+  }
   .map-slot {
     min-height: calc(clamp(420px, 46vw, 600px) + 300px);
   }
@@ -126,26 +148,50 @@ const final = meta('mars-final-airfield');
     margin-top: 14px;
     max-width: 48rem;
   }
-  .mars-more {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: 40px 64px;
-    align-items: start;
-    padding-top: 28px;
-    border-top: 1px solid var(--rule);
-  }
-  .mars-text,
-  .mars-sound {
-    display: grid;
-    gap: 18px;
-    max-width: 38rem;
-  }
   .mars-h2 {
     font-size: var(--fs-lg);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.2;
+    margin-bottom: 24px;
+  }
+  .mars-h3 {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
     text-wrap: balance;
+  }
+  .mars-seen :global(.mars-wide),
+  .mars-end :global(.mars-wide) {
+    --pf-cap-pad: calc(max(0px, (100% - var(--max)) / 2) + var(--gutter));
+    max-width: 1920px;
+    margin-inline: auto;
+  }
+  .mars-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 40px 64px;
+    align-items: end;
+    margin-top: clamp(40px, 6vw, 80px);
+  }
+  .mars-sound {
+    display: grid;
+    gap: 18px;
+    padding-bottom: 28px;
+  }
+  .mars-end {
+    padding-bottom: clamp(48px, 7vw, 96px);
+  }
+  .mars-claim {
+    display: grid;
+    gap: 14px;
+    padding-bottom: clamp(24px, 4vw, 48px);
+  }
+  .mars-claim p {
+    max-width: 30rem;
+    font-size: var(--fs-md);
+    color: var(--muted);
   }
   .big-claim {
     font-size: var(--fs-lg);
@@ -159,31 +205,20 @@ const final = meta('mars-final-airfield');
     letter-spacing: -0.04em;
     line-height: 1;
   }
-  .rule-top {
-    padding-top: clamp(32px, 5vw, 64px);
-  }
-  .mars-photos {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 3fr);
-    gap: 32px 40px;
-    align-items: start;
-    margin-top: 24px;
-  }
-  .photo :global(img) {
-    width: 100%;
-    height: auto;
-    background: var(--raised);
-  }
-  .photo figcaption {
-    margin-top: 10px;
-  }
   @media (max-width: 860px) {
-    .mars-more,
-    .mars-photos {
+    .mars-hero,
+    .mars-pair {
       grid-template-columns: minmax(0, 1fr);
+    }
+    .mars-hero-text {
+      padding-bottom: 0;
     }
     .map-slot {
       min-height: calc(clamp(360px, 92vw, 520px) + 900px);
+    }
+    .mars-seen :global(.mars-wide) {
+      --pf-ratio: 16 / 9;
+      --pf-pos: 42% 50%;
     }
   }
 </style>

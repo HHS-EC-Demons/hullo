@@ -27,6 +27,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'PDF posted Jun 2024, read 1 Nov 2026',
     license: NASA_MEDIA,
     used: 'The sol, date, horizontal distance, highest altitude, top ground speed and time in the air of each of the 72 flights, the hover flights (0 m and 0 m/s), the running total, and the totals of about 17.0 km and 128.8 minutes. Read at build time with pypdf.',
+    note: 'The Mars page shows a flight the log lists with 0 m and 0 m/s as a hover. Distances, heights, speeds and times on the map come from this log, and the paths from the JPL map.',
   },
   {
     id: 'ingenuity-mission',
@@ -63,6 +64,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Released 7 May 2021, recorded 30 Apr 2021',
     license: `${NASA_MEDIA} Credit NASA/JPL-Caltech/LANL/CNES/CNRS/ISAE-Supaéro.`,
     used: 'The full 150 s MP3 of flight 4 from Perseverance’s SuperCam microphone, 80 m away, mixed to mono at 32 kbps, and its waveform.',
+    note: 'NASA boosted the 84 Hz hum of the blades and cut other frequencies, so the hum is easier to hear over the wind.',
   },
   {
     id: 'pia25281',
@@ -90,6 +92,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Read 1 Nov 2026',
     license: 'The LROC terms say data products available through the PDS are in the public domain. Credit NASA/GSFC/Arizona State University.',
     used: `Crops around the six Apollo landing sites from ${lro.crops.map((c) => c.product).join(', ')}, located with the label’s map grid and the NSSDCA coordinates, fetched with range requests and stretched to 8 bits.`,
+    note: 'Each LRO view on the Orbit page is shown at its own 0.5 m or 0.6 m pixels, never scaled up in the file. The lilac ring marks the lunar module.',
   },
   {
     id: 'lroc-terms',
@@ -123,8 +126,9 @@ export const ORBIT_SOURCES: Source[] = [
     title: 'Mission photos on the Moon, Mars and Orbit pages',
     publisher: 'NASA Image and Video Library and NASA JPL Photojournal',
     url: 'https://images.nasa.gov/',
-    dated: 'Downloaded 1 Nov 2026',
+    dated: 'Downloaded 1 and 2 Nov 2026',
     license: `${NASA_MEDIA} No logos or insignia are used. Shown unaltered apart from crop and scale.`,
+    note: 'The Goddard laser photo is cropped to leave out a person at the station. The Valinor Hills view is a full resolution crop of PIA26237 around Ingenuity, and the lilac ring around Ingenuity is drawn by this site. PIA25881 is enhanced color as NASA released it.',
     used: `Mars: ${used('mars-')}. Moon: ${used('moon-')}. Orbit: ${used('orbit-')
       .split(', ')
       .filter((s) => !/^(ESP|PSP)_|^PIA(01881|01882|26515|22223)/.test(s))
