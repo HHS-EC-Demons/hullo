@@ -485,3 +485,13 @@
     scroll-behavior: auto !important;
   }
 }
+
+::view-transition-group(bar-mark) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease);
+}
+
+::view-transition-old(site-head),
+::view-transition-new(site-head) {
+  animation: none;
+}
