@@ -426,7 +426,7 @@
   }
 
   .status-on {
-    color: var(--ok);
+    color: var(--text);
     font-weight: 700;
   }
 
