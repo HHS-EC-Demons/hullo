@@ -1,5 +1,7 @@
 import { useRef, useState, type CSSProperties } from 'react';
-import { ReactCompareSlider, ReactCompareSliderCssVars, ReactCompareSliderHandle } from 'react-compare-slider';
+import { ReactCompareSliderCssVars } from 'react-compare-slider';
+import { Handle, HandleRoot, Item, Provider, Root } from 'react-compare-slider/components';
+import { useReactCompareSlider } from 'react-compare-slider/hooks';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SoundClip, { type SoundClipProps } from './SoundClip';
 import { stamp } from '../lib/passport';
@@ -68,6 +70,7 @@ function View({ view, eager }: { view: ViewProps; eager?: boolean }) {
 }
 
 function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
+  const slider = useReactCompareSlider({ keyboardIncrement: '5%', onlyHandleDraggable: false });
   return (
     <figure className="os-pairfig" onPointerDownCapture={onSlide} onKeyDownCapture={onSlide}>
       <div className="os-whenrow">
@@ -78,29 +81,30 @@ function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
           <span className="mono">{site.now.when}</span> <span className="os-by">{site.now.by}</span>
         </p>
       </div>
-      <ReactCompareSlider
-        className="os-compare"
-        style={{ aspectRatio: `${site.then.pic.width} / ${site.then.pic.height}` }}
-        itemOne={<Picture view={site.then} />}
-        itemTwo={<Picture view={site.now} />}
-        keyboardIncrement="5%"
-        onlyHandleDraggable={false}
-        aria-label={`Slide to compare ${site.name} on ${site.then.when} and ${site.now.when}`}
-        handle={
-          <ReactCompareSliderHandle
-            style={{ [ReactCompareSliderCssVars.handleColor]: 'var(--lilac)' } as CSSProperties}
-            buttonStyle={{
-              backdropFilter: 'none',
-              WebkitBackdropFilter: 'none',
-              backgroundColor: 'var(--violet)',
-              boxShadow: 'none',
-              width: 44,
-              height: 44,
-            }}
-            linesStyle={{ boxShadow: 'none' }}
-          />
-        }
-      />
+      <Provider {...slider}>
+        <Root className="os-compare" style={{ aspectRatio: `${site.then.pic.width} / ${site.then.pic.height}` }}>
+          <Item item="itemOne">
+            <Picture view={site.then} />
+          </Item>
+          <Item item="itemTwo">
+            <Picture view={site.now} />
+          </Item>
+          <HandleRoot aria-label={`Compare ${site.name} on ${site.then.when}, left, and ${site.now.when}, right`}>
+            <Handle
+              style={{ [ReactCompareSliderCssVars.handleColor]: 'var(--lilac)' } as CSSProperties}
+              buttonStyle={{
+                backdropFilter: 'none',
+                WebkitBackdropFilter: 'none',
+                backgroundColor: 'var(--violet)',
+                boxShadow: 'none',
+                width: 44,
+                height: 44,
+              }}
+              linesStyle={{ boxShadow: 'none' }}
+            />
+          </HandleRoot>
+        </Root>
+      </Provider>
       <figcaption className="credit">{site.then.caption} Left is {site.then.when}, right is {site.now.when}. Drag the handle or use the arrow keys.</figcaption>
     </figure>
   );
