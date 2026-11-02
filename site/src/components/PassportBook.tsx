@@ -23,11 +23,26 @@ function tilt(id: string): number {
   return ((h % 9) - 4) * 0.8;
 }
 
-interface Props {
-  site: string;
+export interface Thumb {
+  avif: string;
+  webp: string;
+  src: string;
+  width: number;
+  height: number;
+  sizes: string;
+  alt: string;
+  nasaId: string;
+  credit: string;
+  page: string;
+  when: string;
 }
 
-export default function PassportBook({ site }: Props) {
+interface Props {
+  site: string;
+  thumbs: Record<string, Thumb>;
+}
+
+export default function PassportBook({ site, thumbs }: Props) {
   const stamps = useSyncExternalStore(subscribeStamps, getStamps, getServerStamps);
   const [name, setName] = useState('');
   const [printedAt, setPrintedAt] = useState(() => Date.now());
@@ -90,23 +105,28 @@ export default function PassportBook({ site }: Props) {
         </form>
       </div>
 
-      {earned.length === 0 && <p className="pp-empty">No stamps yet. Each empty slot below says where to earn that stamp.</p>}
-
       {GROUPS.map((g) => {
         const objects = STAMP_OBJECTS.filter((o) => o.group === g.key);
         if (objects.length === 0) return null;
         const got = objects.filter((o) => byId.has(o.id)).length;
         return (
           <section key={g.key} className="pp-group" aria-labelledby={`pp-${g.key}`}>
-            <h2 id={`pp-${g.key}`} className="pp-group-title">
-              <a href={href(objects[0].page)}>{g.title}</a>
+            <div className="pp-group-head">
+              <h2 id={`pp-${g.key}`} className="pp-group-title">
+                {g.title}
+              </h2>
               <span className="pp-group-count mono">
                 {got} of {objects.length}
               </span>
-            </h2>
+              <Button asChild variant="secondary" size="sm">
+                <a href={href(objects[0].page)}>Open {g.title}</a>
+              </Button>
+            </div>
             <ul className="pp-grid">
               {objects.map((o) => (
-                <li key={o.id}>{byId.has(o.id) ? <StampMark object={o} stamp={byId.get(o.id) as Stamp} /> : <EmptySlot object={o} />}</li>
+                <li key={o.id}>
+                  <Slot object={o} thumb={thumbs[o.id]} stamp={byId.get(o.id)} />
+                </li>
               ))}
             </ul>
           </section>
@@ -120,27 +140,36 @@ export default function PassportBook({ site }: Props) {
   );
 }
 
-const GROUP_TITLE = new Map(GROUPS.map((g) => [g.key, g.title]));
-
-function StampMark({ object, stamp }: { object: StampObject; stamp: Stamp }) {
+function Slot({ object, thumb, stamp }: { object: StampObject; thumb?: Thumb; stamp?: Stamp }) {
   return (
-    <article className="pp-stamp" style={{ '--tilt': `${tilt(object.id)}deg` } as CSSProperties} aria-label={`${object.name}, stamped ${dayText(stamp.at)}`}>
-      <p className="pp-stamp-where mono">{GROUP_TITLE.get(object.group)}</p>
-      <h3 className="pp-stamp-name">{object.name}</h3>
-      {stamp.detail && <p className="pp-stamp-detail mono">{stamp.detail}</p>}
-      <p className="pp-stamp-date mono">
-        <time dateTime={new Date(stamp.at).toISOString()}>{dayText(stamp.at)}</time>
-      </p>
+    <article className={stamp ? 'pp-slot stamped' : 'pp-slot'}>
+      <figure className="pp-thumb">
+        {thumb && (
+          <picture>
+            <source type="image/avif" srcSet={thumb.avif} sizes={thumb.sizes} />
+            <source type="image/webp" srcSet={thumb.webp} sizes={thumb.sizes} />
+            <img src={thumb.src} width={thumb.width} height={thumb.height} alt={thumb.alt} loading="lazy" decoding="async" />
+          </picture>
+        )}
+        {thumb && (
+          <figcaption className="pp-cap">
+            {thumb.nasaId}
+            {thumb.when ? `, ${thumb.when}` : ''}, {thumb.credit}
+          </figcaption>
+        )}
+      </figure>
+      <h3 className="pp-name">{object.name}</h3>
+      {stamp ? (
+        <div className="pp-stamp" style={{ '--tilt': `${tilt(object.id)}deg` } as CSSProperties}>
+          {stamp.detail && <p className="pp-stamp-detail mono">{stamp.detail}</p>}
+          <p className="pp-stamp-date mono">
+            Stamped <time dateTime={new Date(stamp.at).toISOString()}>{dayText(stamp.at)}</time>
+          </p>
+        </div>
+      ) : (
+        <p className="sr-only">Not stamped yet</p>
+      )}
     </article>
-  );
-}
-
-function EmptySlot({ object }: { object: StampObject }) {
-  return (
-    <a className="pp-slot" href={href(object.page)}>
-      <span className="pp-slot-name">{object.name}</span>
-      <span className="pp-slot-hint">{object.hint}</span>
-    </a>
   );
 }
 

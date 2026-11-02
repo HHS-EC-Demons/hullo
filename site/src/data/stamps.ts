@@ -8,7 +8,6 @@ export interface StampObject {
   name: string;
   group: StampGroup;
   page: string;
-  hint: string;
 }
 
 export const GROUPS: { key: StampGroup; title: string }[] = [
@@ -24,10 +23,7 @@ const probes: StampObject[] = PROBES.map((p) => ({
   name: p.name,
   group: 'deep-space',
   page: 'deep-space/',
-  hint: p.answers ? `Pick ${p.name} on Deep space, or send a message.` : `Pick ${p.name} on Deep space.`,
 }));
-
-const ORBIT_TOO = new Set(['insight', 'spirit', 'opportunity', 'viking1', 'viking2', 'phoenix']);
 
 const reflectors: StampObject[] = [
   { id: 'a11', name: 'Apollo 11 reflector' },
@@ -39,11 +35,10 @@ const reflectors: StampObject[] = [
   ...r,
   group: 'moon' as const,
   page: 'moon/',
-  hint: `Fire the laser at the ${r.name} on Moon.`,
 }));
 
 const mars: StampObject[] = [
-  { id: 'ingenuity', name: 'Ingenuity', group: 'mars', page: 'mars/', hint: 'Pick one of Ingenuity’s flights on Mars.' },
+  { id: 'ingenuity', name: 'Ingenuity', group: 'mars', page: 'mars/' },
 ];
 
 const orbit: StampObject[] = ['11', '12', '14', '15', '16', '17'].map((n) => ({
@@ -51,7 +46,6 @@ const orbit: StampObject[] = ['11', '12', '14', '15', '16', '17'].map((n) => ({
   name: `Apollo ${n} landing site`,
   group: 'orbit',
   page: 'orbit/',
-  hint: `Open the Apollo ${n} site on Orbit.`,
 }));
 
 const taken = new Set(probes.map((p) => p.id));
@@ -61,9 +55,6 @@ const silent: StampObject[] = SILENT.filter((s) => !taken.has(s.id)).map((s) => 
   name: s.name,
   group: 'silent',
   page: 'silent/',
-  hint: ORBIT_TOO.has(s.id)
-    ? `Pick ${s.name} on the Silent timeline, or open the ${s.name} site on Orbit.`
-    : `Pick ${s.name} on the Silent timeline.`,
 }));
 
 export const STAMP_OBJECTS: StampObject[] = [...probes, ...reflectors, ...mars, ...orbit, ...silent];
