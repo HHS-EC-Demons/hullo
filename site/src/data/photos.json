@@ -6,8 +6,8 @@
   "date": "2021-04-06",
   "credit": "NASA/JPL-Caltech/MSSS",
   "page": "https://images.nasa.gov/details/PIA24542",
-  "width": 1400,
-  "height": 1030,
+  "width": 2400,
+  "height": 1765,
   "cropped": false
  },
  "mars-after-flight05": {
@@ -138,8 +138,8 @@
   "date": "1969-07-20",
   "credit": "NASA",
   "page": "https://images.nasa.gov/details/as11-40-5948",
-  "width": 1400,
-  "height": 1400,
+  "width": 1800,
+  "height": 1800,
   "cropped": false
  },
  "moon-a14-reflector": {
@@ -149,8 +149,8 @@
   "date": "1971-02-05",
   "credit": "NASA",
   "page": "https://images.nasa.gov/details/as14-67-09386",
-  "width": 1400,
-  "height": 1400,
+  "width": 1800,
+  "height": 1800,
   "cropped": false
  },
  "moon-a15-reflector": {
@@ -160,8 +160,8 @@
   "date": "1971-07-31",
   "credit": "NASA",
   "page": "https://images.nasa.gov/details/as15-086-11601",
-  "width": 1400,
-  "height": 1400,
+  "width": 1800,
+  "height": 1800,
   "cropped": true
  },
  "orbit-apollo11-surface": {
@@ -171,8 +171,8 @@
   "date": "1969-07-20",
   "credit": "NASA",
   "page": "https://images.nasa.gov/details/as11-40-5927",
-  "width": 1400,
-  "height": 1400,
+  "width": 1800,
+  "height": 1800,
   "cropped": false
  },
  "orbit-apollo12-surface": {
@@ -182,8 +182,8 @@
   "date": "1969-11-20",
   "credit": "NASA",
   "page": "https://images.nasa.gov/details/AS12-48-7134",
-  "width": 1400,
-  "height": 1400,
+  "width": 1800,
+  "height": 1800,
   "cropped": false
  },
  "orbit-apollo14-surface": {
@@ -193,8 +193,8 @@
   "date": "1971-02-05",
   "credit": "NASA",
   "page": "https://images.nasa.gov/details/as14-66-09277",
-  "width": 1400,
-  "height": 1400,
+  "width": 1800,
+  "height": 1800,
   "cropped": false
  },
  "orbit-apollo15-surface": {
@@ -204,8 +204,8 @@
   "date": "1971-07-31",
   "credit": "NASA",
   "page": "https://images.nasa.gov/details/as15-086-11601",
-  "width": 1400,
-  "height": 1400,
+  "width": 1800,
+  "height": 1800,
   "cropped": false
  },
  "orbit-apollo16-surface": {
@@ -215,8 +215,8 @@
   "date": "1972-04-21",
   "credit": "NASA",
   "page": "https://images.nasa.gov/details/as16-113-18334",
-  "width": 1400,
-  "height": 1472,
+  "width": 1712,
+  "height": 1800,
   "cropped": false
  },
  "orbit-apollo17-surface": {
@@ -226,8 +226,8 @@
   "date": "1972-12-13",
   "credit": "NASA",
   "page": "https://images.nasa.gov/details/as17-134-20382",
-  "width": 1400,
-  "height": 1400,
+  "width": 1800,
+  "height": 1800,
   "cropped": false
  },
  "orbit-viking1-surface": {
@@ -259,8 +259,8 @@
   "date": null,
   "credit": "NASA/JPL/Cornell",
   "page": "https://images.nasa.gov/details/PIA04995",
-  "width": 1400,
-  "height": 1106,
+  "width": 1800,
+  "height": 1422,
   "cropped": true
  },
  "orbit-opportunity-surface": {
@@ -361,5 +361,65 @@
   "width": 1286,
   "height": 1180,
   "cropped": true
+ },
+ "moon-earthrise": {
+  "id": "as08-14-2383",
+  "observation": null,
+  "title": "Apollo 8 Mission image, Earth over the horizon of the moon",
+  "date": "1968-12-24",
+  "credit": "NASA",
+  "page": "https://images.nasa.gov/details/as08-14-2383",
+  "width": 2400,
+  "height": 1350,
+  "cropped": true
+ },
+ "moon-laser-station": {
+  "id": "GSFC_20171208_Archive_e001973",
+  "observation": null,
+  "title": "Goddard Celebrates International Observe the Moon Night with Laser Show",
+  "date": "2010-09-18",
+  "credit": "NASA/GSFC",
+  "page": "https://images.nasa.gov/details/GSFC_20171208_Archive_e001973",
+  "width": 1533,
+  "height": 2400,
+  "cropped": true
+ },
+ "mars-van-zyl": {
+  "id": "PIA24663",
+  "observation": null,
+  "title": "Mastcam-Z's 360-degree View of Van Zyl Overlook",
+  "date": "2021-04-15",
+  "credit": "NASA/JPL-Caltech/ASU/MSSS",
+  "page": "https://images.nasa.gov/details/PIA24663",
+  "width": 2400,
+  "height": 850,
+  "cropped": true,
+  "until": "2021-04-26"
+ },
+ "mars-two-years": {
+  "id": "PIA25881",
+  "observation": null,
+  "title": "Ingenuity at Two Years on Mars",
+  "date": "2023-04-16",
+  "credit": "NASA/JPL-Caltech/ASU/MSSS",
+  "page": "https://images.nasa.gov/details/PIA25881",
+  "width": 2274,
+  "height": 1360,
+  "cropped": false
+ },
+ "mars-valinor": {
+  "id": "PIA26237",
+  "observation": null,
+  "title": "Ingenuity at 'Valinor Hills'",
+  "date": "2024-02-21",
+  "credit": "NASA/JPL-Caltech/ASU/MSSS",
+  "page": "https://images.nasa.gov/details/PIA26237",
+  "width": 2400,
+  "height": 1200,
+  "cropped": true,
+  "mark": [
+   0.42,
+   0.45
+  ]
  }
 }
