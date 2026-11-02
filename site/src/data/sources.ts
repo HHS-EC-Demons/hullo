@@ -1,4 +1,5 @@
 import SILENT_PHOTOS from './silent-images.json';
+import PAGE_PHOTOS from './page-images.json';
 
 export interface Source {
   id: string;
@@ -13,6 +14,9 @@ export interface Source {
 
 const NASA_MEDIA = 'NASA content, generally not subject to US copyright. Credit NASA.';
 const photoList = SILENT_PHOTOS.map((p) => `${p.nasa_id} (${p.credit})`).join(', ');
+const pageList = Object.values(PAGE_PHOTOS)
+  .map((p) => `${p.nasa_id}, ${p.caption.charAt(0).toLowerCase()}${p.caption.slice(1)} (${p.credit})`)
+  .join('; ');
 const NSSDCA = 'NASA NSSDCA page, generally not subject to US copyright. Credit NASA.';
 
 export const DATASETS: Source[] = [
@@ -85,12 +89,21 @@ export const DATASETS: Source[] = [
   },
   {
     id: 'nasa-images-silent',
-    title: 'NASA Image and Video Library, photos on the Silent page',
+    title: 'NASA Image and Video Library, photos of the silent objects',
     publisher: 'NASA',
     url: 'https://images.nasa.gov/',
-    dated: 'Downloaded 1 Nov 2026',
+    dated: 'Downloaded 1 and 2 Nov 2026',
     license: `${NASA_MEDIA} Each item page names its credit. No logos or insignia are used.`,
-    used: `One photo for each silent object, fetched by NASA ID and shown unaltered apart from a 4:3 crop and scale. ${photoList}.`,
+    used: `One photo for each silent object on the Silent and Passport pages, fetched by NASA ID from the full resolution original and shown unaltered apart from a 4:3 crop and scale. ${photoList}.`,
+  },
+  {
+    id: 'nasa-images-pages',
+    title: 'NASA Image and Video Library, photos on Silent, Passport, Classroom and 404',
+    publisher: 'NASA and NASA JPL Photojournal items',
+    url: 'https://images.nasa.gov/',
+    dated: 'Downloaded 2 Nov 2026',
+    license: `${NASA_MEDIA} Each item page names its credit. No logos or insignia are used.`,
+    used: `Full resolution originals, shown unaltered apart from crop and scale. ${pageList}.`,
   },
 ];
 

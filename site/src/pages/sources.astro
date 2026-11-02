@@ -27,7 +27,7 @@ const count = groups.reduce((n, g) => n + g.items.length, 0);
 <Base title="Sources" current="sources" description={`Every dataset, page and tool ${BRAND} uses, with its license and credit.`}>
   <header class="wrap page-head">
     <h1>Sources</h1>
-    <p>All {count} datasets and pages behind the numbers on this site, with each license and credit.</p>
+    <p>The {count} datasets, pages and photo sets behind this site, with licenses and credits.</p>
   </header>
 
   <section class="wrap about" aria-labelledby="about">
@@ -39,18 +39,15 @@ const count = groups.reduce((n, g) => n + g.items.length, 0);
       </div>
       <div>
         <dt>Use of AI</dt>
-        <dd>
-          The code and the research behind this site were made with help from Claude by Anthropic. Every number on the site is
-          computed from the data below or quoted from a dated source on this page. No images are AI generated.
-        </dd>
+        <dd>Code and research made with help from Claude by Anthropic. Every number comes from a source below. No image is AI generated.</dd>
       </div>
       <div>
         <dt>NASA</dt>
-        <dd>Made for the NASA Space Apps Challenge 2026. This project is not endorsed by NASA.</dd>
+        <dd>Made for the NASA Space Apps Challenge 2026. Not endorsed by NASA.</dd>
       </div>
       <div>
         <dt>Passport</dt>
-        <dd>Stamps and the name on the certificate stay in this browser’s local storage. Nothing is sent anywhere.</dd>
+        <dd>Stamps and the certificate name stay in this browser. Nothing is sent.</dd>
       </div>
     </dl>
   </section>
