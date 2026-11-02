@@ -110,7 +110,7 @@ export const MoonSheet = forwardRef<HTMLDivElement, { m: MoonShot; printedAt: nu
         ]}
         questions={[
           'The pulse travels to the mirror and back. How many seconds does the trip to the mirror take?',
-          'How far is the mirror from the telescope, in kilometres?',
+          'How far is the mirror from the telescope, in kilometers?',
           'Round your answer to the nearest 1,000 km.',
           'How many years will it take for the Moon to move 1 km farther away?',
         ]}
@@ -153,9 +153,9 @@ export const VoyagerSheet = forwardRef<HTMLDivElement, { seconds: number; printe
         ]}
         questions={[
           `How many seconds is ${h} h ${m} min ${s} s?`,
-          'How far is Voyager 1 from Earth, in kilometres?',
+          'How far is Voyager 1 from Earth, in kilometers?',
           'How many au is that? Round to one decimal place.',
-          `NASA says Voyager 1 will be one light-day away on ${dayFmt.format(Date.parse(NASA_LIGHT_DAY_UTC))}. How many kilometres is one light-day?`,
+          `NASA says Voyager 1 will be one light-day away on ${dayFmt.format(Date.parse(NASA_LIGHT_DAY_UTC))}. How many kilometers is one light-day?`,
         ]}
         answers={[
           <>
@@ -189,7 +189,7 @@ export const FlightSheet = forwardRef<HTMLDivElement, { f: Flight; printedAt: nu
       <Sheet
         title="How fast did Ingenuity fly?"
         printedAt={printedAt}
-        intro={`Ingenuity was the first helicopter to fly on another planet. On ${date}, sol ${f.sol} of the mission, it made flight ${f.n} over Jezero crater on Mars.`}
+        intro={`Ingenuity was the first helicopter to fly on another planet. On ${date}, sol ${f.sol} of the mission, Ingenuity made flight ${f.n} over Jezero crater on Mars.`}
         numbers={[
           `Distance flown is ${int.format(d)} m.`,
           `Time in the air is ${one.format(t)} s.`,
@@ -197,8 +197,8 @@ export const FlightSheet = forwardRef<HTMLDivElement, { f: Flight; printedAt: nu
           '1 m/s is the same as 3.6 km/h.',
         ]}
         questions={[
-          'What was the average speed in metres per second? Round to two decimal places.',
-          'What is that speed in kilometres per hour?',
+          'What was the average speed in meters per second? Round to two decimal places.',
+          'What is that speed in kilometers per hour?',
           f.max_speed_m_s ? 'Why is the average speed lower than the top speed?' : 'Why might the helicopter fly slower than average at the start and end?',
           'At the average speed, how many seconds would Ingenuity take to fly 1 km?',
         ]}

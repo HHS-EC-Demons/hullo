@@ -102,7 +102,7 @@ export function parseConfig(xml: string): Config {
   return cfg;
 }
 
-/** Dish size in metres from a config type such as 70M or 34MHEF. */
+/** Dish size in meters from a config type such as 70M or 34MHEF. */
 export function dishSize(type: string): string {
   const m = /^(\d+)M/.exec(type);
   return m ? `${m[1]} m` : '';
