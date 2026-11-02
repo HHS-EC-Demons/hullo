@@ -1,0 +1,74 @@
+---
+import { image, pic } from '../lib/photos';
+
+interface Props {
+  slug: string;
+  alt: string;
+  sizes: string;
+  widths?: number[];
+  eager?: boolean;
+  mark?: [number, number];
+  class?: string;
+}
+
+const { slug, alt, sizes, widths = [640, 1080, 1600, 2400], eager = false, mark, class: className } = Astro.props;
+const src = image(slug);
+const native = Math.min(src.width, 2400);
+const list = [...widths.filter((w) => w < native), native];
+const p = await pic(slug, list, sizes);
+---
+
+<figure class:list={['pf', className]}>
+  <div class="pf-frame" style={`--pf-native: ${p.width} / ${p.height}`}>
+    <picture>
+      <source type="image/avif" srcset={p.avif} sizes={sizes} />
+      <source type="image/webp" srcset={p.webp} sizes={sizes} />
+      <img
+        src={p.src}
+        width={p.width}
+        height={p.height}
+        alt={alt}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : undefined}
+        decoding="async"
+      />
+    </picture>
+    {mark && <span class="pf-ring" aria-hidden="true" style={`left: ${mark[0] * 100}%; top: ${mark[1] * 100}%`} />}
+  </div>
+  <figcaption class="credit"><slot /></figcaption>
+</figure>
+
+<style>
+  .pf {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    align-content: start;
+  }
+  .pf-frame {
+    position: relative;
+    aspect-ratio: var(--pf-ratio, var(--pf-native));
+    overflow: hidden;
+    background: var(--raised);
+  }
+  .pf-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pf-pos, 50% 50%);
+  }
+  .pf-ring {
+    position: absolute;
+    width: clamp(36px, 4.4%, 72px);
+    aspect-ratio: 1;
+    border: 2px solid var(--lilac);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .pf figcaption {
+    padding-inline: var(--pf-cap-pad, 0);
+    text-wrap: pretty;
+  }
+</style>
