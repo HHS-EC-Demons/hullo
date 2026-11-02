@@ -6,8 +6,8 @@
   "date": "2022-05-23",
   "center": "JPL",
   "credit": "NASA/JPL-Caltech",
-  "width": 1060,
-  "height": 794,
+  "width": 2400,
+  "height": 1800,
   "page": "https://images.nasa.gov/details/PIA25287"
  },
  {
@@ -17,8 +17,8 @@
   "date": "2018-02-26",
   "center": "JPL",
   "credit": "NASA/JPL-Caltech",
-  "width": 1024,
-  "height": 768,
+  "width": 1311,
+  "height": 983,
   "page": "https://images.nasa.gov/details/PIA22222"
  },
  {
@@ -28,8 +28,8 @@
   "date": "2003-07-02",
   "center": "JPL",
   "credit": "NASA/JPL",
-  "width": 1200,
-  "height": 900,
+  "width": 1485,
+  "height": 1114,
   "page": "https://images.nasa.gov/details/PIA04603"
  },
  {
@@ -50,8 +50,8 @@
   "date": "2009-02-20",
   "center": "KSC",
   "credit": "NASA",
-  "width": 1200,
-  "height": 900,
+  "width": 2400,
+  "height": 1800,
   "page": "https://images.nasa.gov/details/KSC-2009-1745",
   "alt": "LCROSS, wrapped in gold foil, on a stand in a clean room in Florida."
  },
@@ -61,9 +61,9 @@
   "title": "Phoenix Mars Lander Spacecraft Processing",
   "date": "2007-05-10",
   "center": "KSC",
-  "credit": "NASA",
-  "width": 1200,
-  "height": 900,
+  "credit": "NASA/George Shelton",
+  "width": 2052,
+  "height": 1538,
   "page": "https://images.nasa.gov/details/KSC-07PD-1090"
  },
  {
@@ -73,8 +73,8 @@
   "date": "1989-10-18",
   "center": "JSC",
   "credit": "NASA",
-  "width": 713,
-  "height": 535,
+  "width": 2192,
+  "height": 1644,
   "page": "https://images.nasa.gov/details/s34-72-070"
  },
  {
@@ -84,8 +84,8 @@
   "date": "1972-02-26",
   "center": "ARC",
   "credit": "NASA",
-  "width": 1200,
-  "height": 900,
+  "width": 2008,
+  "height": 1506,
   "page": "https://images.nasa.gov/details/ARC-1972-AC72-2135",
   "alt": "Pioneer 10 at Cape Kennedy before launch, a foil wrapped body under a wide silver dish, with a technician standing behind."
  },
@@ -108,8 +108,8 @@
   "date": "1997-12-18",
   "center": "KSC",
   "credit": "NASA",
-  "width": 1200,
-  "height": 900,
+  "width": 1901,
+  "height": 1425,
   "page": "https://images.nasa.gov/details/KSC-97PC1803",
   "alt": "Lunar Prospector, a dark drum covered in solar cells, with two technicians preparing the spacecraft."
  },
@@ -120,8 +120,8 @@
   "date": "1997-12-12",
   "center": "JPL",
   "credit": "NASA/JPL",
-  "width": 1200,
-  "height": 900,
+  "width": 1276,
+  "height": 957,
   "page": "https://images.nasa.gov/details/PIA01122",
   "alt": "The Sojourner rover, small and six wheeled with a flat solar panel on top, on rocky Martian ground."
  },
@@ -132,8 +132,8 @@
   "date": "1973-04-15",
   "center": "MSFC",
   "credit": "NASA",
-  "width": 1200,
-  "height": 900,
+  "width": 2400,
+  "height": 1800,
   "page": "https://images.nasa.gov/details/9139575",
   "alt": "The Atlas-Centaur rocket carrying Pioneer 11 lifting off at night in a cloud of smoke."
  },
@@ -166,19 +166,20 @@
   "date": "1969-11-19",
   "center": "JSC",
   "credit": "NASA",
-  "width": 1200,
-  "height": 900,
+  "width": 2400,
+  "height": 1800,
   "page": "https://images.nasa.gov/details/as12-47-6919"
  },
  {
   "object": "surveyor3",
-  "nasa_id": "AS12-48-7133",
-  "title": "View of two U.S. spacecraft on the surface of the moon",
+  "nasa_id": "as12-48-7121",
+  "title": "View of Surveyor III in its crater",
   "date": "1969-11-20",
   "center": "JSC",
   "credit": "NASA",
-  "width": 1200,
-  "height": 900,
-  "page": "https://images.nasa.gov/details/AS12-48-7133"
+  "width": 2400,
+  "height": 1800,
+  "page": "https://images.nasa.gov/details/as12-48-7121",
+  "alt": "Surveyor 3 on the slope of its small crater, photographed by the Apollo 12 crew."
  }
 ]
