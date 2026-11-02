@@ -1,0 +1,344 @@
+.qt {
+  --qt-name: 15rem;
+  --qt-state: 10rem;
+  --qt-gap: 24px;
+  --qt-on: var(--line);
+  --qt-off: color-mix(in oklab, var(--lilac) 34%, var(--bg));
+  --qt-top: 73px;
+  position: relative;
+}
+
+.qt-sticky {
+  position: sticky;
+  top: var(--qt-top);
+  z-index: 2;
+  background: var(--bg);
+  border-top: 1px solid var(--rule);
+}
+.qt-readout {
+  min-height: 13rem;
+  display: grid;
+  align-items: center;
+  padding-block: 18px;
+}
+.qt-scale {
+  display: grid;
+  grid-template-columns: var(--qt-name) minmax(0, 1fr) var(--qt-state);
+  column-gap: var(--qt-gap);
+  align-items: end;
+  padding-top: 6px;
+  border-bottom: 1px solid var(--edge);
+}
+
+.qt-hint {
+  max-width: 34rem;
+  color: var(--muted);
+  font-size: var(--fs-md);
+  text-wrap: pretty;
+}
+
+.qt-card {
+  display: grid;
+  grid-template-columns: 13rem minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+.qt-card.no-photo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.qt-photo {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+.qt-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius);
+  background: var(--raised);
+}
+
+.qt-text {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.qt-title {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.qt-dates {
+  color: var(--muted);
+}
+.qt-figs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 40px;
+  margin: 4px 0 0;
+}
+.qt-figs dt {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.qt-figs dd {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.qt-stamped {
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+
+.qt-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  padding: 0 0 8px 10px;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+}
+.qt-key-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.qt-key-line {
+  display: inline-block;
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--qt-on);
+}
+.qt-key-line.off {
+  background: var(--qt-off);
+}
+
+.qt-plot {
+  position: relative;
+}
+
+.qt-grid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--qt-name) + var(--qt-gap));
+  right: calc(var(--qt-state) + var(--qt-gap));
+  pointer-events: none;
+}
+.qt-gridline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule);
+}
+
+.qt-rows {
+  position: relative;
+  display: grid;
+  padding-block: 8px 4px;
+}
+
+.qt-row {
+  all: unset;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: var(--qt-name) minmax(0, 1fr) var(--qt-state);
+  grid-template-areas: 'name track state';
+  column-gap: var(--qt-gap);
+  align-items: center;
+  width: 100%;
+  min-height: 40px;
+  padding-block: 4px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.qt-row:hover,
+.qt-row[aria-pressed='true'] {
+  background: color-mix(in oklab, var(--raised) 70%, transparent);
+}
+.qt-row:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.qt-name {
+  grid-area: name;
+  padding-left: 10px;
+  font-size: var(--fs-sm);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.qt-row[aria-pressed='true'] .qt-name {
+  font-weight: 700;
+}
+.qt-state {
+  grid-area: state;
+  padding-right: 10px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.qt-state.answers {
+  color: var(--ok);
+}
+
+.qt-track {
+  grid-area: track;
+  position: relative;
+  height: 12px;
+}
+.qt-on,
+.qt-off,
+.qt-run {
+  position: absolute;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 2px;
+}
+.qt-on {
+  background: var(--qt-on);
+}
+.qt-off {
+  background: var(--qt-off);
+}
+.qt-tick {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 12px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--qt-on);
+}
+.qt-run {
+  pointer-events: none;
+}
+.qt-pulse {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.qt-pulse::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: -3.5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--laser);
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
+.qt-axis {
+  position: relative;
+  height: 30px;
+}
+.qt-tick-label {
+  position: absolute;
+  top: 2px;
+  transform: translateX(-50%);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+.qt-tick-label.today {
+  left: auto;
+  right: 0;
+  transform: none;
+  color: var(--text);
+}
+
+@media (max-width: 959px) {
+  .qt {
+    --qt-top: 61px;
+  }
+}
+
+@media (max-width: 860px) {
+  .qt {
+    --qt-name: 0px;
+    --qt-state: 0px;
+    --qt-gap: 0px;
+  }
+  .qt-readout {
+    min-height: 11rem;
+    padding-block: 14px;
+  }
+  .qt-card {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 14px;
+  }
+  .qt-title {
+    font-size: var(--fs-lg);
+  }
+  .qt-figs {
+    display: grid;
+    gap: 2px;
+    margin-top: 0;
+  }
+  .qt-figs div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 8px;
+  }
+  .qt-figs dt {
+    font-size: var(--fs-xs);
+  }
+  .qt-text {
+    gap: 6px;
+  }
+  .qt-figs dd {
+    font-size: var(--fs-sm);
+  }
+  .qt-dates,
+  .qt-stamped {
+    font-size: var(--fs-sm);
+  }
+  .qt-photo .credit {
+    font-size: 0.8125rem;
+  }
+  .qt-scale {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .qt-key {
+    padding-left: 0;
+    padding-bottom: 2px;
+  }
+  .qt-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'name state'
+      'track track';
+    row-gap: 4px;
+    min-height: 52px;
+    padding: 6px 0;
+  }
+  .qt-name {
+    padding-left: 0;
+  }
+  .qt-state {
+    padding-right: 0;
+  }
+  .qt-gridline.wide-only,
+  .qt-tick-label.wide-only {
+    display: none;
+  }
+}
