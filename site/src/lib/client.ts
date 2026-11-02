@@ -60,49 +60,64 @@ export function useReducedMotion(): boolean {
   );
 }
 
-const dateFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
-const timeFmt = new Intl.DateTimeFormat(undefined, {
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hourCycle: 'h23',
-  timeZoneName: 'short',
-});
-const utcTimeFmt = new Intl.DateTimeFormat('en-GB', {
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hourCycle: 'h23',
-  timeZone: 'UTC',
-});
-const longDateFmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const p2 = (n: number) => String(n).padStart(2, '0');
+
+/**
+ * Date and number text without Intl. The first Intl formatter on a page
+ * starts ICU, which costs hundreds of milliseconds on a slow phone, so the
+ * live numbers use these plain English formats instead.
+ */
+export function zoneLabel(ms: number): string {
+  const off = -new Date(ms).getTimezoneOffset();
+  if (off === 0) return 'UTC';
+  const a = Math.abs(off);
+  return `UTC${off > 0 ? '+' : '-'}${Math.floor(a / 60)}${a % 60 ? `:${p2(a % 60)}` : ''}`;
+}
 
 export function localDate(ms: number): string {
-  return dateFmt.format(ms);
+  const d = new Date(ms);
+  return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
 }
 
 export function localTime(ms: number): string {
-  return timeFmt.format(ms);
+  const d = new Date(ms);
+  return `${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())} ${zoneLabel(ms)}`;
 }
 
 export function utcTime(ms: number): string {
-  return `${utcTimeFmt.format(ms)} UTC`;
+  const d = new Date(ms);
+  return `${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}:${p2(d.getUTCSeconds())} UTC`;
 }
 
-const utcDateFmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
-
-const utcDayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
-
 export function utcDay(ms: number): string {
-  return utcDayFmt.format(ms);
+  const d = new Date(ms);
+  return `${DAYS[d.getUTCDay()]} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
 }
 
 export function utcDate(ms: number): string {
-  return utcDateFmt.format(ms);
+  const d = new Date(ms);
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
+
+export function utcMonth(ms: number): string {
+  return MONTHS[new Date(ms).getUTCMonth()];
 }
 
 export function longDate(ms: number): string {
-  return longDateFmt.format(ms);
+  return utcDate(ms);
 }
 
-export const km = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+export function groupInt(n: number): string {
+  const sign = n < 0 ? '-' : '';
+  const digits = String(Math.round(Math.abs(n)));
+  let out = '';
+  for (let i = 0; i < digits.length; i++) {
+    if (i > 0 && (digits.length - i) % 3 === 0) out += ',';
+    out += digits[i];
+  }
+  return sign + out;
+}
+
+export const km = { format: groupInt };
