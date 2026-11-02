@@ -1,7 +1,8 @@
 """Public domain photos from NASA, saved with their ID, date and credit.
 
-ITEMS are fetched from the NASA Image and Video Library by NASA ID and
-written to site/public/img for the pages that read data/images.json.
+ITEMS are fetched from the NASA Image and Video Library by NASA ID,
+cropped and written to site/src/assets/img/home-<slug>.jpg, with their
+metadata in site/public/data/images.json.
 
 PHOTOS feed astro:assets. Each is fetched by NASA ID from the library, or
 straight from its Photojournal or HiRISE file when the library does not
@@ -36,9 +37,6 @@ PJ = "https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia"
 HIRISE = "https://static.uahirise.org/images"
 
 ITEMS = [
-    {"id": "as14-67-09386", "slug": "apollo14-reflector", "width": 1100, "credit": "NASA"},
-    {"id": "PIA24648", "slug": "ingenuity-flight5", "width": 1200, "credit": "NASA/JPL-Caltech/ASU/MSSS",
-     "crop": (0.0, 0.3, 0.5, 0.8)},
     {"id": "PIA23645", "slug": "pale-blue-dot", "width": 900, "credit": "NASA/JPL-Caltech",
      "crop": (0.48, 0.4037, 0.7094, 0.6935)},
     {"id": "as11-37-5551", "slug": "apollo11-reflector", "width": 900, "credit": "NASA",
@@ -131,7 +129,7 @@ def library(nasa_id: str, prefer_orig: bool) -> tuple[dict, bytes]:
 
 
 def build(site_public: Path) -> list[dict]:
-    out_dir = site_public / "img"
+    out_dir = SITE / "src" / "assets" / "img"
     out_dir.mkdir(parents=True, exist_ok=True)
     meta = []
     for item in ITEMS:
@@ -142,7 +140,7 @@ def build(site_public: Path) -> list[dict]:
             img = img.crop((round(l * img.width), round(t * img.height), round(r * img.width), round(b * img.height)))
         if img.width > item["width"]:
             img = img.resize((item["width"], round(img.height * item["width"] / img.width)), Image.LANCZOS)
-        dest = out_dir / f"{item['slug']}.jpg"
+        dest = out_dir / f"home-{item['slug']}.jpg"
         img.save(dest, "JPEG", quality=80, optimize=True, progressive=True)
         meta.append({
             "slug": item["slug"],

@@ -8,6 +8,7 @@ import { readData } from '../lib/build-data';
 import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import lro from '../data/lro.json';
+import PHOTOS from '../data/photos.json';
 
 interface Photo {
   slug: string;
@@ -60,7 +61,7 @@ const chapters = [
     value: String(mars.totals.flights),
     unit: 'flights',
     line: "Fly Ingenuity’s flights over Jezero crater, one at a time.",
-    photo: photo('ingenuity-flight5'),
+    photo: { nasa_id: PHOTOS['mars-after-flight05'].id, credit: PHOTOS['mars-after-flight05'].credit },
     image: img('mars-after-flight05'),
     focus: '25% 50%',
     what: 'Ingenuity on Mars, 2021',

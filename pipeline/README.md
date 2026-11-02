@@ -1,6 +1,6 @@
 # Hullo data pipeline
 
-These scripts build every data file the site ships under `site/public/data`, the Jezero basemap tiles under `site/public/tiles`, the photos under `site/public/img` and `site/src/assets/img`, the sound clips under `site/public/audio`, and the Horizons check values the tests use under `site/src/lib/fixtures`.
+These scripts build every data file the site ships under `site/public/data`, the Jezero basemap tiles under `site/public/tiles`, the photos under `site/src/assets/img`, the sound clips under `site/public/audio`, and the Horizons check values the tests use under `site/src/lib/fixtures`.
 
 ```sh
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt

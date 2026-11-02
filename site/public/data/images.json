@@ -1,29 +1,5 @@
 [
  {
-  "slug": "apollo14-reflector",
-  "nasa_id": "as14-67-09386",
-  "title": "View of the Laser Ranging Retro Reflector deployed by Apollo 14 astronauts",
-  "date": "1971-02-05",
-  "center": "JSC",
-  "credit": "NASA",
-  "width": 1100,
-  "height": 1100,
-  "page": "https://images.nasa.gov/details/as14-67-09386",
-  "cropped": false
- },
- {
-  "slug": "ingenuity-flight5",
-  "nasa_id": "PIA24648",
-  "title": "Mastcam-Z Views Ingenuity After Fifth Flight",
-  "date": "2021-05-07",
-  "center": "JPL",
-  "credit": "NASA/JPL-Caltech/ASU/MSSS",
-  "width": 802,
-  "height": 599,
-  "page": "https://images.nasa.gov/details/PIA24648",
-  "cropped": true
- },
- {
   "slug": "pale-blue-dot",
   "nasa_id": "PIA23645",
   "title": "Pale Blue Dot Revisited",
