@@ -84,16 +84,30 @@
   color: var(--muted);
 }
 
+.ig-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 32px 40px;
+  align-items: start;
+}
+
+.ig-mapwrap {
+  display: grid;
+  gap: 10px;
+}
+
 .ig-map {
-  height: clamp(420px, 50vw, 600px);
+  position: relative;
+  height: clamp(420px, 46vw, 600px);
   background: var(--raised);
   border-radius: 2px;
+  overflow: hidden;
   z-index: 0;
 }
 
-.ig-map:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 3px;
+.ig-hint {
+  font-size: var(--fs-xs);
+  color: var(--muted);
 }
 
 .ig-control {
@@ -103,57 +117,8 @@
   gap: 12px 24px;
 }
 
-.ig-control label {
+.ig-control-label {
   font-weight: 700;
-}
-
-.ig-control input[type='range'] {
-  width: 100%;
-  min-height: 44px;
-  margin: 0;
-  background: transparent;
-  accent-color: var(--lilac);
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.ig-control input[type='range']::-webkit-slider-runnable-track {
-  height: 2px;
-  background: var(--edge);
-}
-
-.ig-control input[type='range']::-moz-range-track {
-  height: 2px;
-  background: var(--edge);
-}
-
-.ig-control input[type='range']::-moz-range-progress {
-  height: 2px;
-  background: var(--lilac);
-}
-
-.ig-control input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 22px;
-  height: 22px;
-  margin-top: -10px;
-  border: 2px solid var(--bg);
-  border-radius: 50%;
-  background: var(--lilac);
-}
-
-.ig-control input[type='range']::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--bg);
-  border-radius: 50%;
-  background: var(--lilac);
-}
-
-.ig-control input[type='range']:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
 }
 
 .ig-steps {
@@ -161,39 +126,106 @@
   gap: 10px;
 }
 
-.ig .leaflet-container {
+.ig-hover {
+  color: var(--lilac);
+}
+
+.ig-photo {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.ig-frame {
+  position: relative;
+  display: grid;
+  background: var(--raised);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ig-frame > * {
+  grid-area: 1 / 1;
+}
+
+.ig-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ig-nophoto {
+  align-self: center;
+  padding: 24px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  text-wrap: pretty;
+}
+
+.ig-caption {
+  min-height: 2.9em;
+}
+
+.ig-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ig-picks button {
+  min-width: 44px;
+  padding-inline: 10px;
+}
+
+.ig .maplibregl-map {
   font-family: var(--sans);
-  background: var(--raised);
 }
 
-.ig .leaflet-bar {
-  border: 0;
-  box-shadow: none;
+.ig .maplibregl-canvas:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
 }
 
-.ig .leaflet-bar a,
-.ig .leaflet-bar a:hover {
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  font-size: 20px;
+.ig .maplibregl-ctrl-group {
   background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--edge);
+  overflow: hidden;
+}
+
+.ig .maplibregl-ctrl-group button {
+  width: 44px;
+  height: 44px;
+  background-color: transparent;
+}
+
+.ig .maplibregl-ctrl-group button + button {
+  border-top: 1px solid var(--rule);
+}
+
+.ig .maplibregl-ctrl-group button:not(:disabled):hover {
+  background-color: var(--raised);
+}
+
+.ig .maplibregl-ctrl-group button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.ig .maplibregl-ctrl button .maplibregl-ctrl-icon {
+  filter: invert(0.93);
+}
+
+.ig .maplibregl-ctrl button:disabled .maplibregl-ctrl-icon {
+  opacity: 0.35;
+}
+
+.ig .maplibregl-cooperative-gesture-screen {
+  background: color-mix(in oklab, var(--violet) 78%, transparent);
   color: var(--text);
-  border-bottom: 1px solid var(--rule);
-}
-
-.ig .leaflet-bar a:first-child {
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-
-.ig .leaflet-bar a:last-child {
-  border-radius: 0 0 var(--radius) var(--radius);
-  border-bottom: 0;
-}
-
-.ig .leaflet-bar a.leaflet-disabled {
-  color: var(--edge);
-  background: var(--raised);
+  font-family: var(--sans);
+  font-size: var(--fs-md);
+  padding: 24px;
 }
 
 @media (max-width: 860px) {
@@ -208,6 +240,12 @@
   }
   .ig-control {
     grid-template-columns: auto minmax(0, 1fr);
+  }
+  .ig-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ig-map {
+    height: clamp(360px, 92vw, 520px);
   }
   .ig-steps {
     grid-column: 1 / -1;
