@@ -9,8 +9,8 @@ import { lifelines, type ReflectorInfo } from '../data/timeline';
 import PHOTO_META from '../data/silent-images.json';
 import PHOTOS from '../data/photos.json';
 import { readData } from '../lib/build-data';
+import { utcDate } from '../lib/client';
 
-const fmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/img/silent-*.jpg', { eager: true });
 const reflectorFiles = import.meta.glob<{ default: ImageMetadata }>(['../assets/img/home-apollo11-reflector.jpg', '../assets/img/moon-a14-reflector.jpg'], { eager: true });
 const WIDTHS = [320, 640];
@@ -31,7 +31,7 @@ for (const m of PHOTO_META) {
     src: fallback.src,
     width: 640,
     height: 480,
-    alt: `${name}. ${m.title}`,
+    alt: 'alt' in m && m.alt ? m.alt : `${name}. ${m.title}`,
     nasaId: m.nasa_id,
     credit: m.credit,
     page: m.page,
@@ -78,7 +78,7 @@ const builtMs = Date.now();
 
 const rows = SILENT.map((s) => ({
   ...s,
-  when: fmt.format(Date.parse(`${s.date}T12:00:00Z`)),
+  when: utcDate(Date.parse(`${s.date}T12:00:00Z`)),
   photo: photos[s.id],
   links: s.sources
     .map((id) => sourceById(id))
@@ -106,7 +106,7 @@ function linkText(publisher: string, title: string): string {
   </section>
 
   <section class="wrap" aria-labelledby="list">
-    <h2 id="list" class="section-title">Each one, with what it found</h2>
+    <h2 id="list" class="section-title">What each one found</h2>
     <ol class="silent">
       {
         rows.map((r) => (
