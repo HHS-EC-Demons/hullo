@@ -90,7 +90,7 @@ export default function PassportBook({ site }: Props) {
         </form>
       </div>
 
-      {earned.length === 0 && <p className="pp-empty">No stamps yet. Each empty slot below shows where to earn it.</p>}
+      {earned.length === 0 && <p className="pp-empty">No stamps yet. Each empty slot below says where to earn that stamp.</p>}
 
       {GROUPS.map((g) => {
         const objects = STAMP_OBJECTS.filter((o) => o.group === g.key);
