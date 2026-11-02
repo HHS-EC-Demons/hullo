@@ -7,7 +7,7 @@ export const GROUP_TITLE = 'Moon, Mars and Orbit';
 const NASA_MEDIA = 'NASA content, generally not subject to US copyright. Credit NASA.';
 const HIRISE = 'HiRISE images are in the public domain, with the credit asked for where possible. Credit as printed on each page.';
 
-type Photo = { id: string; credit: string; date: string; observation: string | null };
+type Photo = { id: string; credit: string; date: string | null; observation: string | null };
 const list = photos as Record<string, Photo>;
 
 function used(prefix: string): string {
