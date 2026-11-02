@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { DeepSpaceData } from '../lib/lighttime';
 import { localDate, localTime } from '../lib/client';
-import { setText, useFrames } from '../lib/frames';
+import { dropClass, setHidden, setText, useFrames } from '../lib/frames';
 
 export const NASA_LIGHT_DAY_UTC = '2026-11-18T10:16:07Z';
 
@@ -50,17 +50,17 @@ export default function LightDay({ data }: Props) {
             setText(m.current, pad(p.m));
             setText(s.current, pad(p.s));
             setText(said.current, `${p.d} days and ${p.h} hours`);
-            clock.current?.removeAttribute('hidden');
-            after.current?.setAttribute('hidden', '');
+            setHidden(clock.current, false);
+            setHidden(after.current, true);
           } else {
             const days = Math.floor((now - crossing) / 86400000);
             setText(lead.current, 'Voyager 1 crossed one light-day from Earth');
             setText(after.current, days === 0 ? 'today' : days === 1 ? '1 day ago' : `${days} days ago`);
             setText(said.current, after.current?.textContent ?? '');
-            clock.current?.setAttribute('hidden', '');
-            after.current?.removeAttribute('hidden');
+            setHidden(clock.current, true);
+            setHidden(after.current, false);
           }
-          root.current?.classList.remove('pending');
+          dropClass(root.current, 'pending');
         }
       : null,
     [crossing],

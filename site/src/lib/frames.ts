@@ -87,3 +87,13 @@ export function useFrames<T extends Element>(
 export function setText(el: HTMLElement | null, text: string): void {
   if (el && el.textContent !== text) el.textContent = text;
 }
+
+/** Removes a class only when present, so a frame that changes nothing touches no attribute. */
+export function dropClass(el: Element | null, name: string): void {
+  if (el && el.classList.contains(name)) el.classList.remove(name);
+}
+
+/** Sets or clears the hidden attribute only when it changes. */
+export function setHidden(el: Element | null, hidden: boolean): void {
+  if (el && el.hasAttribute('hidden') !== hidden) el.toggleAttribute('hidden', hidden);
+}
