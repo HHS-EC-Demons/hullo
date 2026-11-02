@@ -39,6 +39,7 @@
 .ls-earth,
 .ls-moon {
   position: absolute;
+  z-index: 1;
   top: 50%;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -60,28 +61,23 @@
 .ls-line {
   position: absolute;
   top: 50%;
-  left: calc(var(--ex) * 1%);
-  width: calc((var(--mx) - var(--ex) - var(--mr)) * 1%);
+  left: calc(var(--ex) * 2%);
+  width: calc((var(--mx) - 2 * var(--ex) - var(--mr)) * 1%);
   height: 1px;
   background: var(--edge);
 }
 
 .ls-pulse {
-  --leg: 0;
   position: absolute;
+  z-index: 2;
   top: calc(50% - 4px);
-  left: calc(var(--ex) * 1%);
+  left: calc(var(--ex) * 2%);
   width: 22px;
   height: 8px;
   border-radius: 2px;
   background: var(--laser);
   opacity: 0;
-  transform: translateX(calc(var(--leg) * ((var(--mx) - var(--ex) - var(--mr)) * 1cqw - 22px)));
-  will-change: transform;
-}
-
-.ls-pulse.on {
-  opacity: 1;
+  will-change: transform, opacity;
 }
 
 .ls-labels {
