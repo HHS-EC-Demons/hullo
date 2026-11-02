@@ -10,8 +10,10 @@ interface Props {
 }
 
 const H = 280;
-const PAD = { top: 18, right: 16, bottom: 34, left: 58 };
+const PAD = { top: 26, right: 16, bottom: 34 };
 const DAY = 86400000;
+const DOT = 5;
+const CHAR_PX = 7.9;
 
 function niceStep(span: number): number {
   const raw = span / 4;
@@ -55,16 +57,21 @@ export default function LightTimeChart({ data, probe, name, now }: Props) {
   const showDay = probe === 'voyager1' && 24 >= y0 && 24 <= y1;
   if (y1 - y0 < step * 2) y1 = y0 + step * 2;
 
-  const x = (ms: number) => PAD.left + ((ms - t0) / (t1 - t0)) * (w - PAD.left - PAD.right);
+  const ticks: number[] = [];
+  for (let v = y0; v <= y1 + 1e-9; v += step) ticks.push(Number(v.toFixed(6)));
+  const left = Math.ceil(Math.max(...ticks.map((v) => hoursLabel(v).length)) * CHAR_PX) + 18;
+  const x = (ms: number) => left + ((ms - t0) / (t1 - t0)) * (w - left - PAD.right);
   const y = (h: number) => PAD.top + (1 - (h - y0) / (y1 - y0)) * (H - PAD.top - PAD.bottom);
 
   const path = series.map((p, i) => `${i ? 'L' : 'M'}${x(p.ms).toFixed(1)},${y(p.hours).toFixed(1)}`).join('');
-  const ticks: number[] = [];
-  for (let v = y0; v <= y1 + 1e-9; v += step) ticks.push(Number(v.toFixed(6)));
   const months: number[] = [];
-  for (let yr = 2026; yr <= 2027; yr++) for (let m = 0; m < 12; m += 3) months.push(Date.UTC(yr, m, 1));
+  const every = w - left - PAD.right < 520 ? 6 : 3;
+  for (let yr = 2026; yr <= 2027; yr++) for (let m = 0; m < 12; m += every) months.push(Date.UTC(yr, m, 1));
   months.push(Date.UTC(2028, 0, 1));
 
+  const crossIso = data.probes[probe].light_day_utc;
+  const crossing = showDay && crossIso ? Date.parse(crossIso) : null;
+  const crossLabel = crossing ? utcDate(crossing) : '';
   const nowIndex = now ? Math.round((now - t0) / DAY) : null;
   const nowPoint = nowIndex !== null && nowIndex >= 0 && nowIndex < series.length ? series[nowIndex] : null;
   const active = hover !== null ? series[hover] : null;
@@ -72,7 +79,7 @@ export default function LightTimeChart({ data, probe, name, now }: Props) {
   function pick(e: PointerEvent<SVGSVGElement>) {
     const rect = e.currentTarget.getBoundingClientRect();
     const px = e.clientX - rect.left;
-    const f = (px - PAD.left) / (w - PAD.left - PAD.right);
+    const f = (px - left) / (w - left - PAD.right);
     setHover(Math.max(0, Math.min(series.length - 1, Math.round(f * (series.length - 1)))));
   }
 
@@ -112,8 +119,8 @@ export default function LightTimeChart({ data, probe, name, now }: Props) {
           >
             {ticks.map((v) => (
               <g key={v}>
-                <line className="ltc-grid" x1={PAD.left} x2={w - PAD.right} y1={y(v)} y2={y(v)} />
-                <text className="ltc-tick" x={PAD.left - 10} y={y(v)} dy="0.32em" textAnchor="end">
+                <line className="ltc-grid" x1={left} x2={w - PAD.right} y1={y(v)} y2={y(v)} />
+                <text className="ltc-tick" x={left - 10} y={y(v)} dy="0.32em" textAnchor="end">
                   {hoursLabel(v)}
                 </text>
               </g>
@@ -125,27 +132,31 @@ export default function LightTimeChart({ data, probe, name, now }: Props) {
             ))}
             {showDay && (
               <g>
-                <line className="ltc-ref" x1={PAD.left} x2={w - PAD.right} y1={y(24)} y2={y(24)} />
+                <line className="ltc-ref" x1={left} x2={w - PAD.right} y1={y(24)} y2={y(24)} />
                 <text className="ltc-reflabel" x={w - PAD.right} y={y(24) - 7} textAnchor="end">
                   1 light-day
                 </text>
               </g>
             )}
+            {active && <line className="ltc-cross" x1={x(active.ms)} x2={x(active.ms)} y1={PAD.top} y2={H - PAD.bottom} />}
             <path className="ltc-line" d={path} />
+            {crossing !== null && (
+              <g>
+                <circle className="ltc-mark" cx={x(crossing)} cy={y(24)} r={DOT} />
+                <text className="ltc-marklabel" x={x(crossing)} y={y(24) - 12} textAnchor="middle">
+                  {crossLabel}
+                </text>
+              </g>
+            )}
             {nowPoint && (
               <g>
-                <circle className="ltc-now" cx={x(nowPoint.ms)} cy={y(nowPoint.hours)} r={5} />
+                <circle className="ltc-now" cx={x(nowPoint.ms)} cy={y(nowPoint.hours)} r={DOT} />
                 <text className="ltc-nowlabel" x={x(nowPoint.ms)} y={y(nowPoint.hours) + 22} textAnchor="middle">
                   Today
                 </text>
               </g>
             )}
-            {active && (
-              <g>
-                <line className="ltc-cross" x1={x(active.ms)} x2={x(active.ms)} y1={PAD.top} y2={H - PAD.bottom} />
-                <circle className="ltc-now" cx={x(active.ms)} cy={y(active.hours)} r={4} />
-              </g>
-            )}
+            {active && <circle className="ltc-now" cx={x(active.ms)} cy={y(active.hours)} r={DOT} />}
           </svg>
         )}
         {active && (

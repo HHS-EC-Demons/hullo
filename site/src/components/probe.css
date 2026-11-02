@@ -541,6 +541,18 @@
   stroke-width: 2;
 }
 
+.ltc-mark {
+  fill: var(--bg);
+  stroke: var(--lilac);
+  stroke-width: 2;
+}
+
+.ltc-marklabel {
+  fill: var(--text);
+  font-size: 13px;
+  font-family: var(--mono);
+}
+
 .ltc-cross {
   stroke: var(--muted);
   stroke-width: 1;
