@@ -44,7 +44,7 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
     };
   }
   const m = meta(v.slug);
-  const id = m.observation ? `${label(m.id)} (${m.observation})` : label(m.id);
+  const id = m.observation && m.observation !== m.id ? `${label(m.id)} (${m.observation})` : label(m.id);
   const date = m.date ?? site.landed;
   return {
     date,
