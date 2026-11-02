@@ -27,7 +27,7 @@ const probes: StampObject[] = PROBES.map((p) => ({
   hint: p.answers ? `Pick ${p.name} or send it a message on Deep space.` : `Pick ${p.name} on Deep space.`,
 }));
 
-const ORBIT_TOO = new Set(['l1', 'l2', 'insight', 'spirit', 'opportunity', 'viking1', 'viking2', 'phoenix']);
+const ORBIT_TOO = new Set(['insight', 'spirit', 'opportunity', 'viking1', 'viking2', 'phoenix']);
 
 const reflectors: StampObject[] = [
   { id: 'a11', name: 'Apollo 11 reflector' },
@@ -39,9 +39,7 @@ const reflectors: StampObject[] = [
   ...r,
   group: 'moon' as const,
   page: 'moon/',
-  hint: ORBIT_TOO.has(r.id)
-    ? `Fire the laser at the ${r.name} on Moon or slide its view on Orbit.`
-    : `Fire the laser at the ${r.name} on Moon.`,
+  hint: `Fire the laser at the ${r.name} on Moon.`,
 }));
 
 const mars: StampObject[] = [
@@ -53,7 +51,7 @@ const orbit: StampObject[] = ['11', '12', '14', '15', '16', '17'].map((n) => ({
   name: `Apollo ${n} landing site`,
   group: 'orbit',
   page: 'orbit/',
-  hint: `Slide the before and after view of the Apollo ${n} site on Orbit.`,
+  hint: `Open the Apollo ${n} site on Orbit.`,
 }));
 
 const taken = new Set(probes.map((p) => p.id));
@@ -64,7 +62,7 @@ const silent: StampObject[] = SILENT.filter((s) => !taken.has(s.id)).map((s) => 
   group: 'silent',
   page: 'silent/',
   hint: ORBIT_TOO.has(s.id)
-    ? `Pick ${s.name} on the timeline on Silent or slide its view on Orbit.`
+    ? `Pick ${s.name} on the timeline on Silent or open its site on Orbit.`
     : `Pick ${s.name} on the timeline on Silent.`,
 }));
 

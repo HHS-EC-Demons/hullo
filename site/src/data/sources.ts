@@ -1,3 +1,5 @@
+import SILENT_PHOTOS from './silent-images.json';
+
 export interface Source {
   id: string;
   title: string;
@@ -9,6 +11,7 @@ export interface Source {
 }
 
 const NASA_MEDIA = 'NASA content, generally not subject to US copyright. Credit NASA.';
+const photoList = SILENT_PHOTOS.map((p) => `${p.nasa_id} (${p.credit})`).join(', ');
 const NSSDCA = 'NASA NSSDCA page, generally not subject to US copyright. Credit NASA.';
 
 export const DATASETS: Source[] = [
@@ -76,6 +79,15 @@ export const DATASETS: Source[] = [
     license: `${NASA_MEDIA} No logos or insignia are used.`,
     used: 'Photos AS14-67-9386 of the Apollo 14 reflector and AS11-37-5551 of the Apollo 11 reflector (NASA), PIA24648 of Ingenuity (NASA/JPL-Caltech/ASU/MSSS) and PIA23645, the Pale Blue Dot (NASA/JPL-Caltech). Each is shown unaltered apart from crop and scale.',
   },
+  {
+    id: 'nasa-images-silent',
+    title: 'NASA Image and Video Library, photos on the Silent page',
+    publisher: 'NASA',
+    url: 'https://images.nasa.gov/',
+    dated: 'Downloaded 1 Nov 2026',
+    license: `${NASA_MEDIA} Each item page names its credit. No logos or insignia are used.`,
+    used: `One photo for each silent object, fetched by NASA ID and shown unaltered apart from a 4:3 crop and scale. ${photoList}.`,
+  },
 ];
 
 export const FACTS: Source[] = [
@@ -113,7 +125,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1972-012A',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: 'Jupiter flyby on 4 Dec 1973 and the last detected signal on 23 Jan 2003.',
+    used: 'Launch on 3 Mar 1972, the Jupiter flyby on 4 Dec 1973 and the last detected signal on 23 Jan 2003.',
   },
   {
     id: 'nssdca-pioneer-11',
@@ -122,7 +134,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1973-019A',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: 'First to explore Saturn, science and telemetry ceased 30 Sep 1995.',
+    used: 'Launch on 6 Apr 1973, first to explore Saturn, science and telemetry ceased 30 Sep 1995.',
   },
   {
     id: 'ilrs-lunar',
@@ -185,7 +197,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=2003-027A',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: '7.73 km over 6 years, stuck in sand in 2009, last transmission 22 Mar 2010.',
+    used: 'Launch on 10 Jun 2003, 7.73 km over 6 years, stuck in sand in 2009, last transmission 22 Mar 2010.',
   },
   {
     id: 'nssdca-lcross',
@@ -194,7 +206,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=2009-031B',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: 'Impact times of the Centaur stage and LCROSS on 9 Oct 2009.',
+    used: 'Launch on 18 Jun 2009 and the impact times of the Centaur stage and LCROSS on 9 Oct 2009.',
   },
   {
     id: 'nasa-lcross',
@@ -221,7 +233,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=2007-034A',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: 'Last transmission on 2 Nov 2008 as the summer ended.',
+    used: 'Launch on 4 Aug 2007 and the last transmission on 2 Nov 2008 as the summer ended.',
   },
   {
     id: 'nasa-galileo',
@@ -230,7 +242,7 @@ export const FACTS: Source[] = [
     url: 'https://science.nasa.gov/mission/galileo/',
     dated: 'Read 29 Oct 2026',
     license: NASA_MEDIA,
-    used: 'A possible ocean under Europa and the plunge on 21 Sep 2003.',
+    used: 'Launch on 18 Oct 1989, a possible ocean under Europa and the plunge on 21 Sep 2003.',
   },
   {
     id: 'nssdca-near',
@@ -239,7 +251,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1996-008A',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: 'First to orbit and touch down on an asteroid, touchdown on Eros on 12 Feb 2001.',
+    used: 'Launch on 17 Feb 1996, first to orbit and touch down on an asteroid, touchdown on Eros on 12 Feb 2001.',
   },
   {
     id: 'nssdca-lunar-prospector',
@@ -248,7 +260,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1998-001A',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: 'Its goals, the impact on 31 Jul 1999 and that no plume was seen.',
+    used: 'Launch on 7 Jan 1998, its goals, the impact on 31 Jul 1999 and that no plume was seen.',
   },
   {
     id: 'nssdca-pathfinder',
@@ -257,7 +269,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1996-068A',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: 'Lander and rover at a flood channel, contact lost 27 Sep 1997.',
+    used: 'Launch on 4 Dec 1996, lander and rover at a flood channel, contact lost 27 Sep 1997.',
   },
   {
     id: 'nssdca-viking-1',
@@ -266,7 +278,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1975-075C',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: 'First surface image 25 s after landing, biology experiment, contact lost 13 Nov 1982.',
+    used: 'Launch on 20 Aug 1975, first surface image 25 s after landing, biology experiment, contact lost 13 Nov 1982.',
   },
   {
     id: 'nssdca-viking-2',
@@ -275,7 +287,7 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1975-083C',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: '1,281 Mars days on the surface, turned off 11 Apr 1980.',
+    used: 'Launch on 9 Sep 1975, 1,281 Mars days on the surface, turned off 11 Apr 1980.',
   },
   {
     id: 'nssdca-apollo-17',
@@ -302,7 +314,70 @@ export const FACTS: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1967-035A',
     dated: 'Read 29 Oct 2026',
     license: NSSDCA,
-    used: 'Trenches, 6,326 pictures, last data 4 May 1967 and the camera Apollo 12 took home.',
+    used: 'Launch on 17 Apr 1967, trenches, 6,326 pictures, last data 4 May 1967 and the camera Apollo 12 took home.',
+  },
+  {
+    id: 'nssdca-voyager-1',
+    title: 'Voyager 1 (1977-084A)',
+    publisher: 'NASA NSSDCA',
+    url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1977-084A',
+    dated: 'Read 1 Nov 2026',
+    license: NSSDCA,
+    used: 'Launch on 5 Sep 1977, for the Silent timeline.',
+  },
+  {
+    id: 'nssdca-voyager-2',
+    title: 'Voyager 2 (1977-076A)',
+    publisher: 'NASA NSSDCA',
+    url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1977-076A',
+    dated: 'Read 1 Nov 2026',
+    license: NSSDCA,
+    used: 'Launch on 20 Aug 1977, for the Silent timeline.',
+  },
+  {
+    id: 'nssdca-new-horizons',
+    title: 'New Horizons Pluto Kuiper Belt Flyby (2006-001A)',
+    publisher: 'NASA NSSDCA',
+    url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=2006-001A',
+    dated: 'Read 1 Nov 2026',
+    license: NSSDCA,
+    used: 'Launch on 19 Jan 2006, for the Silent timeline.',
+  },
+  {
+    id: 'nssdca-insight',
+    title: 'InSight (2018-042A)',
+    publisher: 'NASA NSSDCA',
+    url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=2018-042A',
+    dated: 'Read 1 Nov 2026',
+    license: NSSDCA,
+    used: 'Launch on 5 May 2018.',
+  },
+  {
+    id: 'nssdca-opportunity',
+    title: 'Opportunity (2003-032A)',
+    publisher: 'NASA NSSDCA',
+    url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=2003-032A',
+    dated: 'Read 1 Nov 2026',
+    license: NSSDCA,
+    used: 'Launch on 8 Jul 2003.',
+  },
+  {
+    id: 'nasa-cassini',
+    title: 'Cassini',
+    publisher: 'NASA',
+    url: 'https://science.nasa.gov/mission/cassini/',
+    dated: 'Read 1 Nov 2026',
+    license: NASA_MEDIA,
+    used: 'Launch on 15 Oct 1997.',
+  },
+  {
+    id: 'nssdca-apollo-12',
+    title: 'Apollo 12 Lunar Module / ALSEP (1969-099C)',
+    publisher: 'NASA NSSDCA',
+    url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1969-099C',
+    dated: 'Read 1 Nov 2026',
+    license: NSSDCA,
+    used: 'The Apollo 12 central station, the first of the 5 stations, was turned on at 14:21 UT on 19 Nov 1969.',
   },
 ];
 
