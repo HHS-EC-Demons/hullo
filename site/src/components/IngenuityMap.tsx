@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { GeoJSONSource, LngLatBoundsLike, Map as MapLibreMap, StyleSpecification } from 'maplibre-gl';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -75,13 +75,11 @@ let protocolReady = false;
 export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
   const { data, error } = useJson<Ingenuity>('data/ingenuity.json');
   const reduced = useReducedMotion();
-  const uid = useId();
   const [n, setN] = useState(1);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   const [near, setNear] = useState(false);
   const box = useRef<HTMLDivElement>(null);
-  const control = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   const first = useRef(true);
 
@@ -100,13 +98,6 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
     io.observe(el);
     return () => io.disconnect();
   }, [near]);
-
-  useEffect(() => {
-    const thumb = control.current?.querySelector('[role="slider"]');
-    if (!thumb) return;
-    thumb.setAttribute('aria-label', 'Flight');
-    if (data) thumb.setAttribute('aria-valuetext', `Flight ${n}, ${utcDate(Date.parse(`${data.flights[n - 1].date}T12:00:00Z`))}`);
-  }, [data, n]);
 
   useEffect(() => {
     if (!data || !near || !box.current || map.current) return;
@@ -295,11 +286,13 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
         </dl>
       </div>
 
-      <div className="ig-control" ref={control}>
-        <span id={`${uid}-label`} className="ig-control-label" aria-hidden="true">
+      <div className="ig-control">
+        <span className="ig-control-label" aria-hidden="true">
           Flight
         </span>
         <Slider
+          thumbLabel="Flight"
+          thumbValueText={(v) => (data?.flights[v - 1] ? `Flight ${v}, ${utcDate(Date.parse(`${data.flights[v - 1].date}T12:00:00Z`))}` : `Flight ${v}`)}
           min={1}
           max={count}
           step={1}

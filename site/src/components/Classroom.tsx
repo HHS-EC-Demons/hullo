@@ -162,20 +162,14 @@ function Activity({ title, line, facts, rows, onPrint, children }: { title: stri
 
 function FlightPicker({ flights, value, onChange }: { flights: Flight[]; value: number; onChange: (n: number) => void }) {
   const index = Math.max(0, flights.findIndex((f) => f.n === value));
-  const labelId = useId();
-  const box = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const thumb = box.current?.querySelector('[role="slider"]');
-    thumb?.setAttribute('aria-label', 'Flight');
-    thumb?.setAttribute('aria-valuetext', `Flight ${value}`);
-  }, [value]);
   return (
-    <div className="cr-pick" ref={box}>
-      <p id={labelId} className="cr-pick-label">
+    <div className="cr-pick">
+      <p className="cr-pick-label" aria-hidden="true">
         Flight <span className="mono">{value}</span>
       </p>
       <Slider
-        aria-labelledby={labelId}
+        thumbLabel="Flight"
+        thumbValueText={(i) => `Flight ${flights[i]?.n ?? value}`}
         min={0}
         max={Math.max(flights.length - 1, 1)}
         step={1}
