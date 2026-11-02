@@ -8,6 +8,7 @@ export interface Source {
   dated: string;
   license: string;
   used: string;
+  note?: string;
 }
 
 const NASA_MEDIA = 'NASA content, generally not subject to US copyright. Credit NASA.';
@@ -23,6 +24,7 @@ export const DATASETS: Source[] = [
     dated: 'Queried 29 and 30 Oct 2026, one request at a time',
     license: 'Public service under the SSD API fair use policy. Results are cached and shipped as files, never fetched from the browser.',
     used: 'Daily geometric distance for Voyager 1 and 2, New Horizons and Pioneer 10 and 11 from Earth, 2026 to 2027. Hourly range and elevation from Apache Point (site 705) and Caussols near Grasse (site 010) to five lunar reflectors. Daily astrometric right ascension, declination and constellation of the five probes, the Moon, Mars and Eros seen from Earth’s center, for the sky chart.',
+    note: 'Probe light time is the geometric distance from Earth’s center divided by the speed of light, the convention NASA uses for its one light-day date. Pioneer 10 and 11 positions are extrapolated from old tracking. The sky chart shows positions seen from Earth’s center at 00:00 UTC.',
   },
   {
     id: 'bsc5',
@@ -33,6 +35,7 @@ export const DATASETS: Source[] = [
     license:
       'The catalogue ReadMe notes no copyright, and the VizieR usage rules tie rights to the origin of the data. Credit as CDS asks. This research has made use of the VizieR catalogue access tool, CDS, Strasbourg, France (DOI 10.26093/cds/vizier).',
     used: 'Position and brightness of all 2,847 stars brighter than magnitude 5.5 on the sky chart, at their J2000 catalog positions.',
+    note: 'Stars sit at their J2000 catalog positions. None has moved more than 3 arcminutes since, far less than a dot on the chart.',
   },
   {
     id: 'd3-celestial',
@@ -51,6 +54,7 @@ export const DATASETS: Source[] = [
     dated: 'Page updated 6 Mar 2017',
     license: NSSDCA,
     used: 'Positions of the Apollo 11, 14 and 15 reflectors in the DE421 mean Earth frame.',
+    note: 'A Moon round trip is twice the distance from the station to the reflector divided by the speed of light, shown to the millisecond, with reflector positions in the DE421 mean Earth frame. A shot needs the Moon at least 20° above the station’s horizon, a limit this site chose.',
   },
   {
     id: 'nssdca-artifacts',
@@ -324,6 +328,7 @@ export const FACTS: Source[] = [
     dated: 'Read 1 Nov 2026',
     license: NSSDCA,
     used: 'Launch on 5 Sep 1977, for the Silent timeline.',
+    note: 'A Silent timeline line starts on the launch date in UTC, or the day the hardware was set up on the Moon, and fades on the last day anyone heard from the hardware. Spans count whole calendar months up to today.',
   },
   {
     id: 'nssdca-voyager-2',
