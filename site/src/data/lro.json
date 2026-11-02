@@ -1,0 +1,115 @@
+{
+ "source": "LROC RDR NAC_DTM orthoimages, PDS Imaging Node",
+ "coordinates": "https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html",
+ "credit": "NASA/GSFC/Arizona State University",
+ "crops": [
+  {
+   "site": "apollo11",
+   "product": "NAC_DTM_APOLLO11_M150361817_50CM",
+   "label": "https://pds.mcp.nasa.gov/data/store/img/lunar_reconnaissance_orbiter/pds4/lroc/lro-l-lroc-5-rdr/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO11/NAC_DTM_APOLLO11_M150361817_50CM.xml",
+   "acquired": "2011-01-22T18:55:49Z",
+   "scale_m": 0.5,
+   "center": [
+    0.6738,
+    23.474
+   ],
+   "width": 600,
+   "height": 600,
+   "lm_px": [
+    249,
+    278
+   ],
+   "file": "orbit-apollo11-lro.jpg"
+  },
+  {
+   "site": "apollo12",
+   "product": "NAC_DTM_APOLLO12_M120005333_50CM",
+   "label": "https://pds.mcp.nasa.gov/data/store/img/lunar_reconnaissance_orbiter/pds4/lroc/lro-l-lroc-5-rdr/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO12/NAC_DTM_APOLLO12_M120005333_50CM.xml",
+   "acquired": "2010-02-05T10:34:26Z",
+   "scale_m": 0.5,
+   "center": [
+    -3.0145,
+    -23.42
+   ],
+   "width": 760,
+   "height": 760,
+   "lm_px": [
+    266,
+    277
+   ],
+   "file": "orbit-apollo12-lro.jpg"
+  },
+  {
+   "site": "apollo14",
+   "product": "NAC_DTM_APOLLO14_M150633128_50CM",
+   "label": "https://pds.mcp.nasa.gov/data/store/img/lunar_reconnaissance_orbiter/pds4/lroc/lro-l-lroc-5-rdr/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO14/NAC_DTM_APOLLO14_M150633128_50CM.xml",
+   "acquired": "2011-01-25T22:17:41Z",
+   "scale_m": 0.5,
+   "center": [
+    -3.645,
+    -17.4753
+   ],
+   "width": 720,
+   "height": 720,
+   "lm_px": [
+    564,
+    414
+   ],
+   "file": "orbit-apollo14-lro.jpg"
+  },
+  {
+   "site": "apollo15",
+   "product": "NAC_DTM_APOLLO15_M111571816_50CM",
+   "label": "https://pds.mcp.nasa.gov/data/store/img/lunar_reconnaissance_orbiter/pds4/lroc/lro-l-lroc-5-rdr/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO15/NAC_DTM_APOLLO15_M111571816_50CM.xml",
+   "acquired": "2009-10-30T19:55:49Z",
+   "scale_m": 0.5,
+   "center": [
+    26.1328,
+    3.6325
+   ],
+   "width": 720,
+   "height": 720,
+   "lm_px": [
+    404,
+    386
+   ],
+   "file": "orbit-apollo15-lro.jpg"
+  },
+  {
+   "site": "apollo16",
+   "product": "NAC_DTM_APOLLO16_2_M152770233_50CM",
+   "label": "https://pds.mcp.nasa.gov/data/store/img/lunar_reconnaissance_orbiter/pds4/lroc/lro-l-lroc-5-rdr/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO16_2/NAC_DTM_APOLLO16_2_M152770233_50CM.xml",
+   "acquired": "2011-02-19T15:56:06Z",
+   "scale_m": 0.5,
+   "center": [
+    -8.9746,
+    15.4998
+   ],
+   "width": 600,
+   "height": 600,
+   "lm_px": [
+    378,
+    228
+   ],
+   "file": "orbit-apollo16-lro.jpg"
+  },
+  {
+   "site": "apollo17",
+   "product": "NAC_DTM_APOLLO17_1_M134985003_60CM",
+   "label": "https://pds.mcp.nasa.gov/data/store/img/lunar_reconnaissance_orbiter/pds4/lroc/lro-l-lroc-5-rdr/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO17_1/NAC_DTM_APOLLO17_1_M134985003_60CM.xml",
+   "acquired": "2010-07-28T19:35:36Z",
+   "scale_m": 0.6,
+   "center": [
+    20.1917,
+    30.7689
+   ],
+   "width": 600,
+   "height": 600,
+   "lm_px": [
+    462,
+    331
+   ],
+   "file": "orbit-apollo17-lro.jpg"
+  }
+ ]
+}
