@@ -18,6 +18,25 @@ interface Ingenuity {
   flights: Flight[];
 }
 
+export interface TopicPhoto {
+  avif: string;
+  webp: string;
+  src: string;
+  width: number;
+  height: number;
+  sizes: string;
+  alt: string;
+  caption: string;
+  when: string;
+  nasaId: string;
+  credit: string;
+  page: string;
+}
+
+interface Props {
+  photos: { moon: TopicPhoto | null; voyager: TopicPhoto | null; flight: TopicPhoto | null };
+}
+
 const PRINT_FONTS = [
   { family: 'Gabarito Variable', source: `url(${sansFont})`, weight: '400 900' },
   { family: 'Spline Sans Mono Variable', source: `url(${monoFont})`, weight: '300 700' },
@@ -60,7 +79,7 @@ function useMoonShot(at: number): MoonShot | null {
   return state;
 }
 
-export default function Classroom() {
+export default function Classroom({ photos }: Props) {
   const [at, setAt] = useState(() => Date.now());
   useEffect(() => setAt(Date.now()), []);
   const deep = useJson<DeepSpaceData>('data/deep-space.json').data;
@@ -86,7 +105,9 @@ export default function Classroom() {
     <div className="cr">
       <Activity
         title="How far away is the Moon?"
-        line="Work out the distance to a mirror on the Moon from the time a laser pulse takes to come back."
+        photo={photos.moon}
+        first
+        preview={moon && <MoonSheet m={moon} printedAt={at} preview />}
         facts={
           moon
             ? [
@@ -102,14 +123,16 @@ export default function Classroom() {
       />
       <Activity
         title="How far away is Voyager 1?"
-        line="Turn the time light takes to cross from Voyager 1 to Earth into kilometers and astronomical units."
+        photo={photos.voyager}
+        preview={voyagerS !== null && <VoyagerSheet seconds={voyagerS} printedAt={at} preview />}
         facts={voyagerS !== null ? [['Light time', hmsText(voyagerS), true], ['At', atText(at), true]] : null}
         rows={['Light time', 'At']}
         onPrint={() => printNow(voyagerSheet.print)}
       />
       <Activity
         title="How fast did Ingenuity fly?"
-        line="Pick one of the helicopter’s flights on Mars and work out its average speed."
+        photo={photos.flight}
+        preview={flight && <FlightSheet f={flight} printedAt={at} preview />}
         facts={
           flight
             ? [
@@ -134,15 +157,37 @@ export default function Classroom() {
   );
 }
 
-function Activity({ title, line, facts, rows, onPrint, children }: { title: string; line: string; facts: [string, string, boolean][] | null; rows: string[]; onPrint: () => void; children?: ReactNode }) {
+function Activity({ title, photo, first, preview, facts, rows, onPrint, children }: { title: string; photo: TopicPhoto | null; first?: boolean; preview: ReactNode; facts: [string, string, boolean][] | null; rows: string[]; onPrint: () => void; children?: ReactNode }) {
   const id = useId();
   return (
     <section className="cr-activity" aria-labelledby={id}>
-      <div className="cr-head">
-        <h2 id={id}>{title}</h2>
-        <p>{line}</p>
-      </div>
+      {photo && (
+        <figure className="cr-photo">
+          <picture>
+            <source type="image/avif" srcSet={photo.avif} sizes={photo.sizes} />
+            <source type="image/webp" srcSet={photo.webp} sizes={photo.sizes} />
+            <img
+              src={photo.src}
+              width={photo.width}
+              height={photo.height}
+              alt={photo.alt}
+              loading={first ? 'eager' : 'lazy'}
+              fetchPriority={first ? 'high' : 'auto'}
+              decoding="async"
+            />
+          </picture>
+          <figcaption className="credit">
+            {photo.caption}
+            {photo.when ? `, ${photo.when}` : ''}.{' '}
+            <a href={photo.page} rel="external noopener">
+              {photo.nasaId}
+            </a>
+            , {photo.credit}
+          </figcaption>
+        </figure>
+      )}
       <div className="cr-body">
+        <h2 id={id}>{title}</h2>
         {children}
         <dl className="cr-facts">
           {(facts ?? rows.map((k): [string, string, boolean] => [k, 'Loading…', false])).map(([k, v, mono]) => (
@@ -152,9 +197,14 @@ function Activity({ title, line, facts, rows, onPrint, children }: { title: stri
             </div>
           ))}
         </dl>
-        <Button variant="quiet" onClick={onPrint} disabled={!facts}>
-          Print worksheet and answers
-        </Button>
+        <div className="cr-print">
+          <div className="cr-preview" aria-hidden="true" inert>
+            <div className="cr-paper">{preview || null}</div>
+          </div>
+          <Button variant="primary" onClick={onPrint} disabled={!facts}>
+            Print worksheet and answers
+          </Button>
+        </div>
       </div>
     </section>
   );

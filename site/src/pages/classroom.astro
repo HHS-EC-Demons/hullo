@@ -1,15 +1,44 @@
 ---
 import Base from '../layouts/Base.astro';
-import Classroom from '../components/Classroom';
+import Classroom, { type TopicPhoto } from '../components/Classroom';
+import PAGE_PHOTOS from '../data/page-images.json';
+import PHOTOS from '../data/photos.json';
+import { pic } from '../lib/photos';
+import { utcDate } from '../lib/client';
+
+const SIZES = '(max-width: 860px) 100vw, 520px';
+const WIDTHS = [480, 720, 1040, 1440];
+
+async function own(slug: 'class-moon' | 'class-voyager1'): Promise<TopicPhoto> {
+  const m = PAGE_PHOTOS[slug];
+  return { ...(await pic(slug, WIDTHS, SIZES)), alt: m.alt, caption: m.caption, when: m.when, nasaId: m.nasa_id, credit: m.credit, page: m.page };
+}
+
+async function borrowed(slug: string, caption: string, alt: string): Promise<TopicPhoto | null> {
+  const m = (PHOTOS as Record<string, { id: string; date: string | null; credit: string; page: string }>)[slug];
+  const p = m && (await pic(slug, WIDTHS, SIZES).catch(() => null));
+  if (!m || !p) return null;
+  return { ...p, alt, caption, when: m.date ? utcDate(Date.parse(`${m.date}T12:00:00Z`)) : '', nasaId: m.id, credit: m.credit, page: m.page };
+}
+
+const photos = {
+  moon: await own('class-moon'),
+  voyager: await own('class-voyager1'),
+  flight: await borrowed(
+    'mars-selfie',
+    'Perseverance’s selfie with Ingenuity',
+    'The Perseverance rover’s selfie on Mars, with the small Ingenuity helicopter standing on the ground behind the rover.',
+  ),
+};
 ---
 
 <Base title="Classroom" current="classroom" description="Three printable worksheets that use this site’s numbers at the moment of printing, each with an answer key.">
   <header class="wrap page-head">
     <h1>Classroom</h1>
-    <p>Three printable worksheets with this site’s numbers from the moment you print, each on one page with the answer key on a second.</p>
+    <p>Three printable worksheets with this site’s live numbers, each with an answer key.</p>
   </header>
 
   <div class="wrap">
-    <Classroom client:load />
+    <Classroom client:load photos={photos} />
   </div>
 </Base>
