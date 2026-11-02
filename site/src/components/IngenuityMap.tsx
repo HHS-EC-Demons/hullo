@@ -1,11 +1,10 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import type { GeoJSONSource, LngLatBoundsLike, Map as MapLibreMap, StyleSpecification } from 'maplibre-gl';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { stamp } from '../lib/passport';
 import { asset } from '../lib/paths';
-import { useJson, utcDate } from '../lib/client';
+import { useJson, useReducedMotion, utcDate } from '../lib/client';
 import type { Pic } from '../lib/photos';
 import './ingenuity.css';
 
@@ -75,27 +74,65 @@ let protocolReady = false;
 
 export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
   const { data, error } = useJson<Ingenuity>('data/ingenuity.json');
-  const reduced = useReducedMotion() ?? false;
+  const reduced = useReducedMotion();
   const uid = useId();
   const [n, setN] = useState(1);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
+  const [near, setNear] = useState(false);
   const box = useRef<HTMLDivElement>(null);
+  const control = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   const first = useRef(true);
 
   useEffect(() => {
-    if (!data || !box.current || map.current) return;
+    const el = box.current;
+    if (!el || near) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [near]);
+
+  useEffect(() => {
+    const thumb = control.current?.querySelector('[role="slider"]');
+    if (!thumb) return;
+    thumb.setAttribute('aria-label', 'Flight');
+    if (data) thumb.setAttribute('aria-valuetext', `Flight ${n}, ${utcDate(Date.parse(`${data.flights[n - 1].date}T12:00:00Z`))}`);
+  }, [data, n]);
+
+  useEffect(() => {
+    if (!data || !near || !box.current || map.current) return;
     let live = true;
     let instance: MapLibreMap | null = null;
     (async () => {
-      const [lib, worker, deep] = await Promise.all([
+      const [lib, worker, deep, sheet] = await Promise.all([
         import('maplibre-gl'),
         import('maplibre-gl/dist/maplibre-gl-worker.mjs?url'),
         fetch(asset('tiles/jezero/deep.json')).then((r) => (r.ok ? r.json() : {})) as Promise<Record<string, string[]>>,
-        import('maplibre-gl/dist/maplibre-gl.css'),
+        import('maplibre-gl/dist/maplibre-gl.css?url'),
       ]);
       if (!live || !box.current) return;
+      if (!document.querySelector('link[data-maplibre]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = sheet.default;
+        link.dataset.maplibre = '';
+        const loaded = new Promise<void>((done) => {
+          link.onload = () => done();
+          link.onerror = () => done();
+        });
+        document.head.append(link);
+        await loaded;
+        if (!live || !box.current) return;
+      }
       const maplibregl = lib;
       maplibregl.setWorkerUrl(new URL(worker.default, location.href).href);
       const have = new Set(Object.entries(deep).flatMap(([z, tiles]) => tiles.map((t) => `${z}/${t}`)));
@@ -177,7 +214,7 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
       map.current = null;
       setMapReady(false);
     };
-  }, [data]);
+  }, [data, near]);
 
   useEffect(() => {
     const m = map.current;
@@ -258,19 +295,17 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
         </dl>
       </div>
 
-      <div className="ig-control">
-        <label id={`${uid}-label`} className="ig-control-label">
+      <div className="ig-control" ref={control}>
+        <span id={`${uid}-label`} className="ig-control-label" aria-hidden="true">
           Flight
-        </label>
+        </span>
         <Slider
-          aria-labelledby={`${uid}-label`}
           min={1}
           max={count}
           step={1}
           value={[n]}
           disabled={!data}
           onValueChange={([v]) => pick(v)}
-          aria-valuetext={flight ? `Flight ${flight.n}, ${utcDate(Date.parse(`${flight.date}T12:00:00Z`))}` : undefined}
         />
         <div className="ig-steps">
           <Button type="button" variant="quiet" onClick={() => pick(n - 1)} disabled={!data || n <= 1}>
@@ -289,37 +324,20 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
         </div>
         <aside className="ig-photo" aria-label="Photos from Ingenuity’s own cameras">
           <div className="ig-frame" style={{ aspectRatio: shot ? `${shot.pic.width} / ${shot.pic.height}` : '4 / 3' }}>
-            <AnimatePresence initial={false} mode="popLayout">
-              {shot ? (
-                <motion.picture
-                  key={shot.n}
-                  initial={reduced ? false : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={reduced ? { opacity: 1 } : { opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <source type="image/avif" srcSet={shot.pic.avif} sizes={shot.pic.sizes} />
-                  <source type="image/webp" srcSet={shot.pic.webp} sizes={shot.pic.sizes} />
-                  <img src={shot.pic.src} width={shot.pic.width} height={shot.pic.height} alt={shot.alt} loading="lazy" decoding="async" />
-                </motion.picture>
-              ) : (
-                <motion.p
-                  key="none"
-                  className="ig-nophoto"
-                  initial={reduced ? false : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={reduced ? { opacity: 1 } : { opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  No photo from flight {n} here. Pick a flight below to see what Ingenuity’s cameras saw.
-                </motion.p>
-              )}
-            </AnimatePresence>
+            {shot ? (
+              <picture key={shot.n}>
+                <source type="image/avif" srcSet={shot.pic.avif} sizes={shot.pic.sizes} />
+                <source type="image/webp" srcSet={shot.pic.webp} sizes={shot.pic.sizes} />
+                <img src={shot.pic.src} width={shot.pic.width} height={shot.pic.height} alt={shot.alt} loading="lazy" decoding="async" />
+              </picture>
+            ) : (
+              <p className="ig-nophoto">No photo from flight {n} here. Pick a flight below to see what Ingenuity’s cameras saw.</p>
+            )}
           </div>
           <p className="credit ig-caption">{shot ? shot.caption : blank}</p>
           <div className="ig-picks" role="group" aria-label="Flights with a photo">
             {photos.map((p) => (
-              <Button key={p.n} type="button" size="sm" variant={p.n === n ? 'line' : 'ghost'} aria-pressed={p.n === n} onClick={() => pick(p.n)} className="mono">
+              <Button key={p.n} type="button" size="sm" variant={p.n === n ? 'line' : 'ghost'} aria-pressed={p.n === n} aria-label={`Flight ${p.n}`} onClick={() => pick(p.n)} className="mono">
                 {p.n}
               </Button>
             ))}
