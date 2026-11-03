@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { groupInt, useJson, utcDate } from '../lib/client';
+import { useJson, utcDate } from '../lib/client';
 import { decText, hammer, offsetFromCenter, positionsOn, raText, skyDay, type SkyIndex, type SkyMonth, type SkyStars } from '../lib/sky';
 import { probeInfo } from '../data/probes';
 import './sky.css';
@@ -62,7 +62,7 @@ export default function SkyChart({ highlight, now }: Props) {
   const { data: table } = useJson<SkyMonth>(month ? `data/sky/${month}.json` : null);
   const day = table && want ? (table.month === want.month ? want.day : want.month < table.month ? 0 : table.days.length - 1) : 0;
   const shownMs = table ? Date.parse(`${table.first_day}T00:00:00Z`) + day * 86400000 : null;
-  const bodies = index?.bodies ?? [];
+  const bodies = (index?.bodies ?? []).filter((b) => b.kind !== 'world');
   const positions = table && index && table.month === month ? positionsOn(table, bodies, day) : [];
 
   const w = Math.max(width, 300);
@@ -182,10 +182,7 @@ export default function SkyChart({ highlight, now }: Props) {
     <figure className="sky">
       <figcaption className="sky-cap">
         <h2 className="sky-title">The probes in our sky</h2>
-        <p className="sky-sub">
-          Seen from Earth on <span className="mono">{shownMs ? `${utcDate(shownMs)}, 00:00 UTC` : ' '}</span>, among the{' '}
-          {index ? groupInt(index.star_count) : '2,847'} stars brighter than magnitude {sky?.mag_limit ?? 5.5}.
-        </p>
+        <p className="sky-sub mono">{shownMs ? `${utcDate(shownMs)}, 00:00 UTC` : '\u2007'}</p>
       </figcaption>
       <div className="sky-plot" ref={box}>
         {width > 0 && layers && (
@@ -248,35 +245,6 @@ export default function SkyChart({ highlight, now }: Props) {
         )}
         {error && <p className="note">The star chart did not load. Reload the page to try again.</p>}
       </div>
-      <ul className="sky-key">
-        {positions.length === 0 &&
-          Array.from({ length: bodies.length || 8 }, (_, i) => (
-            <li key={i} aria-hidden="true">
-              <span className="sky-key-name">{'\u2007'}</span>
-              <span className="sky-key-where">{'\u2007'}</span>
-              <span className="mono sky-key-pos">{'\u2007'}</span>
-            </li>
-          ))}
-        {positions.map((p) => {
-          const b = bodies.find((x) => x.key === p.key)!;
-          const on = p.key === highlight;
-          return (
-            <li key={p.key} className={on ? 'on' : undefined}>
-              <span className="sky-key-name">
-                {narrow && b.short !== b.name && <span className="mono sky-key-short">{b.short}</span>}
-                {b.name}
-              </span>
-              <span className="sky-key-where">
-                {b.kind === 'world' && b.holds ? `With ${b.holds}, in ` : 'In '}
-                {index?.constellations[p.con] ?? p.con}
-              </span>
-              <span className="mono sky-key-pos">
-                <span>RA {raText(p.ra)}</span> <span>Dec {decText(p.dec)}</span>
-              </span>
-            </li>
-          );
-        })}
-      </ul>
     </figure>
   );
 }

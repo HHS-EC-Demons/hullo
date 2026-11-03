@@ -3,55 +3,46 @@ import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
 import SoundClip from '../components/SoundClip';
 import sounds from '../data/sounds.json';
-import { readData } from '../lib/build-data';
-import { href } from '../lib/paths';
-import { getImage, Picture } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-import probePhotos from '../data/probe-photos.json';
+import { pic } from '../lib/photos';
+import homeImages from '../data/home-images.json';
 import type { ProbePhoto } from '../components/ProbeSignal';
 
-const deep = readData<{ probes: { voyager1: { light_day_utc: string } } }>('deep-space.json');
-const crossing = deep.probes.voyager1.light_day_utc.slice(11, 23);
-const gapMs = Date.parse('2026-11-18T10:16:07Z') - Date.parse(deep.probes.voyager1.light_day_utc);
-const images = readData<{ slug: string; nasa_id: string; credit: string; width: number; height: number }[]>('images.json');
-const photo = images.find((i) => i.slug === 'pale-blue-dot')!;
+interface HomeImage {
+  slug: string;
+  group: string;
+  probe: string | null;
+  id: string;
+  credit: string;
+  short: string;
+  alt: string;
+}
+
 const plasma = sounds.find((s) => s.id === 'voyager-plasma')!;
 
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/img/home-*.jpg', { eager: true });
-const probeFiles = Object.fromEntries(Object.entries(files).filter(([k]) => !k.includes('pale-blue-dot')));
-const widths = [360, 560, 800, 1100];
 const photos: Record<string, ProbePhoto> = {};
-for (const p of probePhotos) {
-  const img = probeFiles[`../assets/img/${p.slug}.jpg`]?.default;
-  if (!img) continue;
-  const avif = await getImage({ src: img, format: 'avif', widths });
-  const webp = await getImage({ src: img, format: 'webp', widths });
-  photos[p.probe] = {
-    avif: avif.srcSet.attribute,
-    webp: webp.srcSet.attribute,
-    src: webp.src,
-    width: img.width,
-    height: img.height,
-    alt: p.alt,
-    caption: p.caption,
-    id: p.nasa_id,
-    credit: p.credit,
-  };
+for (const m of Object.values(homeImages as Record<string, HomeImage>)) {
+  if (m.group !== 'deep' || !m.probe) continue;
+  const p = await pic(m.slug, [480, 720, 960, 1280, 1600, 2000, 2400], '');
+  photos[m.probe] = { ...p, alt: m.alt, caption: `${m.short}.`, id: m.id, credit: m.credit };
 }
 ---
 
 <Base title="Deep space" current="deep-space" preload={['data/deep-space.json']} description="Light time and message travel time to Voyager 1 and 2, New Horizons and Pioneer 10 and 11, from JPL Horizons.">
-  <header class="wrap page-head">
-    <h1>Deep space</h1>
-    <p>Send a message to one of 5 probes on their way out of the solar system.</p>
-  </header>
-
-  <section class="wrap" aria-label="Light time">
-    <ProbeSignal client:load picker="top" status sky chart photos={photos} />
+  <section class="wrap">
+    <ProbeSignal
+      client:load
+      picker="top"
+      status
+      sky
+      chart
+      photos={photos}
+      title="Deep space"
+      line="Message a probe leaving the solar system."
+    />
   </section>
 
   <section class="wrap section listen" aria-labelledby="listen-h">
-    <h2 id="listen-h">Interstellar plasma, recorded by Voyager 1</h2>
+    <h2 id="listen-h">Interstellar plasma</h2>
     <SoundClip
       client:visible
       src={plasma.file}
@@ -61,55 +52,16 @@ for (const p of probePhotos) {
       stampId="voyager1"
       stampDetail="Played the plasma wave recording from Oct 2012 to May 2013"
     >
-      Voyager 1’s plasma wave instrument picked up vibrations of dense interstellar plasma in Oct and Nov 2012 and in Apr and May
-      2013. The sound plays the frequency and strength of those waves. Full clip, 61 s. PIA17045, released 12 Sep 2013,
-      NASA/JPL-Caltech/University of Iowa.
+      Voyager 1, 2012 and 2013. <span data-credit>{plasma.page.split('/').pop()}, {plasma.credit}.</span>
     </SoundClip>
   </section>
 
-  <section class="wrap section">
-    <div class="facts">
-      <figure class="photo">
-        <Picture
-          src={files['../assets/img/home-pale-blue-dot.jpg'].default}
-          formats={['avif', 'webp']}
-          widths={[320, 520, 760]}
-          sizes="(max-width: 860px) 92vw, 30vw"
-          loading="lazy"
-          decoding="async"
-          alt="A tiny pale blue dot of light inside a faint band of sunlight against dark space."
-        />
-        <figcaption class="credit">
-          Earth, the speck in the sunbeam, photographed by Voyager 1 from about 6 billion km on 14 Feb 1990. {photo.nasa_id},
-          {photo.credit}.
-        </figcaption>
-      </figure>
-      <div class="facts-text">
-        <p class="fact">
-          <span class="fact-n mono">18 Nov 2026, 10:16:07 UTC</span>
-          <span>
-            NASA’s date for Voyager 1 reaching one light-day from Earth. The daily table on this site crosses 86,400 s of light
-            time at {crossing} UTC, {gapMs} ms before NASA’s time, so both land in the same second.
-          </span>
-        </p>
-        <p class="note">
-          Light time here is the straight-line distance from Earth’s center at this instant, divided by the speed of light. That is
-          the convention behind NASA’s one light-day date. Horizons observer tables print a few seconds less, because they give
-          the probe’s position when the light now arriving left the probe. A message takes a few seconds more, because the probe keeps
-          moving while the message travels. Pioneer positions are extrapolated from old tracking. <a href={href('sources/')}
-            >Sources</a
-          >
-        </p>
-      </div>
-    </div>
-  </section>
 </Base>
 
 <style>
   .listen {
     display: grid;
     gap: 24px;
-    padding-bottom: 0;
   }
   .listen h2 {
     font-size: var(--fs-xl);
@@ -118,47 +70,5 @@ for (const p of probePhotos) {
     line-height: 1;
     max-width: 16ch;
     text-wrap: balance;
-  }
-  .facts {
-    display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-    gap: 32px 64px;
-    align-items: start;
-    padding-top: 28px;
-    border-top: 1px solid var(--rule);
-  }
-  .photo {
-    display: grid;
-    gap: 10px;
-  }
-  .photo :global(img) {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    background: var(--raised);
-    border-radius: 2px;
-  }
-  .facts-text {
-    display: grid;
-    gap: 28px;
-    align-content: start;
-  }
-  .fact {
-    display: grid;
-    gap: 10px;
-    max-width: 36rem;
-  }
-  .fact-n {
-    font-size: var(--fs-lg);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  @media (max-width: 860px) {
-    .facts {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .photo {
-      max-width: 26rem;
-    }
   }
 </style>
