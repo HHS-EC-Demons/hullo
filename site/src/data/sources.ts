@@ -182,7 +182,7 @@ export const FACTS: Source[] = [
     url: 'https://www.nasa.gov/missions/insight/nasa-retires-insight-mars-lander-mission-after-years-of-science/',
     dated: '21 Dec 2022',
     license: NASA_MEDIA,
-    used: 'InSight detected 1,319 marsquakes and stopped answering.',
+    used: 'InSight detected 1,319 marsquakes. Its last contact with Earth was on 15 Dec 2022.',
   },
   {
     id: 'nasa-opportunity-end',
