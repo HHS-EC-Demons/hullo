@@ -12,7 +12,12 @@ image was released ("released"). The Voyager 2 date comes from the item's
 "4 days and 20 hours before closest approach" and NSSDCA's flyby date of
 25 Aug 1989. The Pioneer 10 frame is cropped to remove the grey scan border.
 Pioneer 11 has no frame from its own camera in the library, so its slot is
-a photo of the spacecraft before launch.
+a photo of the spacecraft before launch. The eyes-* photos show each probe
+before launch on the poster of the Eyes on the Solar System view (Pioneer 11
+uses the Silent page's launch photo), and dsn-eyes-goldstone is the poster of
+the Eyes on the Deep Space Network view. The New Horizons poster is cropped
+to leave out a worker's suit patch and the Pioneer 10 poster to drop the grey
+scan border.
 
 Run with .venv/bin/python images_home.py.
 """
@@ -107,6 +112,48 @@ ITEMS = [
         "short": "Apollo 14, 2009",
         "caption": "The Apollo 14 site and Cone crater, seen by the Lunar Reconnaissance Orbiter",
         "alt": "Grey cratered lunar ground from straight above, with the bright rim of Cone crater at top right and the astronauts’ faint trail at bottom left.",
+    },
+    {
+        "slug": "eyes-voyager1", "group": "eyes", "probe": "voyager1", "id": "PIA21740",
+        "credit": "NASA/JPL-Caltech", "date": "1977", "when": "1977", "kind": "taken",
+        "focus": "62% 45%",
+        "short": "Voyager 1 before launch, 1977",
+        "caption": "Engineers fit the cover over Voyager 1’s Golden Record",
+        "alt": "Two engineers in white clean room suits fix a round cover onto the side of Voyager 1, a dark ten sided spacecraft body under its dish.",
+    },
+    {
+        "slug": "eyes-voyager2", "group": "eyes", "probe": "voyager2", "id": "PIA21736",
+        "credit": "NASA/JPL-Caltech", "date": "1977-03-23", "when": "23 Mar 1977", "kind": "taken",
+        "focus": "60% 45%",
+        "short": "Voyager 2 before launch, 1977",
+        "caption": "Engineers work on Voyager 2 under its white dish antenna",
+        "alt": "Voyager 2 on a test stand under its large white dish antenna, with engineers on a platform beside the probe.",
+    },
+    {
+        "slug": "eyes-newhorizons", "group": "eyes", "probe": "newhorizons", "id": "KSC-05pd2460",
+        "credit": "NASA", "date": "2005-11-07", "when": "7 Nov 2005", "kind": "taken",
+        "crop": (0.0, 0.0, 0.74, 1.0),
+        "focus": "45% 55%",
+        "short": "New Horizons before launch, 2005",
+        "caption": "New Horizons in a clean room at Kennedy Space Center",
+        "alt": "New Horizons, a gold foil wrapped spacecraft with a gold dish on top, on a stand in a white clean room with a worker beside it.",
+    },
+    {
+        "slug": "eyes-pioneer10", "group": "eyes", "probe": "pioneer10", "id": "ARC-1972-AC72-2135",
+        "credit": "NASA", "date": "1972-02-26", "when": "26 Feb 1972", "kind": "taken",
+        "crop": (0.175, 0.0, 0.825, 1.0),
+        "focus": "50% 45%",
+        "short": "Pioneer 10 before launch, 1972",
+        "caption": "Pioneer 10 at Cape Kennedy before launch",
+        "alt": "Pioneer 10, a silver and gold foil spacecraft under a wide round dish, on a stand in a clean room.",
+    },
+    {
+        "slug": "dsn-eyes-goldstone", "group": "dsn-eyes", "site": "Goldstone", "id": "PIA26718",
+        "credit": "NASA/JPL-Caltech", "date": "2025-09", "when": "Sep 2025", "kind": "taken",
+        "focus": "50% 70%",
+        "short": "Goldstone, 2025",
+        "caption": "Goldstone’s 34 m antenna DSS 15 under the Milky Way",
+        "alt": "A white dish antenna on a steel tower pointing up at a night sky full of stars, with the band of the Milky Way rising above it.",
     },
 ]
 
