@@ -195,7 +195,7 @@ function Plot({ width, height, month, station, reflector, minEl, now, label }: P
           </div>
         </TooltipWithBounds>
       )}
-      <p id={liveId} className="sr-only" aria-live="polite">
+      <p id={liveId} className="sr-only" aria-live="polite" data-chart-text="">
         {live}
       </p>
     </div>
