@@ -39,28 +39,7 @@
   text-wrap: balance;
 }
 .cr-print {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  gap: 20px 28px;
   padding-bottom: 4px;
-}
-.cr-preview {
-  flex: none;
-  width: 140px;
-  height: 198px;
-  overflow: hidden;
-  border-radius: 3px;
-  background: #fff;
-}
-.cr-paper {
-  width: 210mm;
-  min-height: 297mm;
-  padding: 16mm 16mm 14mm;
-  background: #fff;
-  transform: scale(0.1764);
-  transform-origin: 0 0;
-  pointer-events: none;
 }
 .cr-facts {
   display: grid;
@@ -95,12 +74,7 @@
 }
 
 .cr-sheets {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  display: none;
 }
 .cr-sheets .ws {
   width: 178mm;
@@ -140,12 +114,7 @@
     border: 0;
   }
   .cr-sheets {
-    position: static;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    clip-path: none;
-    white-space: normal;
+    display: block;
   }
   .cr-sheets .ws {
     width: 100%;

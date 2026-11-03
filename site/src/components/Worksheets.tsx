@@ -44,7 +44,7 @@ export function atText(ms: number): string {
   return `${utcTime(ms)} on ${utcDate(ms)}`;
 }
 
-function Sheet({ title, printedAt, intro, numbers, questions, answers, source, preview }: { title: string; printedAt: number; intro: string; numbers: string[]; questions: string[]; answers: ReactNode[]; source: string; preview?: boolean }) {
+function Sheet({ title, printedAt, intro, numbers, questions, answers, source }: { title: string; printedAt: number; intro: string; numbers: string[]; questions: string[]; answers: ReactNode[]; source: string }) {
   return (
     <>
       <article className="ws-page">
@@ -73,7 +73,6 @@ function Sheet({ title, printedAt, intro, numbers, questions, answers, source, p
         </ol>
         <footer className="ws-foot">{source}</footer>
       </article>
-      {!preview && (
       <article className="ws-page ws-key">
         <header className="ws-head">
           <p className="ws-mark" translate="no">
@@ -89,12 +88,11 @@ function Sheet({ title, printedAt, intro, numbers, questions, answers, source, p
         </ol>
         <footer className="ws-foot">{source}</footer>
       </article>
-      )}
     </>
   );
 }
 
-export const MoonSheet = forwardRef<HTMLDivElement, { m: MoonShot; printedAt: number; preview?: boolean }>(function MoonSheet({ m, printedAt, preview }, ref) {
+export const MoonSheet = forwardRef<HTMLDivElement, { m: MoonShot; printedAt: number }>(function MoonSheet({ m, printedAt }, ref) {
   const t = m.shot.round_trip_s;
   const oneWay = t / 2;
   const km = oneWay * C_KM_S;
@@ -102,7 +100,6 @@ export const MoonSheet = forwardRef<HTMLDivElement, { m: MoonShot; printedAt: nu
   return (
     <div ref={ref} className="ws">
       <Sheet
-        preview={preview}
         title="How far away is the Moon?"
         printedAt={printedAt}
         intro={`At ${atText(m.shot.ms)}, the ${m.stationName} Observatory in New Mexico fires a laser pulse at the mirror that the ${m.reflectorName} crew left on the Moon. The light bounces off the mirror and comes back to the telescope.`}
@@ -137,7 +134,7 @@ export const MoonSheet = forwardRef<HTMLDivElement, { m: MoonShot; printedAt: nu
   );
 });
 
-export const VoyagerSheet = forwardRef<HTMLDivElement, { seconds: number; printedAt: number; preview?: boolean }>(function VoyagerSheet({ seconds, printedAt, preview }, ref) {
+export const VoyagerSheet = forwardRef<HTMLDivElement, { seconds: number; printedAt: number }>(function VoyagerSheet({ seconds, printedAt }, ref) {
   const { h, m, s } = splitHms(seconds);
   const whole = h * 3600 + m * 60 + s;
   const km = whole * C_KM_S;
@@ -146,7 +143,6 @@ export const VoyagerSheet = forwardRef<HTMLDivElement, { seconds: number; printe
   return (
     <div ref={ref} className="ws">
       <Sheet
-        preview={preview}
         title="How far away is Voyager 1?"
         printedAt={printedAt}
         intro={`Voyager 1 was launched in 1977 and still sends radio signals home. At ${atText(printedAt)}, its signal takes ${h} h ${m} min ${s} s to reach Earth.`}
@@ -181,7 +177,7 @@ export const VoyagerSheet = forwardRef<HTMLDivElement, { seconds: number; printe
   );
 });
 
-export const FlightSheet = forwardRef<HTMLDivElement, { f: Flight; printedAt: number; preview?: boolean }>(function FlightSheet({ f, printedAt, preview }, ref) {
+export const FlightSheet = forwardRef<HTMLDivElement, { f: Flight; printedAt: number }>(function FlightSheet({ f, printedAt }, ref) {
   const d = f.dist_m as number;
   const t = f.duration_s as number;
   const v = d / t;
@@ -191,7 +187,6 @@ export const FlightSheet = forwardRef<HTMLDivElement, { f: Flight; printedAt: nu
   return (
     <div ref={ref} className="ws">
       <Sheet
-        preview={preview}
         title="How fast did Ingenuity fly?"
         printedAt={printedAt}
         intro={`Ingenuity was the first helicopter to fly on another planet. On ${date}, sol ${f.sol} of the mission, Ingenuity made flight ${f.n} over Jezero crater on Mars.`}

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { hmsText, lightTimeAt, type DeepSpaceData } from '../lib/lighttime';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth } from '../lib/ranging';
-import { FlightSheet, MoonSheet, VoyagerSheet, dayFmt, int, one, six, atText, type Flight, type MoonShot } from './Worksheets';
+import { FlightSheet, MoonSheet, VoyagerSheet, int, one, six, type Flight, type MoonShot } from './Worksheets';
 import { loadJson, useJson } from '../lib/client';
 import sansFont from '@fontsource-variable/gabarito/files/gabarito-latin-wght-normal.woff2?url';
 import monoFont from '@fontsource-variable/spline-sans-mono/files/spline-sans-mono-latin-wght-normal.woff2?url';
@@ -104,45 +104,32 @@ export default function Classroom({ photos }: Props) {
   return (
     <div className="cr">
       <Activity
-        title="How far away is the Moon?"
+        title="Moon distance"
         photo={photos.moon}
         first
-        preview={moon && <MoonSheet m={moon} printedAt={at} preview />}
-        facts={
-          moon
-            ? [
-                ['Laser shot', atText(moon.shot.ms), true],
-                ['From', `${moon.stationName}, New Mexico`, false],
-                ['Aimed at', `The ${moon.reflectorName} reflector`, false],
-                ['Round trip', `${six.format(moon.shot.round_trip_s)} s`, true],
-              ]
-            : null
-        }
-        rows={['Laser shot', 'From', 'Aimed at', 'Round trip']}
+        facts={moon ? [['Round trip', `${six.format(moon.shot.round_trip_s)} s`]] : null}
+        rows={['Round trip']}
         onPrint={() => printNow(moonSheet.print)}
       />
       <Activity
-        title="How far away is Voyager 1?"
+        title="Voyager 1 distance"
         photo={photos.voyager}
-        preview={voyagerS !== null && <VoyagerSheet seconds={voyagerS} printedAt={at} preview />}
-        facts={voyagerS !== null ? [['Light time', hmsText(voyagerS), true], ['At', atText(at), true]] : null}
-        rows={['Light time', 'At']}
+        facts={voyagerS !== null ? [['Light time', hmsText(voyagerS)]] : null}
+        rows={['Light time']}
         onPrint={() => printNow(voyagerSheet.print)}
       />
       <Activity
-        title="How fast did Ingenuity fly?"
+        title="Ingenuity speed"
         photo={photos.flight}
-        preview={flight && <FlightSheet f={flight} printedAt={at} preview />}
         facts={
           flight
             ? [
-                ['Flown on', dayFmt.format(Date.parse(`${flight.date}T12:00:00Z`)), true],
-                ['Distance', `${int.format(flight.dist_m as number)} m`, true],
-                ['Time in the air', `${one.format(flight.duration_s as number)} s`, true],
+                ['Distance', `${int.format(flight.dist_m as number)} m`],
+                ['Time', `${one.format(flight.duration_s as number)} s`],
               ]
             : null
         }
-        rows={['Flown on', 'Distance', 'Time in the air']}
+        rows={['Distance', 'Time']}
         onPrint={() => printNow(flightSheet.print)}
       >
         <FlightPicker flights={flights} value={flight?.n ?? flightN} onChange={setFlightN} />
@@ -157,7 +144,11 @@ export default function Classroom({ photos }: Props) {
   );
 }
 
-function Activity({ title, photo, first, preview, facts, rows, onPrint, children }: { title: string; photo: TopicPhoto | null; first?: boolean; preview: ReactNode; facts: [string, string, boolean][] | null; rows: string[]; onPrint: () => void; children?: ReactNode }) {
+function year(when: string): string {
+  return when.match(/\d{4}/)?.[0] ?? '';
+}
+
+function Activity({ title, photo, first, facts, rows, onPrint, children }: { title: string; photo: TopicPhoto | null; first?: boolean; facts: [string, string][] | null; rows: string[]; onPrint: () => void; children?: ReactNode }) {
   const id = useId();
   return (
     <section className="cr-activity" aria-labelledby={id}>
@@ -170,19 +161,20 @@ function Activity({ title, photo, first, preview, facts, rows, onPrint, children
               src={photo.src}
               width={photo.width}
               height={photo.height}
-              alt={photo.alt}
+              alt={`${photo.caption}, ${photo.when}.`}
               loading={first ? 'eager' : 'lazy'}
               fetchPriority={first ? 'high' : 'auto'}
               decoding="async"
             />
           </picture>
           <figcaption className="credit">
-            {photo.caption}
-            {photo.when ? `, ${photo.when}` : ''}.{' '}
-            <a href={photo.page} rel="external noopener">
-              {photo.nasaId}
-            </a>
-            , {photo.credit}
+            <span className="mono">{year(photo.when)}</span>{' '}
+            <span data-credit>
+              <a href={photo.page} rel="external noopener">
+                {photo.nasaId}
+              </a>
+              , {photo.credit}
+            </span>
           </figcaption>
         </figure>
       )}
@@ -190,19 +182,16 @@ function Activity({ title, photo, first, preview, facts, rows, onPrint, children
         <h2 id={id}>{title}</h2>
         {children}
         <dl className="cr-facts">
-          {(facts ?? rows.map((k): [string, string, boolean] => [k, 'Loading…', false])).map(([k, v, mono]) => (
+          {(facts ?? rows.map((k): [string, string] => [k, '…'])).map(([k, v]) => (
             <div key={k}>
               <dt>{k}</dt>
-              <dd className={mono ? 'mono' : undefined}>{v}</dd>
+              <dd className="mono">{v}</dd>
             </div>
           ))}
         </dl>
         <div className="cr-print">
-          <div className="cr-preview" aria-hidden="true" inert>
-            <div className="cr-paper">{preview || null}</div>
-          </div>
           <Button variant="primary" onClick={onPrint} disabled={!facts}>
-            Print worksheet and answers
+            Print sheet
           </Button>
         </div>
       </div>
