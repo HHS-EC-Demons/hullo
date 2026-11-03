@@ -218,12 +218,6 @@
 .ld-note {
   color: var(--muted);
   font-size: var(--fs-sm);
-  max-width: 40rem;
-  text-wrap: pretty;
-}
-
-.ld-note .mono {
-  color: var(--text);
 }
 
 .fl-list {
@@ -511,11 +505,6 @@
 .ltc-title {
   font-weight: 700;
   font-size: var(--fs-md);
-}
-
-.ltc-sub {
-  color: var(--muted);
-  font-size: var(--fs-sm);
 }
 
 .ltc-plot {
