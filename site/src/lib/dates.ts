@@ -4,13 +4,13 @@
  * ICU and costs hundreds of milliseconds on a slow phone.
  *
  * A calendar date reads "19 Apr 2021". A clock time shown to the visitor is
- * their own local time, "7:15 PM Tue 3 Nov (your time)". UTC appears only as
- * small secondary text where the science needs it, "10:16:07 UTC".
+ * their own local time, "7:15 PM Tue 3 Nov". UTC appears only where the
+ * science needs it, "10:16:07 UTC".
  */
 
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 export const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-export const YOUR_TIME = '(your time)';
+export const YOUR_TIME = '';
 
 type When = string | number | Date;
 
@@ -60,10 +60,9 @@ export function localDay(ms: number, now: number = Date.now(), weekday = true): 
   return `${weekday ? `${DAYS[t.getDay()]} ` : ''}${t.getDate()} ${MONTHS[t.getMonth()]}${year}`;
 }
 
-/** "7:15 PM Tue 3 Nov (your time)", or "7:15 PM 3 Nov (your time)" with `weekday: false`. */
+/** "7:15 PM Tue 3 Nov" in the visitor's local time, or "7:15 PM 3 Nov" with `weekday: false`. `label` is ignored. */
 export function localStamp(ms: number, opts: { seconds?: boolean; now?: number; label?: boolean; weekday?: boolean } = {}): string {
-  const text = `${clock(ms, opts.seconds)} ${localDay(ms, opts.now, opts.weekday !== false)}`;
-  return opts.label === false ? text : `${text} ${YOUR_TIME}`;
+  return `${clock(ms, opts.seconds)} ${localDay(ms, opts.now, opts.weekday !== false)}`;
 }
 
 /** "10:16:07 UTC". */

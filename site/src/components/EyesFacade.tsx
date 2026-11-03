@@ -20,20 +20,23 @@ interface Props {
   src: string;
   title: string;
   label: string;
-  app: string;
   sizes: string;
   className?: string;
 }
 
-export default function EyesFacade({ poster, src, title, label, app, sizes, className }: Props) {
+export default function EyesFacade({ poster, src, title, label, sizes, className }: Props) {
   const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const frame = useRef<HTMLIFrameElement>(null);
 
   return (
     <figure className={`eyes${className ? ` ${className}` : ''}`}>
-      <div className="eyes-stage">
+      <div className={`eyes-stage ph${loaded ? ' ph-done' : ''}`}>
         {open ? (
-          <iframe ref={frame} src={src} title={title} allow="fullscreen" allowFullScreen onLoad={() => frame.current?.focus()} />
+          <iframe ref={frame} src={src} title={title} allow="fullscreen" allowFullScreen onLoad={() => {
+              setLoaded(true);
+              frame.current?.focus();
+            }} />
         ) : (
           <>
             <picture>
@@ -55,20 +58,6 @@ export default function EyesFacade({ poster, src, title, label, app, sizes, clas
           </>
         )}
       </div>
-      <figcaption className="credit">
-        {open ? (
-          <span data-credit="">
-            <a href={src} rel="noopener" target="_blank">
-              {app}
-            </a>
-            , NASA/JPL-Caltech.
-          </span>
-        ) : (
-          <>
-            {poster.caption}. <span data-credit="">{poster.id}, {poster.credit}.</span>
-          </>
-        )}
-      </figcaption>
     </figure>
   );
 }

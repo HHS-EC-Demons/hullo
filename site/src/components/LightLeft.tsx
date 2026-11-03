@@ -40,7 +40,7 @@ export default function LightLeft({ data, probe, name }: Props) {
 
   return (
     <p ref={root} className="ps-left">
-      <span>Light reaching Earth now left {name} at</span>
+      <span>Light left at</span>
       <span ref={at} className="ps-left-at mono">
         {' '}
       </span>

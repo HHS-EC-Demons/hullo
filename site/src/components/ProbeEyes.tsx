@@ -15,8 +15,7 @@ export default function ProbeEyes({ posters }: { posters: Record<string, Poster>
       poster={poster}
       src={`https://eyes.nasa.gov/apps/solar-system/#/${info.eyes}?${EYES_PARAMS}`}
       title={`NASA Eyes on the Solar System, 3D view of ${info.name}`}
-      label={`Open ${info.name} in 3D`}
-      app="Eyes on the Solar System"
+      label="Open in 3D"
       sizes={SIZES}
     />
   );
