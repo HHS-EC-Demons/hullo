@@ -92,8 +92,10 @@
 }
 
 .ig-mapwrap {
+  position: relative;
   display: grid;
   gap: 10px;
+  align-content: start;
 }
 
 .ig-map {
@@ -131,7 +133,6 @@
 .ig-frame {
   position: relative;
   display: grid;
-  background: var(--raised);
   border-radius: 2px;
   overflow: hidden;
 }

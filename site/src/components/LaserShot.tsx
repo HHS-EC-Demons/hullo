@@ -3,6 +3,7 @@ import type { AnimationPlaybackControls } from 'motion';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import ChartFrame from '@/components/ui/chart-frame';
+import { Skeleton } from '@/components/ui/skeleton';
 import { loadJson, km, useJson, useNow, useReducedMotion } from '../lib/client';
 import { clock, localStamp } from '../lib/dates';
 import { stamp } from '../lib/passport';
@@ -40,23 +41,6 @@ function useMonths(keys: string[]): Record<string, MoonMonth> {
     };
   }, [wanted]);
   return months;
-}
-
-function useNear(ref: React.RefObject<HTMLElement | null>): boolean {
-  const [near, setNear] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || near) return;
-    const io = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting)) {
-        setNear(true);
-        io.disconnect();
-      }
-    }, { rootMargin: '200px 0px' });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [near]);
-  return near;
 }
 
 let motion: Promise<typeof import('motion')> | null = null;
@@ -111,8 +95,6 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
   const pulse = useRef<HTMLSpanElement>(null);
   const line = useRef<HTMLSpanElement>(null);
   const flight = useRef<AnimationPlaybackControls[]>([]);
-  const chartBox = useRef<HTMLDivElement>(null);
-  const near = useNear(chartBox);
 
   const current = now ? monthKey(now) : null;
   const wanted = current && index ? [current, nextMonthKey(current)].filter((k) => index.months.includes(k)) : [];
@@ -242,7 +224,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
             </Button>
             <div className="ls-readout" aria-live="polite">
               <p className={`ls-big mono${flying ? ' ls-dim' : ''}`}>
-                {shown ? shown.round_trip_s.toFixed(3) : ' .   '}
+                {shown ? shown.round_trip_s.toFixed(3) : <Skeleton className="inline-block h-[0.78em] w-[5ch] align-baseline" />}
                 <span className="u">s</span>
               </p>
               <p className="ls-what">{what}</p>
@@ -267,17 +249,19 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
         {photo}
       </div>
       <section className="wrap ls-chartsec" aria-label={chartTitle}>
-        <div ref={chartBox}>
+        <div>
           <ChartFrame className="h-[300px] md:h-[360px]">
-            {near && loaded && current && now && (
+            {loaded && current && now ? (
               <MoonRangeChart
                 month={months[current]}
                 station={station}
                 reflector={reflector}
                 minEl={minEl}
-                now={now}
+                now={Math.floor(now / 60000) * 60000}
                 label={`Range from ${stationName} to the ${mirrorName} mirror, hour by hour this month, with now marked`}
               />
+            ) : (
+              <Skeleton className="absolute inset-0" />
             )}
           </ChartFrame>
         </div>
