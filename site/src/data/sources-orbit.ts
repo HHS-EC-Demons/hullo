@@ -85,6 +85,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Added 12 Sep 2013, recorded Oct to Nov 2012 and Apr to May 2013',
     license: `${NASA_MEDIA} Credit NASA/JPL-Caltech/University of Iowa.`,
     used: 'The 61 s sound track of Voyager 1’s plasma wave instrument, mixed to mono at 48 kbps, and its waveform.',
+    note: 'Voyager 1’s plasma wave instrument picked up vibrations in dense interstellar plasma. The sound plays back the frequency and strength of those waves.',
   },
   {
     id: 'lroc-pds',
