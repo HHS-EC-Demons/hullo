@@ -77,9 +77,6 @@ function sized(el: HTMLElement): Promise<void> {
 
 export interface RotorClip extends SoundClipProps {
   title: string;
-  what: string;
-  date: string;
-  credit: string;
 }
 
 export default function IngenuityMap({
@@ -107,7 +104,6 @@ export default function IngenuityMap({
   const [near, setNear] = useState(false);
   const [chartNear, setChartNear] = useState(false);
   const picksId = useId();
-  const chartId = useId();
   const chartBox = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
@@ -354,17 +350,12 @@ export default function IngenuityMap({
           {photo}
           <div className="ig-sound">
             <h2 className="ig-h2">{rotor.title}</h2>
-            <SoundClip {...rotor}>
-              {rotor.what}, <span className="mono">{rotor.date}</span>. <span data-credit="">{rotor.credit}.</span>
-            </SoundClip>
+            <SoundClip {...rotor} />
           </div>
         </div>
       </div>
 
-      <section className="wrap ig-chartsec" aria-labelledby={chartId}>
-        <h2 id={chartId} className="ig-h2">
-          {chartTitle}
-        </h2>
+      <section className="wrap ig-chartsec" aria-label={chartTitle}>
         <div ref={chartBox}>
           <ChartFrame className="h-[300px] md:h-[340px]">
             {chartNear && data && <FlightsChart flights={data.flights} picked={n} onPick={pick} />}
@@ -375,9 +366,6 @@ export default function IngenuityMap({
       <div className="wrap ig-stage">
         <div className="ig-mapwrap">
           <div className="ig-map" ref={box} role="region" aria-label="Map of Jezero crater" />
-          <p className="credit" data-credit="">
-            M20_HiRISE_RGB_CTX_mosaic_25cm_v7, NASA/JPL-Caltech/University of Arizona/MSSS.
-          </p>
         </div>
         <aside className="ig-photo" aria-label="Photos from Ingenuity’s own cameras">
           <div className="ig-frame" style={{ aspectRatio: shot ? `${shot.pic.width} / ${shot.pic.height}` : '4 / 3' }}>
@@ -391,15 +379,6 @@ export default function IngenuityMap({
               <p className="ig-nophoto">No photo</p>
             )}
           </div>
-          <p className="credit ig-caption">
-            {shot ? (
-              <>
-                <span className="mono">{calDate(shot.date)}</span>. <span data-credit>{shot.credit}.</span>
-              </>
-            ) : (
-              blank
-            )}
-          </p>
           <div className="ig-picks" role="group" aria-label="Flights with a photo from Ingenuity" id={picksId}>
             {photos.map((p) => (
               <Button key={p.n} type="button" size="sm" variant="secondary" aria-pressed={p.n === n} aria-label={`Flight ${p.n} photo`} onClick={() => pick(p.n)} className="mono">
