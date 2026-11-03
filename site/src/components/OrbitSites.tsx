@@ -22,7 +22,6 @@ export interface ViewProps {
   alt: string;
   when: string;
   by: string;
-  caption: string;
   mark?: Mark;
 }
 
@@ -31,7 +30,6 @@ export interface SiteProps {
   name: string;
   tab: string;
   body: 'Moon' | 'Mars';
-  look: string;
   then: ViewProps;
   now: ViewProps;
   landed: string;
@@ -40,18 +38,13 @@ export interface SiteProps {
 }
 
 export interface QuakeClip extends SoundClipProps {
-  what: string;
-  date: string;
-  credit: string;
+  title: string;
 }
 
 export interface MapProps {
   body: 'Moon' | 'Mars';
   pic: Pic;
   alt: string;
-  what: string;
-  year: number;
-  credit: string;
   pins: { id: string; name: string; x: number; y: number }[];
 }
 
@@ -133,9 +126,6 @@ function View({ view, eager }: { view: ViewProps; eager?: boolean }) {
         <Picture pic={view.pic} alt={view.alt} eager={eager} />
         {view.mark && <Overlay pic={view.pic} mark={view.mark} />}
       </div>
-      <figcaption className="credit" data-credit="">
-        {view.caption}
-      </figcaption>
     </figure>
   );
 }
@@ -182,9 +172,6 @@ function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
           </HandleRoot>
         </Root>
       </Provider>
-      <figcaption className="credit" data-credit="">
-        {site.then.caption}
-      </figcaption>
     </figure>
   );
 }
@@ -211,9 +198,6 @@ function SiteMap({ map, active, onPick, eager }: { map: MapProps; active: string
           </Tooltip>
         ))}
       </div>
-      <figcaption className="credit">
-        {map.what}, <span className="mono">{map.year}</span>. <span data-credit="">{map.credit}.</span>
-      </figcaption>
     </figure>
   );
 }
@@ -257,6 +241,11 @@ export default function OrbitSites({ sites, maps, first, head, quake }: { sites:
             {maps.map((m, i) => (
               <div className="os-mapcol" key={m.body}>
                 <SiteMap map={m} active={active} onPick={open} eager={i === 0} />
+                {m.body === 'Moon' && (
+                  <p className="os-label" aria-hidden="true">
+                    Apollo
+                  </p>
+                )}
                 <TabsList aria-label={`${m.body} landing sites`} className="os-list">
                   {sites
                     .filter((s) => s.body === m.body)
@@ -274,12 +263,10 @@ export default function OrbitSites({ sites, maps, first, head, quake }: { sites:
               <p className="os-days">
                 <span className="os-days-n mono">{now ? groupInt(Math.floor((now - Date.parse(`${site.landed}T00:00:00Z`)) / DAY)) : '\u2007'.repeat(6)}</span> days since landing
               </p>
-              <p className="os-look">{site.look}</p>
             </div>
             <div className="os-sound">
-              <SoundClip {...quake}>
-                {quake.what}, <span className="mono">{quake.date}</span>. <span data-credit="">{quake.credit}.</span>
-              </SoundClip>
+              <p className="os-label">{quake.title}</p>
+              <SoundClip {...quake} />
             </div>
           </div>
         </div>
