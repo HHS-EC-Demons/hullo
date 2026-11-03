@@ -1,0 +1,10 @@
+{
+ "source": "https://mars.nasa.gov/rss/api/?feed=raw_images&category=mars2020&feedtype=json&num=1&order=sol+desc",
+ "algorithm": "https://www.giss.nasa.gov/tools/mars24/help/algorithm.html",
+ "image": "ZR0_2024_0846621642_145EBY_N0930000ZCAM10058_1100LMJ",
+ "link": "https://mars.nasa.gov/mars2020/multimedia/raw-images/ZR0_2024_0846621642_145EBY_N0930000ZCAM10058_1100LMJ",
+ "utc": "2026-10-30T09:06:20.570Z",
+ "sol": 2024,
+ "lmst_h": 12.930876,
+ "tt_minus_utc_s": 69.184
+}
