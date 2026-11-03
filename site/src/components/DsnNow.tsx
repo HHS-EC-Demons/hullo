@@ -58,6 +58,23 @@ export default function DsnNow({ photos }: Props) {
   const [cfg, setCfg] = useState<Config | null>(null);
   const [feed, setFeed] = useState<Feed | null>(null);
   const [failed, setFailed] = useState(false);
+  const [near, setNear] = useState(false);
+
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '600px 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     let live = true;
@@ -126,11 +143,15 @@ export default function DsnNow({ photos }: Props) {
               <h3>{site}</h3>
               {photo && (
                 <figure className="dsn-photo">
-                  <picture>
-                    <source type="image/avif" srcSet={photo.avif} sizes={PHOTO_SIZES} />
-                    <source type="image/webp" srcSet={photo.webp} sizes={PHOTO_SIZES} />
-                    <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" />
-                  </picture>
+                  <div className="dsn-frame">
+                    {near && (
+                      <picture>
+                        <source type="image/avif" srcSet={photo.avif} sizes={PHOTO_SIZES} />
+                        <source type="image/webp" srcSet={photo.webp} sizes={PHOTO_SIZES} />
+                        <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" />
+                      </picture>
+                    )}
+                  </div>
                   <figcaption className="credit">
                     {photo.caption}. <span data-credit="">{photo.credit}</span>
                   </figcaption>
