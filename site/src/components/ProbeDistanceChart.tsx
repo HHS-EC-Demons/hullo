@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import LineChart, { type LineSeries } from '@/components/ui/line-chart';
 import history from '../data/probe-history.json';
 import { monthYearOf } from '../lib/dates';
+import { decimalYear } from '../lib/history';
 
 interface Track {
   name: string;
@@ -10,14 +11,15 @@ interface Track {
 }
 
 export default function ProbeDistanceChart({ picked, onPick }: { picked: string; onPick: (key: string) => void }) {
+  const nowYear = decimalYear(Date.now());
   const series = useMemo<LineSeries[]>(
     () =>
       Object.entries(history.probes as Record<string, Track>).map(([key, p]) => ({
         key,
         label: p.name,
-        points: p.t.map((t, i) => ({ x: t, y: p.sun_au[i] })),
+        points: p.t.map((t, i) => ({ x: t, y: p.sun_au[i] })).filter((pt) => pt.x <= nowYear),
       })),
-    [],
+    [Math.floor(nowYear * 12)],
   );
 
   return (

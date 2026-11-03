@@ -1,5 +1,6 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { DeepSpaceData } from '../lib/lighttime';
+import { localStamp, utcClock } from '../lib/dates';
 import { dropClass, setHidden, setText, useFrames } from '../lib/frames';
 
 export const NASA_LIGHT_DAY_UTC = '2026-11-18T10:16:07Z';
@@ -34,6 +35,10 @@ export default function LightDay({ data }: Props) {
   const clock = useRef<HTMLSpanElement>(null);
   const after = useRef<HTMLSpanElement>(null);
   const count = useRef<HTMLParagraphElement>(null);
+  const nasa = Date.parse(NASA_LIGHT_DAY_UTC);
+  const [local, setLocal] = useState<string | null>(null);
+
+  useEffect(() => setLocal(localStamp(nasa, { weekday: false })), [nasa]);
 
   const crossing = data?.probes.voyager1.light_day_utc ? Date.parse(data.probes.voyager1.light_day_utc) : null;
 
@@ -87,7 +92,9 @@ export default function LightDay({ data }: Props) {
           today
         </span>
       </p>
-      <p className="ld-note mono">18 Nov 2026, 10:16:07 UTC</p>
+      <p className="ld-note">
+        <span className="mono">{local ?? '\u2007'}</span> <span className="ld-utc mono">{utcClock(nasa)}</span>
+      </p>
     </div>
   );
 }

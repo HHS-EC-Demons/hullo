@@ -27,6 +27,13 @@ export interface RefLine {
   label: string;
 }
 
+export interface Mark {
+  x: number;
+  y: number;
+  label: string;
+  below?: boolean;
+}
+
 export interface LineChartProps {
   series: LineSeries[];
   label: string;
@@ -44,10 +51,13 @@ export interface LineChartProps {
   onPick?: (key: string) => void;
   endLabels?: boolean;
   refLines?: RefLine[];
+  marks?: Mark[];
+  xTickValues?: number[];
   className?: string;
 }
 
-const MARGIN = { top: 14, right: 18, bottom: 46, left: 58 };
+const MARGIN = { top: 14, right: 18, bottom: 46 };
+const TICK_CHAR = 7.7;
 const LABEL_GAP = 17;
 const PICK_PX = 28;
 const byX = bisector<LinePoint, number>((p) => p.x).center;
@@ -103,20 +113,23 @@ function Plot({
   onPick,
   endLabels,
   refLines = [],
+  marks = [],
+  xTickValues,
 }: LineChartProps & { width: number; height: number }) {
   const liveId = useId();
   const [cursor, setCursor] = useState<number | null>(null);
-
-  const labelRoom = endLabels ? Math.min(118, Math.max(84, width * 0.12)) : 0;
-  const innerW = Math.max(width - MARGIN.left - MARGIN.right - labelRoom, 40);
-  const innerH = Math.max(height - MARGIN.top - MARGIN.bottom, 40);
 
   const all = useMemo(() => series.flatMap((s) => s.points), [series]);
   const xs = xDomain ?? [Math.min(...all.map((p) => p.x)), Math.max(...all.map((p) => p.x))];
   const ys = yDomain ?? [0, Math.max(...all.map((p) => p.y))];
 
-  const x = useMemo(() => scaleLinear<number>({ domain: xs, range: [0, innerW] }), [xs[0], xs[1], innerW]);
+  const labelRoom = endLabels ? Math.min(118, Math.max(84, width * 0.12)) : 0;
+  const innerH = Math.max(height - MARGIN.top - MARGIN.bottom, 40);
   const y = useMemo(() => scaleLinear<number>({ domain: ys, range: [innerH, 0], nice: !yDomain }), [ys[0], ys[1], innerH, yDomain]);
+  const tickChars = Math.max(2, ...y.ticks(yTicks).map((v) => tickY(Number(v)).length));
+  const left = Math.round(tickChars * TICK_CHAR + 34);
+  const innerW = Math.max(width - left - MARGIN.right - labelRoom, 40);
+  const x = useMemo(() => scaleLinear<number>({ domain: xs, range: [0, innerW] }), [xs[0], xs[1], innerW]);
 
   const lead = series.find((s) => s.key === picked) ?? series[0];
   const ordered = useMemo(() => [...series.filter((s) => s.key !== lead?.key), ...(lead ? [lead] : [])], [series, lead]);
@@ -132,13 +145,13 @@ function Plot({
   const snapX = readouts.find((r) => r.s.key === lead?.key)?.p.x ?? readouts[0]?.p.x ?? cursor;
 
   const place = (xv: number) => setCursor(xv);
-  const tipLeft = MARGIN.left + (snapX === null ? 0 : x(snapX));
+  const tipLeft = left + (snapX === null ? 0 : x(snapX));
   const tipTop = MARGIN.top + (readouts.length ? Math.min(Math.max(y(readouts[0].p.y), 0), innerH) : innerH / 2);
 
   const toValue = (e: PointerEvent<SVGRectElement>) => {
     const pt = localPoint(e);
     if (!pt) return null;
-    return { xv: x.invert(Math.min(Math.max(pt.x - MARGIN.left, 0), innerW)), py: pt.y - MARGIN.top };
+    return { xv: x.invert(Math.min(Math.max(pt.x - left, 0), innerW)), py: pt.y - MARGIN.top };
   };
 
   const onMove = (e: PointerEvent<SVGRectElement>) => {
@@ -210,12 +223,12 @@ function Plot({
       onFocus={() => cursor === null && lead && place(lead.points[lead.points.length - 1].x)}
     >
       <svg width={width} height={height} role="presentation">
-        <Group left={MARGIN.left} top={MARGIN.top}>
+        <Group left={left} top={MARGIN.top}>
           <GridRows scale={y} width={innerW} numTicks={yTicks} stroke="var(--rule)" strokeWidth={1} />
           {refLines.map((r) => (
             <g key={r.label}>
               <Line from={{ x: 0, y: y(r.y) }} to={{ x: innerW, y: y(r.y) }} stroke="var(--muted)" strokeWidth={1} strokeOpacity={0.7} />
-              <text x={4} y={y(r.y) - 6} {...TICK} fill="var(--text)">
+              <text x={innerW - 4} y={y(r.y) - 7} {...TICK} fill="var(--text)" textAnchor="end">
                 {r.label}
               </text>
             </g>
@@ -230,13 +243,14 @@ function Plot({
             hideTicks
             tickLabelProps={() => ({ ...TICK, textAnchor: 'end', dx: -6, dy: 4 })}
             label={yTitle}
-            labelOffset={34}
+            labelOffset={Math.round(tickChars * TICK_CHAR + 8)}
             labelProps={{ ...TICK, fill: 'var(--muted)', textAnchor: 'middle' }}
           />
           <AxisBottom
             top={innerH}
             scale={x}
             numTicks={Math.min(xTicks, Math.max(2, Math.floor(innerW / 76)))}
+            tickValues={xTickValues?.filter((_, i, all) => all.length * 64 <= innerW || i % Math.ceil((all.length * 64) / innerW) === 0)}
             tickFormat={(v) => tickX(Number(v))}
             stroke="var(--edge)"
             tickStroke="var(--edge)"
@@ -278,6 +292,22 @@ function Plot({
                 </g>
               );
             })}
+          {marks.map((m) => (
+            <g key={m.label} pointerEvents="none">
+              <circle cx={x(m.x)} cy={y(m.y)} r={4.5} fill="var(--text)" stroke="var(--bg)" strokeWidth={2} />
+              <text
+                x={Math.min(Math.max(x(m.x), 40), innerW - 40)}
+                y={y(m.y) + (m.below ? 22 : -12)}
+                textAnchor="middle"
+                fontFamily="var(--sans)"
+                fontSize={13}
+                fontWeight={700}
+                fill="var(--text)"
+              >
+                {m.label}
+              </text>
+            </g>
+          ))}
           {cursor !== null && snapX !== null && (
             <g pointerEvents="none">
               <Line from={{ x: x(snapX), y: 0 }} to={{ x: x(snapX), y: innerH }} stroke="var(--muted)" strokeWidth={1} />

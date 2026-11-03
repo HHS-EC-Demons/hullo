@@ -2,8 +2,9 @@
 import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
 import DsnNow, { type SitePhoto } from '../components/DsnNow';
+import type { Poster } from '../components/EyesFacade';
+import silentImages from '../data/silent-images.json';
 import { href } from '../lib/paths';
-import { readData } from '../lib/build-data';
 import { meta, pic } from '../lib/photos';
 import homeImages from '../data/home-images.json';
 
@@ -17,16 +18,13 @@ interface HomeImage {
   credit: string;
   caption: string;
   short: string;
+  focus: string;
   alt: string;
 }
 
 const HOME = homeImages as Record<string, HomeImage>;
-const LINE = 'Hardware in space, tracked with NASA data.';
 const credit = (id: string, by: string) => `${id}, ${by}.`;
 
-const moon = readData<{ round_trip_s: { min: number; max: number } }>('moon/index.json');
-const mars = readData<{ totals: { flights: number } }>('ingenuity.json');
-const deep = readData<{ probes: Record<string, unknown> }>('deep-space.json');
 const orbitData = Object.values(import.meta.glob<{ ORBIT_SITES?: unknown[] }>('../data/orbit-sites.ts', { eager: true }))[0];
 const pageFiles = Object.keys(import.meta.glob('./*.astro'));
 
@@ -36,9 +34,19 @@ for (const m of Object.values(HOME)) {
   const p = await pic(m.slug, [400, 640, 900, 1200, 1600], '');
   sitePhotos[m.site] = { avif: p.avif, webp: p.webp, src: p.src, width: p.width, height: p.height, alt: m.alt, caption: m.short, credit: credit(m.id, m.credit) };
 }
+const dsnEyes = HOME['dsn-eyes-goldstone'];
+const dsnPoster: Poster = {
+  ...(await pic(dsnEyes.slug, [480, 720, 960, 1280, 1600], '')),
+  alt: dsnEyes.alt,
+  caption: dsnEyes.short,
+  id: dsnEyes.id,
+  credit: dsnEyes.credit,
+  focus: dsnEyes.focus,
+};
+const surveyor = (silentImages as { object?: string; nasa_id: string; credit: string; date: string; alt?: string }[]).find((x) => x.object === 'surveyor3')!;
 
 const TILE_WIDTHS = [360, 520, 720, 960, 1200, 1600];
-const TILE_SIZES = '(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) 46vw, 23vw';
+const TILE_SIZES = '(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) 31vw, 19vw';
 const laser = meta('moon-laser-station');
 const ingenuity = meta('mars-two-years');
 const pluto = HOME['deep-newhorizons'];
@@ -48,8 +56,6 @@ const chapters = [
   {
     path: 'deep-space/',
     name: 'Deep space',
-    value: String(Object.keys(deep.probes).length),
-    unit: 'probes',
     pic: await pic(pluto.slug, TILE_WIDTHS, TILE_SIZES),
     focus: '50% 50%',
     alt: pluto.alt,
@@ -59,8 +65,6 @@ const chapters = [
   {
     path: 'moon/',
     name: 'Moon',
-    value: `${moon.round_trip_s.min.toFixed(1)}-${moon.round_trip_s.max.toFixed(1)}`,
-    unit: 's',
     pic: await pic('moon-laser-station', TILE_WIDTHS, TILE_SIZES),
     focus: '50% 0%',
     alt: 'Two green laser beams rising from an observatory into a dark blue night sky toward the bright Moon.',
@@ -70,8 +74,6 @@ const chapters = [
   {
     path: 'mars/',
     name: 'Mars',
-    value: String(mars.totals.flights),
-    unit: 'flights',
     pic: await pic('mars-two-years', TILE_WIDTHS, TILE_SIZES),
     focus: '45% 50%',
     alt: 'Ingenuity, a small helicopter with two long rotor blades on four thin legs, standing on rocky reddish ground.',
@@ -83,8 +85,6 @@ const chapters = [
         {
           path: 'orbit/',
           name: 'Orbit',
-          value: String(orbitData.ORBIT_SITES.length),
-          unit: 'sites',
           pic: await pic(apollo14.slug, TILE_WIDTHS, TILE_SIZES),
           focus: '50% 50%',
           alt: apollo14.alt,
@@ -93,22 +93,31 @@ const chapters = [
         },
       ]
     : []),
+  {
+    path: 'silent/',
+    name: 'Silent',
+    pic: await pic('silent-surveyor3', TILE_WIDTHS, TILE_SIZES),
+    focus: '50% 50%',
+    alt: surveyor.alt ?? 'Surveyor 3 on the slope of its small crater, photographed by the Apollo 12 crew.',
+    caption: `Surveyor 3, ${surveyor.date.slice(0, 4)}`,
+    credit: credit(surveyor.nasa_id, surveyor.credit),
+  },
 ];
 ---
 
 <Base preload={['data/deep-space.json']}>
   <section class="wrap hero">
-    <ProbeSignal client:load headline="h1" aside={LINE} picker="form" countdown />
+    <ProbeSignal client:load headline="h1" countdown home />
   </section>
 
-  <DsnNow client:visible photos={sitePhotos} />
+  <DsnNow client:visible photos={sitePhotos} poster={dsnPoster} />
 
   <section class="wrap section tiles-wrap" aria-label="Chapters">
     <ul class="tiles">
       {
         chapters.map((c) => (
           <li class="tile">
-            <a href={href(c.path)} class="tile-link" aria-label={`${c.name}, ${c.value} ${c.unit}`}>
+            <a href={href(c.path)} class="tile-link">
               <picture>
                 <source type="image/avif" srcset={c.pic.avif} sizes={TILE_SIZES} />
                 <source type="image/webp" srcset={c.pic.webp} sizes={TILE_SIZES} />
@@ -124,9 +133,6 @@ const chapters = [
               </picture>
               <span class="tile-row">
                 <span class="press tile-btn">{c.name}</span>
-                <span class="tile-num">
-                  {c.value}<span class="tile-unit">{c.unit}</span>
-                </span>
               </span>
             </a>
             <p class="credit">
@@ -141,12 +147,18 @@ const chapters = [
 
 <style>
   .hero {
-    padding-top: clamp(32px, 6vw, 80px);
-    padding-bottom: clamp(56px, 9vw, 128px);
+    padding-top: clamp(20px, 3vw, 40px);
+    padding-bottom: clamp(8px, 1.5vw, 16px);
+  }
+  :global(.dsn.section) {
+    padding-block: clamp(32px, 4vw, 56px);
+  }
+  .tiles-wrap.section {
+    padding-block: clamp(8px, 1.5vw, 16px) 0;
   }
   .tiles {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 40px clamp(14px, 1.6vw, 24px);
     padding-top: clamp(28px, 4vw, 48px);
     border-top: 1px solid var(--rule);
@@ -193,23 +205,9 @@ const chapters = [
     transform: translateY(var(--press-lip-h, 3px));
     box-shadow: 0 0 0 var(--p-lip);
   }
-  .tile-num {
-    font-size: var(--fs-lg);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    white-space: nowrap;
-  }
-  .tile-unit {
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--muted);
-    margin-left: 0.25em;
-  }
   @media (max-width: 1023px) {
     .tiles {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
   @media (max-width: 639px) {
