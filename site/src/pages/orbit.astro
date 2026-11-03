@@ -1,15 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
-import OrbitSites, { type SiteProps, type ViewProps } from '../components/OrbitSites';
+import OrbitSites, { type MapProps, type Mark, type SiteProps, type ViewProps } from '../components/OrbitSites';
 import { ORBIT_SITES, type OrbitSite, type OrbitView } from '../data/orbit-sites';
-import { utcDate } from '../lib/client';
+import { calDate } from '../lib/dates';
 import { LRO, image, lro, meta, pic } from '../lib/photos';
 import sounds from '../data/sounds.json';
+import siteMaps from '../data/orbit-maps.json';
 
-const dated = (iso: string): string => utcDate(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`));
-
-const SIZES = '(max-width: 760px) 100vw, 50vw';
+const SIZES = '(max-width: 640px) 92vw, (max-width: 1360px) 46vw, 620px';
 const PAIR_SIZES = '(max-width: 900px) 92vw, 820px';
+const MAP_SIZES = '(max-width: 640px) 92vw, (max-width: 1023px) 46vw, (max-width: 1360px) 31vw, 420px';
 const WIDTHS = [640, 800, 1080, 1400, 1800];
 
 function widths(slug: string): number[] {
@@ -43,16 +43,18 @@ function short(by: string): string {
 async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; date: string; detail: string }> {
   if (v.slug.endsWith('-lro')) {
     const c = lro(site.id);
+    const date = c.acquired.slice(0, 10);
+    const mark: Mark = { ring: [c.lm_px[0] / c.width, c.lm_px[1] / c.height], ringSize: 0.09, metersPerPx: c.scale_m };
     return {
-      date: c.acquired.slice(0, 10),
+      date,
       detail: `LROC ${c.product}, ${c.scale_m} m per pixel`,
       props: {
         pic: await pic(v.slug, widths(v.slug), SIZES),
         alt: v.alt,
-        when: c.acquired.slice(0, 10),
+        when: calDate(date),
         by: v.by,
         caption: `${c.product}, ${LRO.credit}.`,
-        ring: [(c.lm_px[0] / c.width) * 100, (c.lm_px[1] / c.height) * 100],
+        mark,
       },
     };
   }
@@ -60,11 +62,11 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
   const date = m.date ?? site.landed;
   return {
     date,
-    detail: `HiRISE view from ${dated(date)}`,
+    detail: `HiRISE view from ${calDate(date)}`,
     props: {
       pic: await pic(v.slug, widths(v.slug), site.pair ? PAIR_SIZES : SIZES),
       alt: v.alt,
-      when: date,
+      when: calDate(date),
       by: short(v.by),
       caption: `${label(m.id)}, ${m.credit}.`,
     },
@@ -73,77 +75,90 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
 
 const quake = sounds.find((s) => s.id === 'insight-quake')!;
 
-async function build(body: 'Moon' | 'Mars'): Promise<SiteProps[]> {
-  return Promise.all(
-    ORBIT_SITES.filter((s) => s.body === body).map(async (s) => {
-      const then = await view(s, s.then);
-      const now = await view(s, s.now);
+const sites: SiteProps[] = await Promise.all(
+  ORBIT_SITES.map(async (s) => {
+    const then = await view(s, s.then);
+    const now = await view(s, s.now);
+    return {
+      id: s.id,
+      name: s.name,
+      tab: s.body === 'Moon' ? s.name.replace(/^Apollo /, '') : s.name,
+      body: s.body,
+      where: coords(s),
+      apart: apart(then.date, now.date),
+      look: s.look,
+      then: then.props,
+      now: now.props,
+      pair: !!s.pair,
+      stampDetail: now.detail,
+      sound:
+        s.sound === 'insight-quake'
+          ? {
+              src: quake.file,
+              peaks: quake.peaks,
+              duration: quake.duration_s,
+              label: 'InSight’s biggest marsquake as sound',
+              stampId: 'insight',
+              stampDetail: 'Heard the magnitude 5 quake of 4 May 2022',
+              what: 'Magnitude 5 marsquake as sound',
+              date: calDate(quake.recorded),
+              credit: `PIA25281, ${quake.credit}`,
+            }
+          : undefined,
+    } satisfies SiteProps;
+  }),
+);
+
+type MapMeta = { file: string; west: number; east: number; north: number; south: number; id: string; year: number; credit: string };
+
+async function siteMap(body: 'Moon' | 'Mars', m: MapMeta, alt: string): Promise<MapProps> {
+  const slug = m.file.replace(/\.jpg$/, '');
+  return {
+    body,
+    pic: await pic(slug, widths(slug), MAP_SIZES),
+    alt,
+    what: body,
+    year: m.year,
+    credit: `${m.id}, ${m.credit}`,
+    pins: ORBIT_SITES.filter((s) => s.body === body).map((s) => {
+      const lon = body === 'Mars' && s.lon < m.west ? s.lon + 360 : s.lon;
       return {
         id: s.id,
         name: s.name,
-        tab: body === 'Moon' ? s.name.replace(/^Apollo /, '') : s.name,
-        where: coords(s),
-        apart: apart(then.date, now.date),
-        then: then.props,
-        now: now.props,
-        pair: !!s.pair,
-        stampDetail: now.detail,
-        sound:
-          s.sound === 'insight-quake'
-            ? {
-                src: quake.file,
-                peaks: quake.peaks,
-                duration: quake.duration_s,
-                label: 'InSight’s biggest marsquake as sound',
-                stampId: 'insight',
-                stampDetail: 'Heard the magnitude 5 quake of 4 May 2022',
-                what: 'Magnitude 5 marsquake as sound',
-                date: quake.recorded,
-                credit: `PIA25281, ${quake.credit}`,
-              }
-            : undefined,
-      } satisfies SiteProps;
+        x: ((lon - m.west) / (m.east - m.west)) * 100,
+        y: ((m.north - s.lat) / (m.north - m.south)) * 100,
+      };
     }),
-  );
+  };
 }
 
-const moon = await build('Moon');
-const mars = await build('Mars');
+const maps = [
+  await siteMap('Moon', siteMaps.moon, 'The near side of the Moon around the Apollo landing sites, grey highlands and dark lava plains, with the bright rays of Copernicus crater on the left.'),
+  await siteMap('Mars', siteMaps.mars, 'A flat map of all of Mars, reddish with dark patches, white polar caps and the big Tharsis volcanoes near the middle.'),
+];
 ---
 
-<Base title="Orbit" current="orbit" description="Apollo landing sites seen by LRO and Mars landers seen by HiRISE, each next to a photo from landing.">
-  <header class="wrap page-head">
-    <h1>Orbit</h1>
-    <p>Landing sites, seen later from orbit.</p>
-  </header>
-
-  <section class="orbit-sec" aria-labelledby="moon-h">
-    <h2 id="moon-h" class="wrap orbit-h2">Moon</h2>
-    <OrbitSites client:visible label="Apollo landing sites" sites={moon} first="apollo11" eager />
-  </section>
-
-  <section class="orbit-sec rule-top" aria-labelledby="mars-h">
-    <h2 id="mars-h" class="wrap orbit-h2">Mars</h2>
-    <OrbitSites client:visible label="Mars landing sites" sites={mars} first="phoenix" />
-  </section>
+<Base title="Orbit" current="orbit" description="Apollo landing sites seen by LRO and Mars landers seen by HiRISE, each next to a photo from landing, picked from maps of the Moon and Mars.">
+  <OrbitSites client:load sites={sites} maps={maps} first="apollo11">
+    <Fragment slot="head">
+      <h1 class="orbit-h1">Orbit</h1>
+      <p class="orbit-line">Landing sites, seen later from orbit.</p>
+    </Fragment>
+  </OrbitSites>
 </Base>
 
 <style>
-  .orbit-sec {
-    display: grid;
-    gap: 24px;
-    padding-block: clamp(24px, 4vw, 48px);
+  .orbit-h1 {
+    font-size: var(--fs-display);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.035em;
   }
-  .rule-top {
-    border-top: 1px solid var(--rule);
-    margin-top: clamp(24px, 4vw, 48px);
-    padding-top: clamp(32px, 5vw, 64px);
-  }
-  .orbit-h2 {
-    font-size: var(--fs-lg);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    text-wrap: balance;
+  .orbit-line {
+    margin-top: 18px;
+    max-width: var(--measure);
+    font-size: var(--fs-md);
+    color: var(--muted);
+    text-wrap: pretty;
   }
 </style>
