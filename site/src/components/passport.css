@@ -6,10 +6,11 @@
 .pp-head {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
   grid-template-areas:
     'title chart'
     'count chart'
+    'since chart'
     'print chart';
   gap: 22px 56px;
   align-items: start;
@@ -30,6 +31,31 @@
 }
 .pp-print {
   grid-area: print;
+}
+.pp-since-wrap {
+  grid-area: since;
+  min-height: 4.4rem;
+}
+.pp-head .pp-since p {
+  margin-top: 0;
+  max-width: none;
+}
+.pp-since {
+  display: grid;
+  gap: 2px;
+}
+.pp-head .pp-since-lead {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.pp-head .pp-since-fig {
+  color: var(--text);
+  font-size: var(--fs-md);
+}
+.pp-since-n {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 .pp-chart {
   grid-area: chart;
@@ -202,6 +228,7 @@
     grid-template-areas:
       'title'
       'count'
+      'since'
       'chart'
       'print';
   }
