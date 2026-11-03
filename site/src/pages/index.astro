@@ -118,6 +118,7 @@ const chapters = [
         chapters.map((c) => (
           <li class="tile">
             <a href={href(c.path)} class="tile-link">
+              <span class="tile-img ph">
               <picture>
                 <source type="image/avif" srcset={c.pic.avif} sizes={TILE_SIZES} />
                 <source type="image/webp" srcset={c.pic.webp} sizes={TILE_SIZES} />
@@ -131,13 +132,11 @@ const chapters = [
                   style={`object-position: ${c.focus}`}
                 />
               </picture>
+              </span>
               <span class="tile-row">
                 <span class="press tile-btn">{c.name}</span>
               </span>
             </a>
-            <p class="credit">
-              {c.caption}. <span data-credit>{c.credit}</span>
-            </p>
           </li>
         ))
       }
@@ -169,9 +168,7 @@ const chapters = [
     gap: 10px;
     min-width: 0;
   }
-  .tile .credit {
-    overflow-wrap: anywhere;
-  }
+
   .tile-link {
     display: grid;
     gap: 16px;
@@ -182,12 +179,16 @@ const chapters = [
   .tile-link:focus-visible {
     outline-offset: 6px;
   }
+  .tile-img {
+    display: block;
+    aspect-ratio: 3 / 4;
+    border-radius: 2px;
+    overflow: hidden;
+  }
   .tile-link img {
     width: 100%;
-    aspect-ratio: 3 / 4;
+    height: 100%;
     object-fit: cover;
-    background: var(--raised);
-    border-radius: 2px;
   }
   .tile-row {
     display: flex;

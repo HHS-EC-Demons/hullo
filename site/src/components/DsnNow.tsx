@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { contacts, DSN_CONFIG, DSN_FEED, parseConfig, parseFeed, type Config, type Contact, type Feed } from '../lib/dsn';
-import { useNow } from '../lib/client';
-import { ago, clock, YOUR_TIME } from '../lib/dates';
+import { clock } from '../lib/dates';
+import { Skeleton } from '@/components/ui/skeleton';
 import EyesFacade, { type Poster } from './EyesFacade';
 import './dsn.css';
 
@@ -60,7 +60,6 @@ export default function DsnNow({ photos, poster }: Props) {
   const [feed, setFeed] = useState<Feed | null>(null);
   const [failed, setFailed] = useState(false);
   const [near, setNear] = useState(false);
-  const now = useNow(15000);
 
   useEffect(() => {
     const el = root.current;
@@ -128,7 +127,6 @@ export default function DsnNow({ photos, poster }: Props) {
   }, []);
 
   const list = feed ? contacts(feed, cfg) : [];
-  const ours = list.some((c) => PROBES[c.craft]);
 
   return (
     <section ref={root} className="wrap section dsn" aria-labelledby="dsn-h">
@@ -140,15 +138,14 @@ export default function DsnNow({ photos, poster }: Props) {
           <p className="dsn-time">
             {feed ? (
               <>
-                updated <span className="mono">{clock(feed.time)}</span> {YOUR_TIME}, <span className="mono">{ago(feed.time, now ?? feed.time)}</span>
+                Updated <span className="mono">{clock(feed.time)}</span>
               </>
             ) : failed ? (
-              'The live feed did not load.'
+              'Feed offline'
             ) : (
-              ' '
+              <Skeleton className="h-[1.5em] w-40" />
             )}
           </p>
-          <p className="dsn-none">{feed && !ours ? 'None of Hullo’s probes right now.' : ' '}</p>
         </div>
 
         <ul className="dsn-sites">
@@ -160,8 +157,8 @@ export default function DsnNow({ photos, poster }: Props) {
             return (
               <li key={site} className="dsn-site">
                 {photo && (
-                  <figure className="dsn-photo">
-                    <div className="dsn-frame">
+                  <div className="dsn-photo">
+                    <div className="dsn-frame ph">
                       {near && (
                         <picture>
                           <source type="image/avif" srcSet={photo.avif} sizes={PHOTO_SIZES} />
@@ -170,15 +167,16 @@ export default function DsnNow({ photos, poster }: Props) {
                         </picture>
                       )}
                     </div>
-                    <figcaption className="credit">
-                      {photo.caption}. <span data-credit="">{photo.credit}</span>
-                    </figcaption>
-                  </figure>
+                  </div>
                 )}
                 <div className="dsn-text">
                   <h3>{site}</h3>
                   <ul className="dsn-dishes">
-                    {!feed && <li>{' '}</li>}
+                    {!feed && !failed && (
+                      <li>
+                        <Skeleton className="h-[1.35em] w-full max-w-48" />
+                      </li>
+                    )}
                     {links.slice(0, SHOWN).map((c) => (
                       <li key={`${c.dish}${c.craft}`} className={PROBES[c.craft] ? 'dsn-dish dsn-ours' : 'dsn-dish'} title={`${c.dish} is ${c.verb} ${c.name}`}>
                         <span className="mono">{c.dish}</span> → <span className="dsn-craft">{label(c)}</span>
@@ -204,7 +202,6 @@ export default function DsnNow({ photos, poster }: Props) {
         src={EYES_APP}
         title="NASA Eyes on the Deep Space Network, live view of every dish"
         label="Open DSN Now"
-        app="DSN Now"
         sizes={EYES_SIZES}
       />
     </section>
