@@ -1,34 +1,48 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
-import DsnNow from '../components/DsnNow';
-import { BRAND_LINE } from '../brand';
+import DsnNow, { type SitePhoto } from '../components/DsnNow';
 import { href } from '../lib/paths';
 import { readData } from '../lib/build-data';
-import { Picture } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-import lro from '../data/lro.json';
-import PHOTOS from '../data/photos.json';
+import { meta, pic } from '../lib/photos';
+import homeImages from '../data/home-images.json';
 
-interface Photo {
+interface HomeImage {
   slug: string;
-  nasa_id: string;
+  group: string;
+  site: string | null;
+  id: string;
+  when: string;
+  kind: string;
   credit: string;
-  width: number;
-  height: number;
+  caption: string;
+  short: string;
+  alt: string;
 }
-const photos = readData<Photo[]>('images.json');
-const photo = (slug: string) => photos.find((p) => p.slug === slug)!;
+
+const HOME = homeImages as Record<string, HomeImage>;
+const LINE = 'Hardware in space, tracked with NASA data.';
+const credit = (id: string, by: string) => `${id}, ${by}.`;
 
 const moon = readData<{ round_trip_s: { min: number; max: number } }>('moon/index.json');
 const mars = readData<{ totals: { flights: number } }>('ingenuity.json');
 const deep = readData<{ probes: Record<string, unknown> }>('deep-space.json');
-
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/img/*.jpg', { eager: true });
-const img = (slug: string) => files[`../assets/img/${slug}.jpg`].default;
 const orbitData = Object.values(import.meta.glob<{ ORBIT_SITES?: unknown[] }>('../data/orbit-sites.ts', { eager: true }))[0];
 const pageFiles = Object.keys(import.meta.glob('./*.astro'));
-const a11 = lro.crops.find((c) => c.site === 'apollo11')!;
+
+const sitePhotos: Record<string, SitePhoto> = {};
+for (const m of Object.values(HOME)) {
+  if (m.group !== 'dsn' || !m.site) continue;
+  const p = await pic(m.slug, [400, 640, 900, 1200, 1600], '');
+  sitePhotos[m.site] = { avif: p.avif, webp: p.webp, src: p.src, width: p.width, height: p.height, alt: m.alt, caption: m.short, credit: credit(m.id, m.credit) };
+}
+
+const TILE_WIDTHS = [360, 520, 720, 960, 1200, 1600];
+const TILE_SIZES = '(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) 46vw, 23vw';
+const laser = meta('moon-laser-station');
+const ingenuity = meta('mars-two-years');
+const pluto = HOME['deep-newhorizons'];
+const apollo14 = HOME['home-orbit-apollo14'];
 
 const chapters = [
   {
@@ -36,36 +50,33 @@ const chapters = [
     name: 'Deep space',
     value: String(Object.keys(deep.probes).length),
     unit: 'probes',
-    line: 'Send a message to one of 5 probes on their way out of the solar system.',
-    photo: photo('pale-blue-dot'),
-    image: img('home-pale-blue-dot'),
-    focus: '50% 40%',
-    what: 'Earth from Voyager 1, 1990',
-    alt: 'A tiny pale blue dot of light inside a faint band of sunlight against dark space.',
+    pic: await pic(pluto.slug, TILE_WIDTHS, TILE_SIZES),
+    focus: '50% 50%',
+    alt: pluto.alt,
+    caption: 'Pluto, 2015',
+    credit: credit(pluto.id, pluto.credit),
   },
   {
     path: 'moon/',
     name: 'Moon',
-    value: `${moon.round_trip_s.min.toFixed(1)} to ${moon.round_trip_s.max.toFixed(1)}`,
+    value: `${moon.round_trip_s.min.toFixed(1)}-${moon.round_trip_s.max.toFixed(1)}`,
     unit: 's',
-    line: 'Fire a laser at a mirror an Apollo crew left and time the echo.',
-    photo: photo('apollo11-reflector'),
-    image: img('home-apollo11-reflector'),
-    focus: '36% 70%',
-    what: 'Apollo 11 mirror, 1969',
-    alt: 'The Apollo 11 laser mirror, a small tilted box on grey lunar soil, with a seismometer behind the mirror.',
+    pic: await pic('moon-laser-station', TILE_WIDTHS, TILE_SIZES),
+    focus: '50% 0%',
+    alt: 'Two green laser beams rising from an observatory into a dark blue night sky toward the bright Moon.',
+    caption: `Goddard laser, ${laser.date!.slice(0, 4)}`,
+    credit: credit(laser.id, laser.credit),
   },
   {
     path: 'mars/',
     name: 'Mars',
     value: String(mars.totals.flights),
     unit: 'flights',
-    line: "Fly Ingenuity’s flights over Jezero crater, one at a time.",
-    photo: { nasa_id: PHOTOS['mars-after-flight05'].id, credit: PHOTOS['mars-after-flight05'].credit },
-    image: img('mars-after-flight05'),
-    focus: '25% 50%',
-    what: 'Ingenuity on Mars, 2021',
-    alt: 'Ingenuity, a small helicopter with two long rotor blades, standing on reddish sand and rocks.',
+    pic: await pic('mars-two-years', TILE_WIDTHS, TILE_SIZES),
+    focus: '45% 50%',
+    alt: 'Ingenuity, a small helicopter with two long rotor blades on four thin legs, standing on rocky reddish ground.',
+    caption: `Ingenuity, ${ingenuity.date!.slice(0, 4)}`,
+    credit: credit(ingenuity.id, ingenuity.credit),
   },
   ...(orbitData?.ORBIT_SITES && pageFiles.includes('./orbit.astro')
     ? [
@@ -74,12 +85,11 @@ const chapters = [
           name: 'Orbit',
           value: String(orbitData.ORBIT_SITES.length),
           unit: 'sites',
-          line: 'Compare landing photos with the same spots seen from orbit years later.',
-          photo: { slug: 'orbit-apollo11-lro', nasa_id: `LROC NAC ${a11.product.split('_')[3]}`, credit: lro.credit, width: a11.width, height: a11.height },
-          image: img('orbit-apollo11-lro'),
+          pic: await pic(apollo14.slug, TILE_WIDTHS, TILE_SIZES),
           focus: '50% 50%',
-          what: `Apollo 11 site from LRO, ${a11.acquired.slice(0, 4)}`,
-          alt: 'The Apollo 11 site from straight above, a cratered grey plain with the lunar module’s shadow inside the ring.',
+          alt: apollo14.alt,
+          caption: apollo14.short,
+          credit: credit(apollo14.id, apollo14.credit),
         },
       ]
     : []),
@@ -88,36 +98,40 @@ const chapters = [
 
 <Base preload={['data/deep-space.json']}>
   <section class="wrap hero">
-    <ProbeSignal client:load headline="h1" aside={BRAND_LINE} picker="form" countdown sky />
+    <ProbeSignal client:load headline="h1" aside={LINE} picker="form" countdown />
   </section>
 
-  <DsnNow client:visible />
+  <DsnNow client:visible photos={sitePhotos} />
 
-  <section class="wrap chapters" aria-label="Chapters">
-    <ul>
+  <section class="wrap section tiles-wrap" aria-label="Chapters">
+    <ul class="tiles">
       {
         chapters.map((c) => (
-          <li>
-            <a href={href(c.path)} class="chapter">
-              <span class="ch-num">{c.value}<span class="ch-unit">{c.unit}</span></span>
-              <span class="ch-text">
-                <span class="ch-name">{c.name}</span>
-                <span class="ch-line">{c.line}</span>
-              </span>
-              <figure class="ch-photo">
-                <Picture
-                  src={c.image}
-                  formats={['avif', 'webp']}
-                  widths={[240, 400, 640]}
-                  sizes="(max-width: 860px) 9.5rem, 26vw"
+          <li class="tile">
+            <a href={href(c.path)} class="tile-link" aria-label={`${c.name}, ${c.value} ${c.unit}`}>
+              <picture>
+                <source type="image/avif" srcset={c.pic.avif} sizes={TILE_SIZES} />
+                <source type="image/webp" srcset={c.pic.webp} sizes={TILE_SIZES} />
+                <img
+                  src={c.pic.src}
+                  width={c.pic.width}
+                  height={c.pic.height}
+                  alt={c.alt}
                   loading="lazy"
                   decoding="async"
-                  alt={c.alt}
                   style={`object-position: ${c.focus}`}
                 />
-                <figcaption class="credit">{c.what}. {c.photo.nasa_id.toUpperCase()}, {c.photo.credit.replaceAll('/', '/\u200b')}.</figcaption>
-              </figure>
+              </picture>
+              <span class="tile-row">
+                <span class="press tile-btn">{c.name}</span>
+                <span class="tile-num">
+                  {c.value}<span class="tile-unit">{c.unit}</span>
+                </span>
+              </span>
             </a>
+            <p class="credit">
+              {c.caption}. <span data-credit>{c.credit}</span>
+            </p>
           </li>
         ))
       }
@@ -130,97 +144,80 @@ const chapters = [
     padding-top: clamp(32px, 6vw, 80px);
     padding-bottom: clamp(56px, 9vw, 128px);
   }
-  .chapters ul {
-    border-bottom: 1px solid var(--rule);
-  }
-  .chapter {
+  .tiles {
     display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 5fr) minmax(0, 3fr);
-    gap: 12px 32px;
-    align-items: start;
-    padding-block: clamp(24px, 3.2vw, 40px);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 40px clamp(14px, 1.6vw, 24px);
+    padding-top: clamp(28px, 4vw, 48px);
     border-top: 1px solid var(--rule);
+  }
+  .tile {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+  }
+  .tile-link {
+    display: grid;
+    gap: 16px;
     color: var(--text);
     text-decoration: none;
+    border-radius: 4px;
   }
-  .chapter:hover,
-  .chapter:focus-visible {
-    box-shadow: inset 0 2px 0 var(--line);
-  }
-  .chapter:focus-visible {
+  .tile-link:focus-visible {
     outline-offset: 6px;
   }
-  .ch-num {
-    font-size: var(--fs-xl);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    white-space: nowrap;
-  }
-  .ch-unit {
-    font-size: max(1rem, 0.42em);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--muted);
-    margin-left: 0.22em;
-  }
-  .ch-text {
-    display: grid;
-    gap: 8px;
-    align-content: start;
-    padding-top: 6px;
-  }
-  .ch-name {
-    text-wrap: balance;
-    font-size: var(--fs-lg);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-  }
-  .ch-line {
-    color: var(--muted);
-    max-width: 28rem;
-  }
-  .chapter:hover .ch-line,
-  .chapter:focus-visible .ch-line {
-    color: var(--text);
-  }
-  .chapter:hover .ch-name,
-  .chapter:focus-visible .ch-name {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-decoration-color: var(--line);
-    text-underline-offset: 0.22em;
-  }
-  .ch-photo {
-    display: grid;
-    gap: 8px;
-  }
-  .ch-photo :global(img) {
+  .tile-link img {
     width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
     background: var(--raised);
     border-radius: 2px;
   }
-  @media (max-width: 860px) {
-    .chapter {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 9.5rem);
-      grid-template-areas: 'num photo' 'text photo';
-      gap: 10px 20px;
+  .tile-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 4px;
+  }
+  .tile-btn {
+    min-height: 44px;
+    padding-inline: 16px;
+  }
+  @media (hover: hover) {
+    .tile-link:hover .tile-btn {
+      background: var(--p-fill-hover);
     }
-    .ch-num {
-      grid-area: num;
+  }
+  .tile-link:active .tile-btn {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--p-lip);
+  }
+  .tile-num {
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .tile-unit {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--muted);
+    margin-left: 0.25em;
+  }
+  @media (max-width: 1023px) {
+    .tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .ch-text {
-      grid-area: text;
-      padding-top: 0;
+  }
+  @media (max-width: 639px) {
+    .tiles {
+      grid-template-columns: minmax(0, 1fr);
     }
-    .ch-photo {
-      grid-area: photo;
-    }
-    .ch-photo :global(img) {
-      aspect-ratio: 1;
+    .tile-link img {
+      aspect-ratio: 4 / 5;
     }
   }
 </style>
