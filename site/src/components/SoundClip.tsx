@@ -14,6 +14,7 @@ export interface SoundClipProps {
   stampId?: string;
   stampDetail?: string;
   children?: ReactNode;
+  source?: string;
 }
 
 function clock(s: number): string {
@@ -26,7 +27,7 @@ function css(name: string, fallback: string): string {
   return v || fallback;
 }
 
-export default function SoundClip({ src, peaks, duration, label, stampId, stampDetail, children }: SoundClipProps) {
+export default function SoundClip({ src, peaks, duration, label, stampId, stampDetail, children, source }: SoundClipProps) {
   const wave = useRef<HTMLDivElement>(null);
   const audio = useRef<HTMLAudioElement>(null);
   const time = useRef<HTMLSpanElement>(null);
@@ -152,7 +153,7 @@ export default function SoundClip({ src, peaks, duration, label, stampId, stampD
         </p>
       </div>
       <audio ref={audio} src={asset(src)} preload="none" />
-      {children && <figcaption className="credit">{children}</figcaption>}
+      {(children || source) && <figcaption className="credit" data-credit>{children ?? source}</figcaption>}
     </figure>
   );
 }

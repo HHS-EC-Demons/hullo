@@ -257,7 +257,7 @@ function Plot({
             tickStroke="var(--edge)"
             tickLength={5}
             tickLabelProps={() => ({ ...TICK, textAnchor: 'middle', dy: 2 })}
-            label={xTitle}
+            label={undefined}
             labelOffset={14}
             labelProps={{ ...TICK, fill: 'var(--muted)', textAnchor: 'middle' }}
           />

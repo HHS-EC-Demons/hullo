@@ -11,8 +11,6 @@ import LiveLightView from './LiveLight';
 import LightDayView from './LightDay';
 import type { Message } from './MessageFlight';
 import SkyChartView from './SkyChart';
-import LightLeft from './LightLeft';
-import BirthdayToy from './BirthdayToy';
 import ChartFrame from '@/components/ui/chart-frame';
 import './probe.css';
 
@@ -74,10 +72,11 @@ const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: F
   return (
     <form className="ps-form" onSubmit={submit} noValidate>
       {children}
-      <label htmlFor={`${uid}-msg`}>Pretend message</label>
       <div className="ps-row">
         <Input
           id={`${uid}-msg`}
+          aria-label="Pretend message"
+          placeholder="Pretend message"
           name="message"
           type="text"
           value={draft}
@@ -134,6 +133,7 @@ function Frame({ photo }: { photo: ProbePhoto }) {
           />
         </picture>
       </div>
+      <figcaption className="credit" data-credit>{photo.id}, {photo.credit}</figcaption>
     </figure>
   );
 }
@@ -169,7 +169,6 @@ export default function ProbeSignal({
   const minute = useNow(60000);
   const [probe, setProbe] = useState(initial);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [born, setBorn] = useState<number | null>(null);
   const uid = useId();
   const info = probeInfo(probe);
 
@@ -248,12 +247,6 @@ export default function ProbeSignal({
     </div>
   );
 
-  const statusLine = status && (
-    <p className="ps-status">
-      <span className={info.answers ? 'status-on' : 'status-off'}>{info.answers ? 'Still answers' : 'Silent since'}</span>
-      {!info.answers && <span className="mono">{calDate(info.statusDate)}</span>}
-    </p>
-  );
 
   return (
     <div className="ps">
@@ -264,16 +257,13 @@ export default function ProbeSignal({
             {line && <p>{line}</p>}
             {choices('Probe', 'ps-picker')}
             <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} speed={false} compact />
-            {statusLine}
-            <LightLeft data={data} probe={probe} name={info.name} />
             {form}
           </div>
           {photo && <Frame photo={photo} />}
         </div>
       ) : (
         <>
-          <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} speed={!home} distance={!home} />
-          {statusLine}
+          <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} speed={false} distance />
           <div className={`ps-act${home ? ' has-side' : ''}`}>
             <div className="ps-col">
               {countdown && <LightDay data={data} />}
@@ -281,9 +271,8 @@ export default function ProbeSignal({
             </div>
             {home && (
               <div className="ps-side">
-                <BirthdayToy onPick={setBorn} />
                 <ChartFrame className="ps-v1">
-                  <VoyagerLightChart born={born} />
+                  <VoyagerLightChart />
                 </ChartFrame>
               </div>
             )}

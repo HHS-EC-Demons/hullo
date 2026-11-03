@@ -22,7 +22,7 @@ export default function NopePing() {
   return (
     <div className="nope-ping">
       <Button variant="secondary" onClick={ping}>
-        Ping Voyager 1
+        Ping
       </Button>
       <p className="nope-ping-out" aria-live="polite">
         {arrives !== null && <>Arrives {localStamp(arrives, { label: false })}</>}

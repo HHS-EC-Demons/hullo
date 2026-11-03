@@ -44,7 +44,7 @@ export default function LightDay({ data }: Props) {
           const left = secondsToLightDay(crossing, now);
           if (left > 0) {
             const p = countdownParts(left);
-            setText(lead.current, 'One light-day in');
+            setText(lead.current, 'Light-day in');
             setText(d.current, String(p.d));
             setText(h.current, pad(p.h));
             setText(m.current, pad(p.m));
@@ -54,7 +54,7 @@ export default function LightDay({ data }: Props) {
             setHidden(after.current, true);
           } else {
             const days = Math.floor((now - crossing) / 86400000);
-            setText(lead.current, 'One light-day reached');
+            setText(lead.current, 'Light-day reached');
             setText(after.current, days === 0 ? 'today' : days === 1 ? '1 day ago' : `${days} days ago`);
             setLabel(count.current, after.current?.textContent ?? '');
             setHidden(clock.current, true);
@@ -70,7 +70,7 @@ export default function LightDay({ data }: Props) {
   return (
     <div ref={root} className="ld pending">
       <p className="ld-lead" ref={lead}>
-        One light-day in
+        Light-day in
       </p>
       <p className="ld-count mono" ref={count} role="img" aria-label="a few days">
         <span ref={clock}>

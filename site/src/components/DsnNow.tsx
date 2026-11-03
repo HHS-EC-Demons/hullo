@@ -138,7 +138,7 @@ export default function DsnNow({ photos, poster }: Props) {
           <p className="dsn-time">
             {feed ? (
               <>
-                Updated <span className="mono">{clock(feed.time)}</span>
+                <span className="mono">{clock(feed.time)}</span>
               </>
             ) : failed ? (
               'Feed offline'
@@ -167,6 +167,9 @@ export default function DsnNow({ photos, poster }: Props) {
                         </picture>
                       )}
                     </div>
+                    <p className="credit" data-credit>
+                      {photo.caption}. {photo.credit}
+                    </p>
                   </div>
                 )}
                 <div className="dsn-text">
@@ -185,7 +188,7 @@ export default function DsnNow({ photos, poster }: Props) {
                     {links.length > SHOWN && <li className="dsn-more mono">+{links.length - SHOWN}</li>}
                     {rest && (
                       <li className="dsn-dish dsn-idle">
-                        <span className="mono">{rest.dishes}</span> <span>{rest.activity}</span>
+                        <span>{rest.activity}</span>
                       </li>
                     )}
                   </ul>
@@ -201,7 +204,7 @@ export default function DsnNow({ photos, poster }: Props) {
         poster={poster}
         src={EYES_APP}
         title="NASA Eyes on the Deep Space Network, live view of every dish"
-        label="Open DSN Now"
+        label="3D view"
         sizes={EYES_SIZES}
       />
     </section>

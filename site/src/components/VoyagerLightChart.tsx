@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import LineChart, { type Mark } from '@/components/ui/line-chart';
 import history from '../data/probe-history.json';
-import { calDate, monthYearOf } from '../lib/dates';
-import { decimalYear, seriesAt, type History } from '../lib/history';
+import { monthYearOf } from '../lib/dates';
+import { decimalYear, type History } from '../lib/history';
 
 const V1 = (history as History).probes.voyager1;
 
@@ -11,7 +11,7 @@ function hoursText(h: number): string {
   return `${whole} h ${String(Math.floor((h - whole) * 60)).padStart(2, '0')} min`;
 }
 
-export default function VoyagerLightChart({ born }: { born?: number | null }) {
+export default function VoyagerLightChart() {
   const nowYear = decimalYear(Date.now());
   const series = useMemo(() => {
     const points = V1.t.map((t, i) => ({ x: t, y: V1.earth_light_h[i] })).filter((p) => p.x <= nowYear);
@@ -19,18 +19,13 @@ export default function VoyagerLightChart({ born }: { born?: number | null }) {
   }, [Math.floor(nowYear * 12)]);
 
   const marks: Mark[] = [];
-  if (born) {
-    const x = decimalYear(born);
-    const y = seriesAt(V1.t, V1.earth_light_h, x);
-    if (y !== null) marks.push({ x, y, label: calDate(born) });
-  }
 
   return (
     <LineChart
       series={series}
       label="Hours of light from Earth to Voyager 1 each month since launch in 1977"
       xTitle="Year"
-      yTitle="Hours of light"
+      yTitle=""
       tickX={(x) => String(Math.round(x))}
       tickY={(y) => `${y} h`}
       readX={monthYearOf}
@@ -39,7 +34,7 @@ export default function VoyagerLightChart({ born }: { born?: number | null }) {
       yDomain={[0, 28]}
       xTickValues={[1980, 1990, 2000, 2010, 2020]}
       yTicks={4}
-      refLines={[{ y: 24, label: 'One light-day' }]}
+      refLines={[{ y: 24, label: '' }]}
       marks={marks}
     />
   );

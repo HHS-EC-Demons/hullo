@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import OrbitSites, { type MapProps, type Mark, type QuakeClip, type SiteProps, type ViewProps } from '../components/OrbitSites';
 import { ORBIT_SITES, type OrbitSite, type OrbitView } from '../data/orbit-sites';
 import { calDate } from '../lib/dates';
-import { image, lro, meta, pic } from '../lib/photos';
+import { LRO, image, lro, meta, pic } from '../lib/photos';
 import sounds from '../data/sounds.json';
 import siteMaps from '../data/orbit-maps.json';
 import orbitMarks from '../data/orbit-marks.json';
@@ -37,8 +37,9 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
       props: {
         pic: await pic(v.slug, widths(v.slug), SIZES),
         alt: v.alt,
-        when: calDate(date),
+        when: date.slice(0, 4),
         by: v.by,
+        credit: `${c.product}, ${LRO.credit}`,
         mark,
       },
     };
@@ -52,8 +53,9 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
     props: {
       pic: await pic(v.slug, widths(v.slug), site.pair ? PAIR_SIZES : SIZES),
       alt: v.alt,
-      when: calDate(date),
+      when: date.slice(0, 4),
       by: short(v.by),
+      credit: `${/^as\d/i.test(m.id) ? m.id.toUpperCase() : m.id}, ${m.credit}`,
       mark: hit ? { ring: hit.ring, ringSize: hit.ring_size, metersPerPx: hit.m_per_px } : undefined,
     },
   };
@@ -80,6 +82,7 @@ const sites: SiteProps[] = await Promise.all(
 );
 
 const quakeClip: QuakeClip = {
+  source: 'InSight, 2022. PIA25281, NASA/JPL-Caltech/CNES',
   src: quake.file,
   peaks: quake.peaks,
   duration: quake.duration_s,
@@ -119,7 +122,7 @@ const maps = [
   <OrbitSites client:idle sites={sites} maps={maps} first="apollo11" quake={quakeClip}>
     <Fragment slot="head">
       <h1 class="orbit-h1">Orbit</h1>
-      <p class="orbit-line">Landing sites, seen later from orbit.</p>
+      <p class="orbit-line">Landing sites from orbit.</p>
     </Fragment>
   </OrbitSites>
 </Base>

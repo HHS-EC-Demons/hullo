@@ -61,6 +61,7 @@ function Plot({ width, height, flights, picked, onPick }: Props & { width: numbe
     else if (e.key === 'End') next = flights.length;
     if (next === null) return;
     e.preventDefault();
+    setTouched(true);
     onPick(Math.min(flights.length, Math.max(1, next)));
   };
 
@@ -82,7 +83,8 @@ function Plot({ width, height, flights, picked, onPick }: Props & { width: numbe
   };
 
   const tipX = tipFlight ? MARGIN.left + (x(tipFlight.n) ?? 0) + bw / 2 : 0;
-  const live = `Flight ${picked} picked.`;
+  const [touched, setTouched] = useState(false);
+  const live = touched ? `Flight ${picked} picked.` : '';
 
   return (
     <div
@@ -144,6 +146,7 @@ function Plot({ width, height, flights, picked, onPick }: Props & { width: numbe
             onPointerDown={(e) => {
               const f = toFlight(e);
               if (f) {
+                setTouched(true);
                 setHover(f);
                 onPick(f);
               }
