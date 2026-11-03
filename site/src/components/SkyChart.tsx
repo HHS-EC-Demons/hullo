@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useJson, utcDate } from '../lib/client';
+import { useJson } from '../lib/client';
 import { decText, hammer, offsetFromCenter, positionsOn, raText, skyDay, type SkyIndex, type SkyMonth, type SkyStars } from '../lib/sky';
 import { probeInfo } from '../data/probes';
+import { Skeleton } from '@/components/ui/skeleton';
 import './sky.css';
 
 interface Props {
@@ -61,7 +62,6 @@ export default function SkyChart({ highlight, now }: Props) {
   const month = index && want ? (index.months.includes(want.month) ? want.month : want.month < index.months[0] ? index.months[0] : index.months[index.months.length - 1]) : null;
   const { data: table } = useJson<SkyMonth>(month ? `data/sky/${month}.json` : null);
   const day = table && want ? (table.month === want.month ? want.day : want.month < table.month ? 0 : table.days.length - 1) : 0;
-  const shownMs = table ? Date.parse(`${table.first_day}T00:00:00Z`) + day * 86400000 : null;
   const bodies = (index?.bodies ?? []).filter((b) => b.kind !== 'world');
   const positions = table && index && table.month === month ? positionsOn(table, bodies, day) : [];
 
@@ -182,9 +182,9 @@ export default function SkyChart({ highlight, now }: Props) {
     <figure className="sky">
       <figcaption className="sky-cap">
         <h2 className="sky-title">In our sky</h2>
-        <p className="sky-sub mono">{shownMs ? `${utcDate(shownMs)}, 00:00 UTC` : '\u2007'}</p>
       </figcaption>
       <div className="sky-plot" ref={box}>
+        {!(width > 0 && layers) && !error && <Skeleton className="absolute inset-0" />}
         {width > 0 && layers && (
           <svg
             width={w}
@@ -243,7 +243,7 @@ export default function SkyChart({ highlight, now }: Props) {
             })}
           </svg>
         )}
-        {error && <p className="note">The star chart did not load. Reload the page to try again.</p>}
+        {error && <p className="note">Chart offline</p>}
       </div>
     </figure>
   );

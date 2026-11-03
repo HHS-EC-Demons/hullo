@@ -76,14 +76,6 @@ function placeLabels(track: HTMLElement) {
   track.style.paddingBottom = `${LABEL_TOP + Math.max(ends.length, 1) * LABEL_ROW - 10}px`;
 }
 
-function yearsSince(iso: string, now: number): number {
-  const then = new Date(`${iso}T12:00:00Z`);
-  const n = new Date(now);
-  let y = n.getUTCFullYear() - then.getUTCFullYear();
-  if (n.getUTCMonth() < then.getUTCMonth() || (n.getUTCMonth() === then.getUTCMonth() && n.getUTCDate() < then.getUTCDate())) y -= 1;
-  return y;
-}
-
 function When({ ms }: { ms: number }) {
   return <span className="mono">{localStamp(ms, { seconds: true })}</span>;
 }
@@ -137,7 +129,6 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
 
   const now = Date.now();
   const silent = !info.answers;
-  const replyPast = msg.reply ? now >= msg.reply : false;
 
   return (
     <m.li
@@ -170,7 +161,6 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
         </span>
         <span className="fl-end">{info.name}</span>
       </div>
-      {first && <p className="fl-scale">Each step along the line is ten times the travel time of the one before.</p>}
 
       <dl className="fl-times">
         <div>
@@ -191,10 +181,9 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
         )}
         {!silent && msg.reply && (
           <div>
-            <dt>{replyPast ? 'A reply would have landed' : 'A reply would land'}</dt>
+            <dt>Reply lands</dt>
             <dd>
               <When ms={msg.reply} />
-              <span className="fl-why">if {info.name} answered the moment the message arrived</span>
             </dd>
           </div>
         )}
@@ -202,17 +191,16 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
 
       {silent && (
         <div className="fl-silent">
-          <p className="fl-silent-big">No reply will come.</p>
+          <p className="fl-silent-big">No reply</p>
           <p>
-            {info.name}’s {info.lastContact} on <span className="mono">{calDate(info.statusDate)}</span>,{' '}
-            <span className="mono">{yearsSince(info.statusDate, now)} years</span> ago.
+            Silent since <span className="mono">{calDate(info.statusDate)}</span>
           </p>
         </div>
       )}
 
       <div className="fl-act">
         <Button variant="quiet" size="sm" onClick={() => onShare(msg)} disabled={sharing}>
-          {sharing ? 'Making the picture…' : shareLabel}
+          {sharing ? 'Making…' : shareLabel}
         </Button>
       </div>
     </m.li>
@@ -253,7 +241,7 @@ export default function MessageFlight({ data, messages }: Props) {
         const name = `hullo-message-to-${card.probe}.png`;
         if (canShare) {
           setReady({ id: card.id, file: new File([blob], name, { type: 'image/png' }) });
-          setNote('The picture is ready to share.');
+          setNote('Ready');
         } else {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
@@ -263,10 +251,10 @@ export default function MessageFlight({ data, messages }: Props) {
           a.click();
           a.remove();
           setTimeout(() => URL.revokeObjectURL(url), 4000);
-          setNote('The picture is saved to your downloads.');
+          setNote('Saved');
         }
       } catch {
-        if (live) setNote('The picture could not be made in this browser. Try again, or try another browser.');
+        if (live) setNote('Try again');
       } finally {
         if (live) {
           setBusy(null);
@@ -313,7 +301,7 @@ export default function MessageFlight({ data, messages }: Props) {
               first={i === 0}
               onShare={share}
               sharing={busy === msg.id}
-              shareLabel={ready?.id === msg.id ? 'Share the picture' : canShare ? 'Make a picture to share' : 'Save as a picture'}
+              shareLabel={ready?.id === msg.id ? 'Share picture' : canShare ? 'Make picture' : 'Save picture'}
             />
           ))}
         </AnimatePresence>

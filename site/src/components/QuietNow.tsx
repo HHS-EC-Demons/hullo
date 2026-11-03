@@ -3,6 +3,7 @@ import type { Lifeline } from '../data/timeline';
 import { answeringOn, quietEvents } from '../lib/quiet-count';
 import { dayMs, TIMELINE_START } from '../data/timeline';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { localIsoDay } from '../lib/local-date';
 import './quiet-now.css';
 
@@ -43,10 +44,12 @@ export default function QuietNow({ lines, builtMs }: Props) {
         </span>
       </p>
       <div className="qn-chart">
-        {live && (
-          <Suspense fallback={null}>
+        {live ? (
+          <Suspense fallback={<Skeleton className="absolute inset-0" />}>
             <QuietChart events={events} nowMs={now} markMs={valid ? dayMs(birthday) : null} markCount={then} />
           </Suspense>
+        ) : (
+          <Skeleton className="absolute inset-0" />
         )}
       </div>
       <div className="qn-birth">
