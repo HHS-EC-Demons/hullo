@@ -47,7 +47,7 @@
 
 .ls-big {
   color: var(--laser);
-  font-size: clamp(3rem, 12vw, 5.5rem);
+  font-size: clamp(2.5rem, 10vw, 5.5rem);
   line-height: 0.95;
   font-weight: 700;
   letter-spacing: -0.045em;
