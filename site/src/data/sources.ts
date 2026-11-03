@@ -89,22 +89,13 @@ export const DATASETS: Source[] = [
     used: 'Photos AS14-67-9386 of the Apollo 14 reflector, AS11-37-5551 of the Apollo 11 reflector (NASA) and PIA24648 of Ingenuity (NASA/JPL-Caltech/ASU/MSSS). Each is shown unaltered apart from crop and scale.',
   },
   {
-    id: 'nasa-images-silent',
-    title: 'NASA Image and Video Library, Silent photos',
-    publisher: 'NASA',
-    url: 'https://images.nasa.gov/',
-    dated: 'Downloaded 1 and 2 Nov 2026',
-    license: `${NASA_MEDIA} Each item page names its credit. No logos or insignia are used.`,
-    used: `One photo for each silent object on the Silent and Passport pages, fetched by NASA ID from the full resolution original and shown unaltered apart from a 4:3 crop and scale. ${photoList}.`,
-  },
-  {
     id: 'nasa-images-pages',
     title: 'NASA Image and Video Library, page photos',
     publisher: 'NASA',
     url: 'https://images.nasa.gov/',
-    dated: 'Downloaded 2 Nov 2026',
+    dated: 'Downloaded 1 and 2 Nov 2026',
     license: `${NASA_MEDIA} Each item page names its credit. No logos or insignia are used.`,
-    used: `Photos on the Silent, Passport, Classroom and 404 pages, some of them JPL Photojournal items, each a full resolution original shown unaltered apart from crop and scale. ${pageList}.`,
+    used: `One photo for each silent object on the Silent and Passport pages, fetched by NASA ID from the full resolution original and shown unaltered apart from a 4:3 crop and scale. ${photoList}. Photos on the Silent, Passport, Classroom and 404 pages, some of them JPL Photojournal items, each a full resolution original shown unaltered apart from crop and scale. ${pageList}.`,
   },
 ];
 

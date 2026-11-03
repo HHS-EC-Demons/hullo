@@ -10,6 +10,13 @@ Flights the log lists with 0 m and 0 m/s are hovers. Basemap tiles are
 stored with XYZ row numbering: JPEG at zoom 13 to 16 over the whole area,
 and WebP at zoom 17 and 18 only along the flight paths, listed in
 deep.json so the map never asks for a tile that does not exist.
+
+clock() reads the newest Perseverance raw image record from NASA's raw
+image feed, whose sol and local mean solar time ("Sol-02024M12:55:51.155")
+come with the UTC time the image was taken. The Mars page runs the NASA
+GISS Mars24 algorithm from that one record, so its Jezero clock and sol
+count follow Perseverance's own mission clock. Run with
+.venv/bin/python mars.py clock
 """
 
 from __future__ import annotations
@@ -38,6 +45,8 @@ DEEP = {17: 100.0, 18: 50.0}
 MARGIN_M = 350.0
 FLIGHT_LOG = "https://science.nasa.gov/wp-content/uploads/2024/06/ingenuity-helicopter-flight-log.pdf"
 MISSION_PAGE = "https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-mars-helicopter/"
+RAW_FEED = "https://mars.nasa.gov/rss/api/?feed=raw_images&category=mars2020&feedtype=json&num=1&order=sol+desc"
+MARS24 = "https://www.giss.nasa.gov/tools/mars24/help/algorithm.html"
 LOG_ROW = re.compile(
     r"(?<![\d.,~])(\d{1,2}) (\d{2,4}) ([A-Z][a-z]+\.?) (\d{1,2}), (\d{4}) ([\d,]+) ~?[\d,]+ (\d+) ~?[\d,]+ "
     r"([\d.]+) ~?[\d.]+ ([\d.]+)"
@@ -269,3 +278,30 @@ def build(site_public: Path) -> dict:
     (data_dir / "ingenuity.json").write_text(json.dumps(out, separators=(",", ":")))
     return {"flights": len(flights), "tiles": count, "deep_tiles": out["deep_tiles"],
             "deep_mb": round(deep_bytes / 1e6, 2), "nasa": nasa_totals, "log_m": running}
+
+
+def clock(out: Path) -> dict:
+    """Write the newest raw image's UTC time, sol and LMST for the Jezero clock."""
+    image = json.loads(net.get(RAW_FEED, timeout=120))["images"][0]
+    m = re.fullmatch(r"Sol-(\d+)M(\d\d):(\d\d):(\d\d(?:\.\d+)?)", image["date_taken_mars"])
+    if not m:
+        raise ValueError(f"unexpected date_taken_mars {image['date_taken_mars']}")
+    record = {
+        "source": RAW_FEED,
+        "algorithm": MARS24,
+        "image": image["imageid"],
+        "link": image["link"],
+        "utc": image["date_taken_utc"] + "Z",
+        "sol": int(m.group(1)),
+        "lmst_h": round(int(m.group(2)) + int(m.group(3)) / 60 + float(m.group(4)) / 3600, 6),
+        "tt_minus_utc_s": 69.184,
+    }
+    out.write_text(json.dumps(record, indent=1) + "\n")
+    return record
+
+
+if __name__ == "__main__":
+    import sys
+
+    if sys.argv[1:] == ["clock"]:
+        print(clock(Path(__file__).resolve().parent.parent / "site" / "src" / "data" / "jezero-clock.json"))

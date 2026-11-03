@@ -43,4 +43,8 @@ Instrument readout fits Hullo best. Martian Mono's 0 carries a slash so it never
 
 ## Recommendation
 
-Instrument readout, with Mission records as the second choice. Waiting for the owner's pick before anything changes on the site.
+Instrument readout, with Mission records as the second choice.
+
+## Decision
+
+On 3 Nov 2026 the owner chose to keep the current fonts, Gabarito and Spline Sans Mono, everywhere on the site. The specimens stay here as a record.

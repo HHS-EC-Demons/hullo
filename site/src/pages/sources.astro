@@ -54,8 +54,21 @@ const software: Tool[] = [
     };
   }),
 ].sort((a, b) => a.name.localeCompare(b.name));
+const byLicense = [...new Set(software.map((t) => t.license))]
+  .map((license) => ({ license, tools: software.filter((t) => t.license === license) }))
+  .sort((a, b) => b.tools.length - a.tools.length || a.license.localeCompare(b.license));
 
-const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
+const SHARED = 4;
+const groups = SOURCE_GROUPS.map((g) => {
+  const counts = new Map<string, number>();
+  for (const s of g.items) counts.set(s.publisher, (counts.get(s.publisher) ?? 0) + 1);
+  const shared = [...new Set(g.items.map((s) => s.publisher))].filter((p) => (counts.get(p) ?? 0) >= SHARED);
+  const parts = [
+    ...shared.map((publisher) => ({ publisher, items: g.items.filter((s) => s.publisher === publisher) })),
+    { publisher: null as string | null, items: g.items.filter((s) => !shared.includes(s.publisher)) },
+  ].filter((part) => part.items.length > 0);
+  return { ...g, slug: `g-${g.key}`, parts };
+});
 ---
 
 <Base title="Sources" current="sources" description={`Every dataset, page and tool ${BRAND} uses, with its license and credit.`}>
@@ -86,23 +99,26 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
         <h2 class="group" id={g.slug}>
           {g.title}
         </h2>
-        <ul class="list">
-          {g.items.map((s) => (
-            <li id={s.id}>
-              <p class="title">
-                <a href={s.url} rel="external noopener">{s.title}</a>
-              </p>
-              <details>
-                <summary class="meta">
-                  {s.publisher}, {s.dated}
-                </summary>
-                <p class="used">{s.used}</p>
-                {s.note && <p class="note">{s.note}</p>}
-                <p class="license">{s.license}</p>
-              </details>
-            </li>
-          ))}
-        </ul>
+        {g.parts.map((part) => (
+          <>
+            {part.publisher && <h3 class="pub">{part.publisher}</h3>}
+            <ul class="list">
+              {part.items.map((s) => (
+                <li id={s.id}>
+                  <p class="title">
+                    <a href={s.url} rel="external noopener">{s.title}</a>
+                  </p>
+                  <details>
+                    <summary class="meta">{part.publisher ? s.dated : `${s.publisher}, ${s.dated}`}</summary>
+                    <p class="used">{s.used}</p>
+                    {s.note && <p class="note">{s.note}</p>}
+                    <p class="license">{s.license}</p>
+                  </details>
+                </li>
+              ))}
+            </ul>
+          </>
+        ))}
       </section>
     ))
   }
@@ -115,12 +131,17 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
         <p class="license">Naipe Foundry, Eben Sorkin and Mirko Velimirović. SIL Open Font License.</p>
       </li>
       {
-        software.map((t) => (
+        byLicense.map((g) => (
           <li>
-            <p class="title">
-              <a href={t.url} rel="external noopener">{t.name}</a> <span class="mono version">{t.version}</span>
+            <p class="title mono">{g.license}</p>
+            <p class="pkgs">
+              {g.tools.map((t, i) => (
+                <>
+                  <a href={t.url} rel="external noopener">{t.name}</a> <span class="mono version">{t.version}</span>
+                  {i < g.tools.length - 1 ? ', ' : ''}
+                </>
+              ))}
             </p>
-            <p class="license mono">{t.license}</p>
           </li>
         ))
       }
@@ -168,6 +189,15 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
     letter-spacing: -0.02em;
     margin-bottom: 18px;
   }
+  .pub {
+    margin: 28px 0 6px;
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+  }
+  .group + .pub {
+    margin-top: 0;
+  }
   .list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -182,7 +212,12 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
     scroll-margin-top: 88px;
   }
   .tools {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pkgs {
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    line-height: 1.7;
   }
   .title {
     font-weight: 700;
