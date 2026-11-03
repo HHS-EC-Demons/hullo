@@ -1,0 +1,79 @@
+{
+ "orbit-viking1-hirise": {
+  "ring": [
+   0.4995,
+   0.5006
+  ],
+  "ring_size": 0.08,
+  "method": "End of the Lander leader line in NASA's annotated PIA01881_fig1.jpg, the same pixels as the plain release.",
+  "m_per_px": 0.2462,
+  "scale": "MAP_SCALE 0.25 m in https://hirise-pds.lpl.arizona.edu/PDS/RDR/PSP/ORB_001500_001599/PSP_001521_2025/PSP_001521_2025_RED.LBL, east to west at 22.27° N. The figure matches the RED browse image at 0.255 m per pixel, so it is at full resolution."
+ },
+ "orbit-viking2-hirise": {
+  "ring": [
+   0.4995,
+   0.5006
+  ],
+  "ring_size": 0.08,
+  "method": "End of the Lander leader line in NASA's annotated PIA01882_fig1.jpg, the same pixels as the plain release.",
+  "scale": "No scale bar. The figure has too little relief to match against the browse image, so its pixel scale could not be checked."
+ },
+ "orbit-spirit-hirise": {
+  "ring": [
+   0.2274,
+   0.4264
+  ],
+  "ring_size": 0.08,
+  "method": "Brightest pixel in the image, where the HiRISE caption of ESP_021925_1650 says Spirit is the brightest spot.",
+  "scale": "No scale bar. The HiRISE page does not give the scale of this cut and it could not be matched to the browse image."
+ },
+ "orbit-opportunity-hirise": {
+  "ring": [
+   0.7438,
+   0.3202
+  ],
+  "ring_size": 0.08,
+  "method": "Bright hardware at the center of the crater the HiRISE caption of ESP_050177_1780 names as Eagle crater, where it says the lander rests.",
+  "scale": "No scale bar. The HiRISE page does not give the scale of this cut and it could not be matched to the browse image."
+ },
+ "orbit-phoenix-2008": {
+  "ring": [
+   0.4005,
+   0.1093
+  ],
+  "ring_size": 0.08,
+  "m_per_px": 0.2411,
+  "method": "The feature the PIA22223 caption names as the lander (top). Figures 1 and 2 line up to within 1 px.",
+  "scale": "MAP_SCALE 0.25 m in https://hirise-pds.lpl.arizona.edu/PDS/RDR/PSP/ORB_009200_009299/PSP_009290_2485/PSP_009290_2485_RED.LBL, polar stereographic, at 68.22° N. The caption says each figure is about 300 m wide, which the 1286 px width at this scale matches."
+ },
+ "orbit-phoenix-2017": {
+  "ring": [
+   0.4005,
+   0.1093
+  ],
+  "ring_size": 0.08,
+  "m_per_px": 0.2411,
+  "method": "The feature the PIA22223 caption names as the lander (top). Figures 1 and 2 line up to within 1 px.",
+  "scale": "MAP_SCALE 0.25 m in https://hirise-pds.lpl.arizona.edu/PDS/RDR/ESP/ORB_053400_053499/ESP_053451_2485/ESP_053451_2485_RED.LBL, polar stereographic, at 68.22° N. The caption says each figure is about 300 m wide, which the 1286 px width at this scale matches."
+ },
+ "orbit-insight-2018": {
+  "ring": [
+   0.5406,
+   0.512
+  ],
+  "ring_size": 0.08,
+  "m_per_px": 0.3418,
+  "method": "The bright spot with two dark round solar arrays, the InSight lander in the HiRISE full resolution hardware cutout and in the labeled release ESP_058005_1845-labels.",
+  "scale": "MAP_SCALE 0.25 m in https://hirise-pds.lpl.arizona.edu/PDS/RDR/ESP/ORB_058000_058099/ESP_058005_1845/ESP_058005_1845_RED.LBL, a full resolution cutout, scaled to 1400 px wide on this site."
+ },
+ "orbit-insight-2024": {
+  "ring": [
+   0.4094,
+   0.554
+  ],
+  "ring_size": 0.08,
+  "m_per_px": 0.303,
+  "method": "The two dark round solar arrays inside the faded blast mark in PIA26515, NASA's HiRISE view of InSight.",
+  "scale": "The 100 m bar NASA printed on PIA26515, 330 px long. The bar is cropped out of the view on this site."
+ }
+}

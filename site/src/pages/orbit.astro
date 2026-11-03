@@ -6,6 +6,9 @@ import { calDate } from '../lib/dates';
 import { LRO, image, lro, meta, pic } from '../lib/photos';
 import sounds from '../data/sounds.json';
 import siteMaps from '../data/orbit-maps.json';
+import orbitMarks from '../data/orbit-marks.json';
+
+const MARKS = orbitMarks as Record<string, { ring: [number, number]; ring_size: number; m_per_px?: number }>;
 
 const SIZES = '(max-width: 640px) 92vw, (max-width: 1360px) 46vw, 620px';
 const PAIR_SIZES = '(max-width: 900px) 92vw, 820px';
@@ -47,6 +50,7 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
   }
   const m = meta(v.slug);
   const date = m.date ?? site.landed;
+  const hit = MARKS[v.slug];
   return {
     date,
     detail: `HiRISE view from ${calDate(date)}`,
@@ -56,6 +60,7 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
       when: calDate(date),
       by: short(v.by),
       caption: `${label(m.id)}, ${m.credit}.`,
+      mark: hit ? { ring: hit.ring, ringSize: hit.ring_size, metersPerPx: hit.m_per_px } : undefined,
     },
   };
 }
