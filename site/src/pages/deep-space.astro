@@ -14,6 +14,7 @@ interface HomeImage {
   id: string;
   credit: string;
   short: string;
+  focus: string;
   alt: string;
 }
 
@@ -23,7 +24,7 @@ const photos: Record<string, ProbePhoto> = {};
 for (const m of Object.values(homeImages as Record<string, HomeImage>)) {
   if (m.group !== 'deep' || !m.probe) continue;
   const p = await pic(m.slug, [480, 720, 960, 1280, 1600, 2000, 2400], '');
-  photos[m.probe] = { ...p, alt: m.alt, caption: `${m.short}.`, id: m.id, credit: m.credit };
+  photos[m.probe] = { ...p, alt: m.alt, caption: `${m.short}.`, id: m.id, credit: m.credit, focus: m.focus };
 }
 ---
 
