@@ -107,7 +107,6 @@
 
 .ps-stage {
   aspect-ratio: 5 / 4;
-  background: #000;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -118,9 +117,6 @@
   object-fit: cover;
 }
 
-.ps-frame .credit {
-  min-height: calc(2 * 1.45em);
-}
 
 .ps-claim {
   display: grid;
@@ -684,9 +680,6 @@
   }
   .ps-act.has-side {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .ps-frame .credit {
-    min-height: calc(3 * 1.45em);
   }
 }
 
