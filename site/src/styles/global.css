@@ -20,7 +20,6 @@
   --muted: var(--ink-muted);
   --edge: color-mix(in oklab, var(--ink-muted) 62%, var(--violet));
   --line: var(--lilac);
-  --thumb: color-mix(in oklab, var(--lilac) 38%, var(--violet));
   --focus: var(--lilac);
   --on-laser: var(--violet);
   --ok: color-mix(in oklab, var(--laser) 70%, var(--ink-muted));
@@ -144,8 +143,6 @@
     font-size: 100%;
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
-    scrollbar-color: var(--thumb) var(--bg);
-    scrollbar-width: thin;
     scroll-padding-top: 72px;
   }
 
@@ -153,19 +150,6 @@
     html {
       scroll-padding-top: 68px;
     }
-  }
-
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--bg);
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--thumb);
-    border: 3px solid var(--bg);
-    border-radius: 10px;
   }
 
   body {
