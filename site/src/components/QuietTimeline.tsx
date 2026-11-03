@@ -1,9 +1,8 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { scaleLinear } from 'd3-scale';
 import { dayMs, span, spanText, TIMELINE_START, type Lifeline } from '../data/timeline';
-import { getStamp, stamp } from '../lib/passport';
+import { stamp } from '../lib/passport';
 import { onQuietPick } from '../lib/quiet-pick';
-import { href } from '../lib/paths';
 import { useReducedMotion } from '../lib/client';
 import { calDate } from '../lib/dates';
 import './quiet.css';
@@ -25,7 +24,6 @@ export interface TimelinePhoto {
 interface Props {
   lines: Lifeline[];
   photos: Record<string, TimelinePhoto>;
-  found: Record<string, string>;
   builtMs: number;
   first: string;
 }
@@ -38,12 +36,11 @@ function year(iso: string): string {
   return iso.slice(0, 4);
 }
 
-export default function QuietTimeline({ lines, photos, found, builtMs, first }: Props) {
+export default function QuietTimeline({ lines, photos, builtMs, first }: Props) {
   const [now, setNow] = useState(builtMs);
   const [picked, setPicked] = useState<string | null>(null);
   const [hover, setHover] = useState<string | null>(null);
   const [pulse, setPulse] = useState(0);
-  const [stamped, setStamped] = useState(false);
   const reduce = useReducedMotion();
 
   const root = useRef<HTMLDivElement>(null);
@@ -82,7 +79,6 @@ export default function QuietTimeline({ lines, photos, found, builtMs, first }: 
     setPulse((n) => n + 1);
     const f = figures(l);
     stamp(l.id, l.answers ? `Answering for ${f.on}` : `Silent for ${f.off}`);
-    setStamped(getStamp(l.id) !== null);
   }
 
   const pickRef = useRef(pick);
@@ -100,7 +96,7 @@ export default function QuietTimeline({ lines, photos, found, builtMs, first }: 
     <div className="qt" ref={root}>
       <div className="qt-sticky">
         <div className="qt-readout" aria-live="polite">
-          <Readout line={shown} photo={photos[shown.id]} found={found[shown.id]} figures={figures(shown)} picked={picked !== null} stamped={stamped && shown.id === picked} />
+          <Readout line={shown} photo={photos[shown.id]} figures={figures(shown)} />
         </div>
         <div className="qt-scale" aria-hidden="true" data-tick>
           <p className="qt-key">
@@ -181,37 +177,31 @@ export default function QuietTimeline({ lines, photos, found, builtMs, first }: 
   );
 }
 
-function Readout({ line, photo, found, figures, picked, stamped }: { line: Lifeline; photo?: TimelinePhoto; found?: string; figures: { on: string; off: string | null }; picked: boolean; stamped: boolean }) {
+function Readout({ line, photo, figures }: { line: Lifeline; photo?: TimelinePhoto; figures: { on: string; off: string | null } }) {
   return (
     <div className="qt-card">
       <figure className="qt-photo">
         {photo && (
-          <>
-            <picture>
-              {photo.avif && <source type="image/avif" srcSet={photo.avif} sizes={SIZES} />}
-              {photo.webp && <source type="image/webp" srcSet={photo.webp} sizes={SIZES} />}
-              <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" />
-            </picture>
-            <figcaption className="credit">
-              {photo.caption}
-              {photo.when ? `, ${photo.when}` : ''}.{' '}
-              <span data-credit>
-                <a href={photo.page} rel="external noopener">
-                  {photo.nasaId}
-                </a>
-                , {photo.credit}
-              </span>
-            </figcaption>
-          </>
+          <picture>
+            {photo.avif && <source type="image/avif" srcSet={photo.avif} sizes={SIZES} />}
+            {photo.webp && <source type="image/webp" srcSet={photo.webp} sizes={SIZES} />}
+            <img src={photo.src} width={photo.width} height={photo.height} alt={`${photo.alt} ${photo.caption}${photo.when ? `, ${photo.when}` : ''}.`} loading="lazy" decoding="async" />
+          </picture>
         )}
       </figure>
       <div className="qt-text">
         <h3 className="qt-title">{line.name}</h3>
-        <p className="qt-dates">
-          {line.startKind} {calDate(line.start)}.{' '}
-          {line.end ? `Last heard ${calDate(line.end)}.` : `${line.endKind}.`}
-        </p>
         <dl className="qt-figs">
+          <div>
+            <dt>{line.startKind}</dt>
+            <dd className="mono">{calDate(line.start)}</dd>
+          </div>
+          {line.end && (
+            <div>
+              <dt>Last heard</dt>
+              <dd className="mono">{calDate(line.end)}</dd>
+            </div>
+          )}
           <div>
             <dt>{line.answers ? 'Answering for' : 'Answered for'}</dt>
             <dd className="mono">{figures.on}</dd>
@@ -223,14 +213,6 @@ function Readout({ line, photo, found, figures, picked, stamped }: { line: Lifel
             </div>
           )}
         </dl>
-        {found && <p className="qt-found">{found}</p>}
-        {stamped ? (
-          <p className="qt-stamped">
-            Stamped in your <a href={href('passport/')}>passport</a>.
-          </p>
-        ) : (
-          !picked && <p className="qt-stamped">Pick a line. Each pick stamps your passport.</p>
-        )}
       </div>
     </div>
   );

@@ -169,13 +169,12 @@ export default function Classroom({ photos, title, line }: Props) {
             <SeriesChart
               points={moon.points}
               marker={{ x: moon.shot.ms, y: moon.shot.round_trip_s }}
-              markerLabel="The shot on the sheet"
               label={`Laser round trip from ${moon.stationName} to the ${moon.reflectorName} reflector, hour by hour`}
               xTitle="date"
-              yTitle="round trip (s)"
+              yTitle="round trip, s"
               tickX={dayTick}
               tickY={(v) => v.toFixed(2)}
-              readX={(v) => localStamp(v)}
+              readX={(v) => localStamp(v, { label: false })}
               readY={(v) => `${six.format(v)} s`}
               xTickValues={weekTicks}
             />
@@ -193,11 +192,10 @@ export default function Classroom({ photos, title, line }: Props) {
             <SeriesChart
               points={voyagerPoints}
               marker={{ x: at, y: voyagerS / 3600 }}
-              markerLabel="Today"
               refY={{ y: 24, label: '1 light day' }}
               label="Voyager 1 light time, day by day"
               xTitle="date"
-              yTitle="light time (h)"
+              yTitle="light time, h"
               tickX={(v) => monthYear(v)}
               tickY={(v) => v.toFixed(1)}
               readX={(v) => calDate(v)}
@@ -244,10 +242,6 @@ export default function Classroom({ photos, title, line }: Props) {
   );
 }
 
-function year(when: string): string {
-  return when.match(/\d{4}/)?.[0] ?? '';
-}
-
 function MoonCheck({ km }: { km: number | null }) {
   const id = useId();
   const [text, setText] = useState('');
@@ -262,7 +256,7 @@ function MoonCheck({ km }: { km: number | null }) {
         setResult({ off: guess - Math.round(km) });
       }}
     >
-      <label htmlFor={id}>Your answer (km)</label>
+      <label htmlFor={id}>Answer in km</label>
       <Input
         id={id}
         inputMode="numeric"
@@ -281,10 +275,10 @@ function MoonCheck({ km }: { km: number | null }) {
       <p className="cr-check-out" aria-live="polite">
         {result &&
           (Math.abs(result.off) <= 1000 ? (
-            'Spot on, within 1,000 km'
+            'Correct'
           ) : (
             <>
-              <span className="mono">{int.format(Math.abs(result.off))} km</span> too {result.off > 0 ? 'high' : 'low'}
+              <span className="mono">{int.format(Math.abs(result.off))} km</span> {result.off > 0 ? 'high' : 'low'}
             </>
           ))}
       </p>
@@ -314,15 +308,6 @@ function Activity({ title, photo, head, facts, rows, chart, after, onPrint, chil
               decoding="async"
             />
           </picture>
-          <figcaption className="credit">
-            <span className="mono">{year(photo.when)}</span>{' '}
-            <span data-credit>
-              <a href={photo.page} rel="external noopener">
-                {photo.nasaId}
-              </a>
-              , {photo.credit}
-            </span>
-          </figcaption>
         </figure>
       )}
       <div className="cr-body">

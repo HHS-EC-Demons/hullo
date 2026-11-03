@@ -1,4 +1,4 @@
-import { forwardRef, lazy, Suspense, type CSSProperties, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
+import { forwardRef, lazy, Suspense, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,7 +50,6 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
   const [live, setLive] = useState(false);
   const sheet = useRef<HTMLDivElement>(null);
   const nameId = useId();
-  const hintId = useId();
 
   useEffect(() => {
     setName(getHolder());
@@ -99,7 +98,7 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
           }}
         >
           <div className="pp-field">
-            <label htmlFor={nameId}>Name on the certificate</label>
+            <label htmlFor={nameId}>Certificate name</label>
             <Input
               id={nameId}
               name="certificate-name"
@@ -107,15 +106,11 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
               value={name}
               maxLength={60}
               autoComplete="off"
-              aria-describedby={hintId}
               onChange={(e) => {
                 setName(e.target.value);
                 setHolder(e.target.value);
               }}
             />
-            <p id={hintId} className="pp-hint">
-              Optional. It stays on this device.
-            </p>
           </div>
           <Button type="submit" disabled={earned.length === 0}>
             Print certificate
@@ -147,11 +142,8 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
                   {g.title}
                 </a>
               </h2>
-              <span className="pp-group-count">
-                <span className="mono">
-                  {got} of {objects.length}
-                </span>{' '}
-                stamped
+              <span className="pp-group-count mono">
+                {got}/{objects.length}
               </span>
             </div>
             <ul className="pp-grid">
@@ -172,39 +164,17 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
   );
 }
 
-function year(when: string): string {
-  return when.match(/\d{4}/)?.[0] ?? '';
-}
-
 function Slot({ object, thumb, stamp }: { object: StampObject; thumb?: Thumb; stamp?: Stamp }) {
   return (
-    <article className={stamp ? 'pp-slot stamped' : 'pp-slot'} aria-label={stamp ? `${object.name}, stamped ${dayText(stamp.at)}` : `${object.name}, not stamped yet`}>
-      <figure className="pp-thumb">
-        {thumb && (
-          <picture>
-            <source type="image/avif" srcSet={thumb.avif} sizes={thumb.sizes} />
-            <source type="image/webp" srcSet={thumb.webp} sizes={thumb.sizes} />
-            <img src={thumb.src} width={thumb.width} height={thumb.height} alt={thumb.alt} loading="lazy" decoding="async" />
-          </picture>
-        )}
-        {thumb && (
-          <figcaption className="pp-cap">
-            {year(thumb.when) && <span className="mono">{year(thumb.when)} </span>}
-            <span data-credit>
-              {thumb.nasaId}, {thumb.credit}
-            </span>
-          </figcaption>
-        )}
-      </figure>
+    <article className={stamp ? 'pp-slot stamped' : 'pp-slot'} aria-label={stamp ? `${object.name}, stamped ${dayText(stamp.at)}${stamp.detail ? `, ${stamp.detail}` : ''}` : `${object.name}, not stamped yet`}>
+      {thumb && (
+        <picture className="pp-thumb">
+          <source type="image/avif" srcSet={thumb.avif} sizes={thumb.sizes} />
+          <source type="image/webp" srcSet={thumb.webp} sizes={thumb.sizes} />
+          <img src={thumb.src} width={thumb.width} height={thumb.height} alt={thumb.alt} loading="lazy" decoding="async" />
+        </picture>
+      )}
       <h3 className="pp-name">{object.name}</h3>
-      {stamp ? (
-        <div className="pp-stamp" style={{ '--tilt': `${tilt(object.id)}deg` } as CSSProperties}>
-          {stamp.detail && <p className="pp-stamp-detail mono">{stamp.detail}</p>}
-          <p className="pp-stamp-date mono">
-            <time dateTime={new Date(stamp.at).toISOString()}>{dayText(stamp.at)}</time>
-          </p>
-        </div>
-      ) : null}
     </article>
   );
 }
