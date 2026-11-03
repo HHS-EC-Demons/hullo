@@ -46,7 +46,20 @@ export default function QuietTimeline({ lines, photos, found, builtMs, first }: 
   const [stamped, setStamped] = useState(false);
   const reduce = useReducedMotion();
 
+  const root = useRef<HTMLDivElement>(null);
+
   useEffect(() => setNow(Date.now()), []);
+
+  useEffect(() => {
+    const head = document.querySelector('.site-head');
+    const el = root.current;
+    if (!head || !el) return;
+    const fit = () => el.style.setProperty('--qt-top', `${Math.floor(head.getBoundingClientRect().height)}px`);
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(head);
+    return () => ro.disconnect();
+  }, []);
 
   const x = useMemo(() => scaleLinear().domain([dayMs(TIMELINE_START), now]).range([0, 100]).clamp(true), [now]);
   const ticks = useMemo(() => {
@@ -84,7 +97,7 @@ export default function QuietTimeline({ lines, photos, found, builtMs, first }: 
   );
 
   return (
-    <div className="qt">
+    <div className="qt" ref={root}>
       <div className="qt-sticky">
         <div className="qt-readout" aria-live="polite">
           <Readout line={shown} photo={photos[shown.id]} found={found[shown.id]} figures={figures(shown)} picked={picked !== null} stamped={stamped && shown.id === picked} />
@@ -216,7 +229,7 @@ function Readout({ line, photo, found, figures, picked, stamped }: { line: Lifel
             Stamped in your <a href={href('passport/')}>passport</a>.
           </p>
         ) : (
-          !picked && <p className="qt-stamped">Pick a line to compare. Each pick stamps your passport.</p>
+          !picked && <p className="qt-stamped">Pick a line. Each pick stamps your passport.</p>
         )}
       </div>
     </div>
