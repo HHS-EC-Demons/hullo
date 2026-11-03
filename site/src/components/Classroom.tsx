@@ -38,6 +38,7 @@ export interface TopicPhoto {
   nasaId: string;
   credit: string;
   page: string;
+  fit?: 'cover' | 'contain';
 }
 
 interface Props {
@@ -307,6 +308,7 @@ function Activity({ title, photo, head, facts, rows, chart, after, onPrint, chil
               width={photo.width}
               height={photo.height}
               alt={`${photo.caption}, ${photo.when}.`}
+              className={photo.fit === 'contain' ? 'contain' : undefined}
               loading={first ? 'eager' : 'lazy'}
               fetchPriority={first ? 'high' : 'auto'}
               decoding="async"
