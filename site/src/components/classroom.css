@@ -28,8 +28,7 @@
   align-self: stretch;
   margin: 0;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 8px;
+  grid-template-rows: minmax(0, 1fr);
 }
 .cr-photo picture {
   display: block;

@@ -22,7 +22,7 @@
   background: var(--bg);
 }
 .qt-readout {
-  min-height: calc(var(--qt-photo) * 0.75 + 98px);
+  min-height: calc(var(--qt-photo) * 0.75 + 40px);
   display: grid;
   align-items: start;
   padding-block: 18px;
@@ -34,13 +34,6 @@
   align-items: end;
   padding-top: 6px;
   border-bottom: 1px solid var(--edge);
-}
-
-.qt-hint {
-  max-width: 34rem;
-  color: var(--muted);
-  font-size: var(--fs-md);
-  text-wrap: pretty;
 }
 
 .qt-card {
@@ -77,9 +70,6 @@
   letter-spacing: -0.035em;
   text-wrap: balance;
 }
-.qt-dates {
-  color: var(--muted);
-}
 .qt-figs {
   display: flex;
   flex-wrap: wrap;
@@ -97,15 +87,6 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
 }
-.qt-found {
-  max-width: 34rem;
-  text-wrap: pretty;
-}
-.qt-stamped {
-  font-size: var(--fs-sm);
-  color: var(--muted);
-}
-
 .qt-key {
   display: flex;
   flex-wrap: wrap;
@@ -170,7 +151,7 @@
   border-radius: var(--radius);
   cursor: pointer;
   touch-action: manipulation;
-  scroll-margin-top: calc(var(--qt-top) + var(--qt-photo) * 0.75 + 190px);
+  scroll-margin-top: calc(var(--qt-top) + var(--qt-photo) * 0.75 + 130px);
   scroll-margin-bottom: 24px;
   -webkit-tap-highlight-color: transparent;
 }
@@ -293,14 +274,12 @@
     --qt-gap: 0px;
   }
   .qt-readout {
-    min-height: 18.5rem;
+    min-height: 10.5rem;
     padding-block: 14px;
   }
   .qt-card {
     grid-template-columns: 7.5rem minmax(0, 1fr);
-    grid-template-areas:
-      'photo text'
-      'cap cap';
+    grid-template-areas: 'photo text';
     gap: 10px 14px;
   }
   .qt-photo {
@@ -309,14 +288,8 @@
   .qt-photo picture {
     grid-area: photo;
   }
-  .qt-photo figcaption {
-    grid-area: cap;
-  }
   .qt-text {
     grid-area: text;
-  }
-  .qt-found {
-    display: none;
   }
   .qt-title {
     font-size: var(--fs-lg);
@@ -341,10 +314,6 @@
   .qt-figs dd {
     font-size: var(--fs-sm);
   }
-  .qt-dates,
-  .qt-stamped {
-    font-size: var(--fs-sm);
-  }
   .qt-scale {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -353,7 +322,7 @@
     padding-bottom: 2px;
   }
   .qt-row {
-    scroll-margin-top: calc(var(--qt-top) + 18.5rem + 70px);
+    scroll-margin-top: calc(var(--qt-top) + 10.5rem + 70px);
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       'name state'

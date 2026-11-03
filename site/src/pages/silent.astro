@@ -64,7 +64,6 @@ for (const b of borrowed) {
 
 const moon = readData<{ reflectors: ReflectorInfo[] }>('moon/index.json');
 const lines = lifelines(moon.reflectors);
-const found = Object.fromEntries(SILENT.map((s) => [s.id, s.found]));
 const builtMs = Date.now();
 
 const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
@@ -79,7 +78,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
   <header class="wrap page-head silent-head">
     <div class="silent-title">
       <h1>The silent ones</h1>
-      <p>NASA’s legacy hardware, quiet or still answering.</p>
+      <p>NASA’s legacy hardware</p>
     </div>
     <figure class="silent-hero">
       <picture>
@@ -87,21 +86,15 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
         <source type="image/webp" srcset={heroPic.webp} sizes={heroPic.sizes} />
         <img src={heroPic.src} width={heroPic.width} height={heroPic.height} alt={hero.alt} loading="eager" fetchpriority="high" decoding="async" />
       </picture>
-      <figcaption class="credit">
-        Charles Conrad Jr. checks Surveyor 3’s TV camera, <span class="mono">1969</span>.
-        <span data-credit><a href={hero.page} rel="external noopener">{hero.nasa_id}</a>, {hero.credit}</span>
-      </figcaption>
     </figure>
     <QuietNow client:idle lines={lines} builtMs={builtMs} />
   </header>
 
-  <section class="wrap timeline" aria-labelledby="quiet">
-    <h2 id="quiet" class="section-title">When the hardware went quiet</h2>
-    <QuietTimeline client:idle lines={lines} photos={photos} found={found} builtMs={builtMs} first="insight" />
+  <section class="wrap timeline" aria-label="When each object went quiet">
+    <QuietTimeline client:idle lines={lines} photos={photos} builtMs={builtMs} first="insight" />
   </section>
 
-  <section class="wrap" aria-labelledby="wall">
-    <h2 id="wall" class="section-title">Photos of the silent ones</h2>
+  <section class="wrap" aria-label="Photos of the silent objects">
     <ol class="wall">
       {
         rows.map((r) => (
@@ -117,10 +110,6 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
                 <time class="wall-when mono" datetime={r.date}>
                   {r.date.slice(0, 4)}
                 </time>
-                <span class="credit" data-credit>
-                  <a href={r.photo.page} rel="external noopener">{r.photo.nasaId}</a>, {r.photo.credit}
-                </span>
-              </figcaption>
               </figcaption>
             </figure>
           </li>
@@ -150,8 +139,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
     align-self: stretch;
     margin: 0;
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 8px;
+    grid-template-rows: minmax(0, 1fr);
   }
   .silent-hero picture {
     display: block;

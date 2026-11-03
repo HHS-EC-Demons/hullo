@@ -29,14 +29,6 @@
   font-size: var(--fs-md);
   color: var(--muted);
 }
-.qn-date {
-  color: var(--muted);
-  font-size: var(--fs-sm);
-}
-.qn-date time {
-  color: var(--text);
-}
-
 .qn-chart {
   position: relative;
   height: clamp(190px, 22vw, 240px);

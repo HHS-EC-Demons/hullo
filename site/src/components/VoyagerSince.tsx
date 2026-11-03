@@ -13,6 +13,7 @@ export default function VoyagerSince({ fromMs, stamped }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const num = useRef<HTMLSpanElement>(null);
   const dir = useRef<HTMLSpanElement>(null);
+  const since = stamped ? 'since your first stamp' : 'since you opened this page';
 
   useFrames(
     root,
@@ -22,23 +23,24 @@ export default function VoyagerSince({ fromMs, stamped }: Props) {
           const b = rangeAt(data, 'voyager1', now);
           if (!a || !b) return;
           const d = b.rg_km - a.rg_km;
+          const way = d >= 0 ? 'farther' : 'closer';
           setText(num.current, `${groupInt(Math.abs(d))} km`);
-          setText(dir.current, d >= 0 ? 'farther from Earth' : 'closer to Earth');
+          setText(dir.current, `Voyager 1 ${way}`);
+          root.current?.setAttribute('aria-label', `Voyager 1 is ${groupInt(Math.abs(d))} km ${way === 'farther' ? 'farther from' : 'closer to'} Earth ${since}`);
         }
       : null,
-    [data, fromMs],
+    [data, fromMs, since],
     true,
   );
 
   return (
-    <div ref={root} className="pp-since" aria-live="off">
-      <p className="pp-since-lead">{stamped ? 'Voyager 1 since your first stamp' : 'Voyager 1 since you opened this page'}</p>
-      <p className="pp-since-fig">
-        <span ref={num} className="pp-since-n mono">
-          0 km
-        </span>{' '}
-        <span ref={dir}>farther from Earth</span>
-      </p>
+    <div ref={root} className="pp-since" role="group">
+      <span ref={dir} className="pp-since-lead">
+        Voyager 1 farther
+      </span>
+      <span ref={num} className="pp-since-n mono">
+        0 km
+      </span>
     </div>
   );
 }
