@@ -181,7 +181,7 @@ export default function SkyChart({ highlight, now }: Props) {
   return (
     <figure className="sky">
       <figcaption className="sky-cap">
-        <h2 className="sky-title">The probes in our sky</h2>
+        <h2 className="sky-title">In our sky</h2>
         <p className="sky-sub mono">{shownMs ? `${utcDate(shownMs)}, 00:00 UTC` : '\u2007'}</p>
       </figcaption>
       <div className="sky-plot" ref={box}>
