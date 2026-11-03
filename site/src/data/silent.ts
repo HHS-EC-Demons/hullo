@@ -23,7 +23,7 @@ export const SILENT: Silent[] = [
     startKind: 'Launched',
     status: 'Silent',
     statusLine: 'No answer after its solar powered batteries ran out',
-    date: '2022-12-21',
+    date: '2022-12-15',
     sources: ['nasa-insight-end', 'nssdca-insight'],
   },
   {
