@@ -53,16 +53,16 @@ export function clock(ms: number, seconds = false): string {
   return `${h12}:${p2(t.getMinutes())}${seconds ? `:${p2(t.getSeconds())}` : ''} ${h < 12 ? 'AM' : 'PM'}`;
 }
 
-/** "Tue 3 Nov" in the visitor's local time, with the year when it is not this year. */
-export function localDay(ms: number, now: number = Date.now()): string {
+/** "Tue 3 Nov" in the visitor's local time, with the year when it is not this year, or "3 Nov" without the weekday. */
+export function localDay(ms: number, now: number = Date.now(), weekday = true): string {
   const t = new Date(ms);
   const year = t.getFullYear() !== new Date(now).getFullYear() ? ` ${t.getFullYear()}` : '';
-  return `${DAYS[t.getDay()]} ${t.getDate()} ${MONTHS[t.getMonth()]}${year}`;
+  return `${weekday ? `${DAYS[t.getDay()]} ` : ''}${t.getDate()} ${MONTHS[t.getMonth()]}${year}`;
 }
 
-/** "7:15 PM Tue 3 Nov (your time)". */
-export function localStamp(ms: number, opts: { seconds?: boolean; now?: number; label?: boolean } = {}): string {
-  const text = `${clock(ms, opts.seconds)} ${localDay(ms, opts.now)}`;
+/** "7:15 PM Tue 3 Nov (your time)", or "7:15 PM 3 Nov (your time)" with `weekday: false`. */
+export function localStamp(ms: number, opts: { seconds?: boolean; now?: number; label?: boolean; weekday?: boolean } = {}): string {
+  const text = `${clock(ms, opts.seconds)} ${localDay(ms, opts.now, opts.weekday !== false)}`;
   return opts.label === false ? text : `${text} ${YOUR_TIME}`;
 }
 

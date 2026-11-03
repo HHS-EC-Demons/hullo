@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, LazyMotion, domAnimation, m } from 'motion/react';
 import { hmsText, lightTimeAt, type DeepSpaceData } from '../lib/lighttime';
-import { localDate, localTime, longDate, utcDay, utcTime } from '../lib/client';
+import { calDate, localStamp } from '../lib/dates';
 import { setText, useFrames } from '../lib/frames';
 import { probeInfo } from '../data/probes';
 import { Button } from '@/components/ui/button';
@@ -85,16 +85,7 @@ function yearsSince(iso: string, now: number): number {
 }
 
 function When({ ms }: { ms: number }) {
-  return (
-    <>
-      <span className="mono">
-        {localDate(ms)}, {localTime(ms)}
-      </span>
-      <span className="fl-utc mono">
-        {utcDay(ms)}, {utcTime(ms)}
-      </span>
-    </>
-  );
+  return <span className="mono">{localStamp(ms, { seconds: true })}</span>;
 }
 
 function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
@@ -213,7 +204,7 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
         <div className="fl-silent">
           <p className="fl-silent-big">No reply will come.</p>
           <p>
-            {info.name}’s {info.lastContact} on <span className="mono">{longDate(Date.parse(`${info.statusDate}T12:00:00Z`))}</span>,{' '}
+            {info.name}’s {info.lastContact} on <span className="mono">{calDate(info.statusDate)}</span>,{' '}
             <span className="mono">{yearsSince(info.statusDate, now)} years</span> ago.
           </p>
         </div>
@@ -304,7 +295,7 @@ export default function MessageFlight({ data, messages }: Props) {
       text: msg.text,
       sent: msg.sent,
       arrives: msg.arrives,
-      silent: info.answers ? undefined : `No reply will come. ${info.name}’s ${info.lastContact} on ${longDate(Date.parse(`${info.statusDate}T12:00:00Z`))}.`,
+      silent: info.answers ? undefined : `No reply will come. ${info.name}’s ${info.lastContact} on ${calDate(info.statusDate)}.`,
     });
   }
 
