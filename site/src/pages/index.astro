@@ -134,7 +134,7 @@ const chapters = [
               </picture>
               </span>
               <span class="tile-row">
-                <span class="press tile-btn">{c.name}</span>
+                <span class="tile-name">{c.name}</span>
               </span>
             </a>
           </li>
@@ -197,18 +197,16 @@ const chapters = [
     gap: 12px;
     padding-bottom: 4px;
   }
-  .tile-btn {
-    min-height: 44px;
-    padding-inline: 16px;
+  .tile-name {
+    font-weight: 700;
+    font-size: var(--fs-lg);
+    color: var(--text);
   }
   @media (hover: hover) {
-    .tile-link:hover .tile-btn {
-      background: var(--p-fill-hover);
+    .tile-link:hover .tile-name {
+      text-decoration: underline;
+      text-underline-offset: 4px;
     }
-  }
-  .tile-link:active .tile-btn {
-    transform: translateY(var(--press-lip-h, 3px));
-    box-shadow: 0 0 0 var(--p-lip);
   }
   @media (max-width: 1023px) {
     .tiles {

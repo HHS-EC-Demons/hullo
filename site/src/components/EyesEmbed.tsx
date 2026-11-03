@@ -21,7 +21,7 @@ export default function EyesEmbed({ src, title, button, poster, alt }: { src: st
             <source type="image/webp" srcSet={poster.webp} sizes={poster.sizes} />
             <img src={poster.src} width={poster.width} height={poster.height} alt={alt} loading="lazy" decoding="async" />
           </picture>
-          <Button type="button" variant="primary" size="lg" className="ey-open" onClick={() => setOpen(true)}>
+          <Button type="button" variant="secondary" className="ey-open" onClick={() => setOpen(true)}>
             {button}
           </Button>
         </>

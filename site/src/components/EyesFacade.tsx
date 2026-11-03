@@ -52,7 +52,7 @@ export default function EyesFacade({ poster, src, title, label, sizes, className
                 style={{ objectPosition: poster.focus ?? '50% 50%' }}
               />
             </picture>
-            <Button className="eyes-btn" onClick={() => setOpen(true)}>
+            <Button variant="secondary" className="eyes-btn" onClick={() => setOpen(true)}>
               {label}
             </Button>
           </>

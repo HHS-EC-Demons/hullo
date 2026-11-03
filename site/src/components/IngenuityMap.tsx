@@ -1,6 +1,5 @@
 import { lazy, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import type { GeoJSONSource, LngLatBoundsLike, Map as MapLibreMap, StyleSpecification } from 'maplibre-gl';
-import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import ChartFrame from '@/components/ui/chart-frame';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -103,7 +102,6 @@ export default function IngenuityMap({
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   const [near, setNear] = useState(false);
-  const picksId = useId();
   const box = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   const first = useRef(true);
@@ -290,12 +288,12 @@ export default function IngenuityMap({
             <p className="ig-flight">
               <span className="ig-label">Flight</span>
               <span className="ig-n mono">{flight ? flight.n : blank}</span>
-              <span className="ig-of">of {count}</span>
+              <span className="ig-of mono">/ {count}</span>
             </p>
             <p className="ig-when">
               {flight ? (
                 <>
-                  <span className="mono">{calDate(flight.date)}</span>, sol <span className="mono">{flight.sol}</span>
+                  <span className="mono">{calDate(flight.date)}</span>
                 </>
               ) : (
                 blank
@@ -327,14 +325,6 @@ export default function IngenuityMap({
               disabled={!data}
               onValueChange={([v]) => pick(v)}
             />
-            <div className="ig-steps">
-              <Button type="button" variant="secondary" aria-label="Previous flight" onClick={() => pick(n - 1)} disabled={!data || n <= 1}>
-                Previous
-              </Button>
-              <Button type="button" variant="secondary" aria-label="Next flight" onClick={() => pick(n + 1)} disabled={!data || n >= count}>
-                Next
-              </Button>
-            </div>
           </div>
         </div>
         <div className="ig-right">
@@ -370,13 +360,6 @@ export default function IngenuityMap({
             ) : (
               <p className="ig-nophoto">No photo</p>
             )}
-          </div>
-          <div className="ig-picks" role="group" aria-label="Flights with a photo from Ingenuity" id={picksId}>
-            {photos.map((p) => (
-              <Button key={p.n} type="button" size="sm" variant="secondary" aria-pressed={p.n === n} aria-label={`Flight ${p.n} photo`} onClick={() => pick(p.n)} className="mono">
-                {p.n}
-              </Button>
-            ))}
           </div>
         </aside>
       </div>
