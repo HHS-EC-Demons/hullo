@@ -55,7 +55,11 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: var(--radius);
-  background: var(--raised);
+}
+.qt-photo .ph {
+  display: block;
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .qt-text {

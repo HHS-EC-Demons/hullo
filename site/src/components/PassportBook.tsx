@@ -2,6 +2,7 @@ import { forwardRef, lazy, Suspense, useEffect, useId, useRef, useState, useSync
 import { useReactToPrint } from 'react-to-print';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { BRAND, WORDMARK } from '../brand';
 import { GROUPS, STAMP_OBJECTS, type StampObject } from '../data/stamps';
 import { getHolder, getServerStamps, getStamps, setHolder, subscribeStamps, type Stamp } from '../lib/passport';
@@ -83,10 +84,12 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
           <span className="pp-count-of"> of {STAMP_OBJECTS.length} stamped</span>
         </p>
         <div className="pp-since-wrap">
-          {live && (
-            <Suspense fallback={null}>
+          {live ? (
+            <Suspense fallback={<SinceSkeleton />}>
               <VoyagerSince fromMs={firstAt ?? openedAt} stamped={firstAt !== null} />
             </Suspense>
+          ) : (
+            <SinceSkeleton />
           )}
         </div>
         <form
@@ -121,10 +124,12 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
             Stamps by page
           </h2>
           <div className="pp-chart-frame">
-            {live && (
-              <Suspense fallback={null}>
+            {live ? (
+              <Suspense fallback={<Skeleton className="absolute inset-0" />}>
                 <PassportChart byId={byId} dayText={dayText} />
               </Suspense>
+            ) : (
+              <Skeleton className="absolute inset-0" />
             )}
           </div>
         </section>
@@ -164,11 +169,20 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
   );
 }
 
+function SinceSkeleton() {
+  return (
+    <div className="pp-since">
+      <Skeleton className="h-[1.2rem] w-[9rem]" />
+      <Skeleton className="h-[2rem] w-[8rem]" />
+    </div>
+  );
+}
+
 function Slot({ object, thumb, stamp }: { object: StampObject; thumb?: Thumb; stamp?: Stamp }) {
   return (
     <article className={stamp ? 'pp-slot stamped' : 'pp-slot'} aria-label={stamp ? `${object.name}, stamped ${dayText(stamp.at)}${stamp.detail ? `, ${stamp.detail}` : ''}` : `${object.name}, not stamped yet`}>
       {thumb && (
-        <picture className="pp-thumb">
+        <picture className="pp-thumb ph">
           <source type="image/avif" srcSet={thumb.avif} sizes={thumb.sizes} />
           <source type="image/webp" srcSet={thumb.webp} sizes={thumb.sizes} />
           <img src={thumb.src} width={thumb.width} height={thumb.height} alt={thumb.alt} loading="lazy" decoding="async" />
