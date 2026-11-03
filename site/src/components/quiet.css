@@ -4,7 +4,7 @@
   --qt-gap: 24px;
   --qt-on: var(--line);
   --qt-off: color-mix(in oklab, var(--lilac) 34%, var(--bg));
-  --qt-top: 73px;
+  --qt-top: 57px;
   --qt-photo: min(26rem, calc((100svh - var(--qt-top)) * 0.5));
   position: relative;
 }
@@ -12,9 +12,14 @@
 .qt-sticky {
   position: sticky;
   top: var(--qt-top);
-  z-index: 2;
+  z-index: 3;
   background: var(--bg);
   border-top: 1px solid var(--rule);
+  isolation: isolate;
+}
+.qt-readout,
+.qt-scale {
+  background: var(--bg);
 }
 .qt-readout {
   min-height: calc(var(--qt-photo) * 0.75 + 98px);
@@ -275,9 +280,9 @@
   color: var(--text);
 }
 
-@media (max-width: 959px) {
+@media (max-width: 1023px) {
   .qt {
-    --qt-top: 61px;
+    --qt-top: 53px;
   }
 }
 

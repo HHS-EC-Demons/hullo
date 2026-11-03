@@ -4,7 +4,7 @@ import Classroom, { type TopicPhoto } from '../components/Classroom';
 import PAGE_PHOTOS from '../data/page-images.json';
 import PHOTOS from '../data/photos.json';
 import { pic } from '../lib/photos';
-import { utcDate } from '../lib/client';
+import { calDate } from '../lib/dates';
 
 const SIZES = '(max-width: 860px) 100vw, 520px';
 const WIDTHS = [480, 720, 1040, 1440];
@@ -18,7 +18,7 @@ async function borrowed(slug: string, caption: string, alt: string): Promise<Top
   const m = (PHOTOS as Record<string, { id: string; date: string | null; credit: string; page: string }>)[slug];
   const p = m && (await pic(slug, WIDTHS, SIZES).catch(() => null));
   if (!m || !p) return null;
-  return { ...p, alt, caption, when: m.date ? utcDate(Date.parse(`${m.date}T12:00:00Z`)) : '', nasaId: m.id, credit: m.credit, page: m.page };
+  return { ...p, alt, caption, when: m.date ? calDate(m.date) : '', nasaId: m.id, credit: m.credit, page: m.page };
 }
 
 const photos = {
@@ -33,12 +33,7 @@ const photos = {
 ---
 
 <Base title="Classroom" current="classroom" description="Three printable worksheets that use this site’s numbers at the moment of printing, each with an answer key.">
-  <header class="wrap page-head">
-    <h1>Classroom</h1>
-    <p>Worksheets with live numbers and answer keys.</p>
-  </header>
-
   <div class="wrap">
-    <Classroom client:load photos={photos} />
+    <Classroom client:load photos={photos} title="Classroom" line="Worksheets with live numbers and answer keys." />
   </div>
 </Base>

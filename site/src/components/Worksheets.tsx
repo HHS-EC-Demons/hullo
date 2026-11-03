@@ -3,7 +3,8 @@ import { WORDMARK } from '../brand';
 import { NASA_LIGHT_DAY_UTC } from './LightDay';
 import { C_KM_S, splitHms } from '../lib/lighttime';
 import type { Shot } from '../lib/ranging';
-import { groupInt, utcDate, utcTime } from '../lib/client';
+import { groupInt } from '../lib/client';
+import { calDate, localStamp } from '../lib/dates';
 import './worksheet.css';
 
 export const AU_KM = 149597870.7;
@@ -38,10 +39,10 @@ export const one = fmt(1);
 const two = fmt(2);
 const three = fmt(3);
 export const six = fmt(6);
-export const dayFmt = { format: utcDate };
+export const dayFmt = { format: calDate };
 
 export function atText(ms: number): string {
-  return `${utcTime(ms)} on ${utcDate(ms)}`;
+  return localStamp(ms);
 }
 
 function Sheet({ title, printedAt, intro, numbers, questions, answers, source }: { title: string; printedAt: number; intro: string; numbers: string[]; questions: string[]; answers: ReactNode[]; source: string }) {
@@ -183,7 +184,7 @@ export const FlightSheet = forwardRef<HTMLDivElement, { f: Flight; printedAt: nu
   const v = d / t;
   const kmh = v * 3.6;
   const perKm = 1000 / v;
-  const date = dayFmt.format(Date.parse(`${f.date}T12:00:00Z`));
+  const date = calDate(f.date);
   return (
     <div ref={ref} className="ws">
       <Sheet

@@ -8,30 +8,63 @@ import { BRAND } from '../brand';
 interface Pkg {
   version?: string;
   license?: string;
+  repository?: string | { url?: string };
   dependencies?: Record<string, string>;
 }
 
+function repoUrl(repo: Pkg['repository']): string | null {
+  const raw = typeof repo === 'string' ? repo : repo?.url;
+  if (!raw) return null;
+  return raw.replace(/^git\+/, '').replace(/\.git$/, '').replace(/^git:\/\//, 'https://');
+}
+
+interface Tool {
+  name: string;
+  url: string;
+  version: string;
+  license: string;
+}
+
 const readPkg = (path: string): Pkg => JSON.parse(readFileSync(resolve(process.cwd(), path), 'utf8')) as Pkg;
-const software = Object.keys(readPkg('package.json').dependencies ?? {})
+const packages = Object.keys(readPkg('package.json').dependencies ?? {})
   .filter((name) => !name.startsWith('@fontsource'))
   .map((name) => {
     const pkg = readPkg(`node_modules/${name}/package.json`);
-    return { name, version: pkg.version ?? '', license: pkg.license ?? 'see package' };
-  })
-  .sort((a, b) => a.name.localeCompare(b.name));
+    return { name, version: pkg.version ?? '', license: pkg.license ?? 'see package', repo: repoUrl(pkg.repository) };
+  });
+const scopes = new Map<string, typeof packages>();
+for (const p of packages) {
+  const scope = p.name.startsWith('@') ? p.name.split('/')[0] : '';
+  if (scope) scopes.set(scope, [...(scopes.get(scope) ?? []), p]);
+}
+const grouped = new Set([...scopes].filter(([, list]) => list.length >= 3).map(([scope]) => scope));
+const software: Tool[] = [
+  ...packages
+    .filter((p) => !grouped.has(p.name.split('/')[0]))
+    .map((p) => ({ name: p.name, version: p.version, license: p.license, url: `https://www.npmjs.com/package/${p.name}` })),
+  ...[...grouped].map((scope) => {
+    const list = scopes.get(scope) ?? [];
+    const versions = [...new Set(list.map((p) => p.version))];
+    const licenses = [...new Set(list.flatMap((p) => p.license.split(/\s+and\s+/)))];
+    return {
+      name: `${scope}/*`,
+      url: list.find((p) => p.repo)?.repo ?? `https://www.npmjs.com/package/${list[0].name}`,
+      version: versions.length === 1 ? versions[0] : versions.join(', '),
+      license: licenses.join(' and '),
+    };
+  }),
+].sort((a, b) => a.name.localeCompare(b.name));
 
 const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
 ---
 
 <Base title="Sources" current="sources" description={`Every dataset, page and tool ${BRAND} uses, with its license and credit.`}>
-  <header class="wrap page-head">
-    <h1>Sources</h1>
-    <p>Every dataset, page and photo behind this site.</p>
-  </header>
-
-  <section class="wrap about" aria-labelledby="about">
-    <h2 id="about" class="sr-only">About this site</h2>
-    <dl class="facts">
+  <header class="wrap page-head src-head">
+    <div class="src-title">
+      <h1>Sources</h1>
+      <p>Every dataset, page and photo behind this site.</p>
+    </div>
+    <dl class="facts" aria-label="About this site">
       <div>
         <dt>Written for</dt>
         <dd>Readers 10 to 14 years old, and anyone curious.</dd>
@@ -45,7 +78,7 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
         <dd>Stamps and names stay in this browser. Nothing is sent.</dd>
       </div>
     </dl>
-  </section>
+  </header>
 
   {
     groups.map((g) => (
@@ -85,7 +118,7 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
         software.map((t) => (
           <li>
             <p class="title">
-              <a href={`https://www.npmjs.com/package/${t.name}`} rel="external noopener">{t.name}</a> <span class="mono version">{t.version}</span>
+              <a href={t.url} rel="external noopener">{t.name}</a> <span class="mono version">{t.version}</span>
             </p>
             <p class="license mono">{t.license}</p>
           </li>
@@ -96,6 +129,16 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
 </Base>
 
 <style>
+  .src-head {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 32px 56px;
+    align-items: start;
+    padding-top: clamp(28px, 4vw, 56px);
+  }
+  .src-head + .section {
+    padding-top: clamp(16px, 2vw, 24px);
+  }
   .facts {
     display: grid;
     gap: 0;
@@ -104,9 +147,9 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
   }
   .facts div {
     display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
-    gap: 6px 32px;
-    padding-block: 20px;
+    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+    gap: 6px 28px;
+    padding-block: 18px;
     border-top: 1px solid var(--rule);
   }
   .facts dt {
@@ -183,6 +226,11 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
   }
   .note {
     color: var(--muted);
+  }
+  @media (max-width: 1023px) {
+    .src-head {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
   @media (max-width: 860px) {
     .facts div {
