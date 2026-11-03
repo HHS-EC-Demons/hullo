@@ -10,9 +10,9 @@ Hardware left in space that still answers. Space Apps 2026, Abandoned but not Fo
 |---|---|
 | `/` | Live light time to Voyager 1, DSN now |
 | `/deep-space` | Five probes, sky chart, message travel |
-| `/moon` | Laser echo off Apollo reflectors |
-| `/mars` | Ingenuity's 72 flights on Jezero |
-| `/orbit` | Landing sites seen from orbit |
+| `/moon` | Laser echo off Apollo and Lunokhod reflectors |
+| `/mars` | Ingenuity's 72 flights over Jezero crater |
+| `/orbit` | Apollo and Mars landing sites seen from orbit |
 | `/silent` | When each object went quiet |
 | `/passport` | Stamps and a printable certificate |
 | `/classroom` | Three printable worksheets with answer keys |
