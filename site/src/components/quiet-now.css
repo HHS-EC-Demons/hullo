@@ -1,0 +1,55 @@
+.qn {
+  grid-area: now;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-width: 0;
+}
+
+.qn-count {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 36px;
+}
+.qn-fig {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.qn-n {
+  font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.qn-n.on {
+  color: var(--laser);
+}
+.qn-l {
+  font-size: var(--fs-md);
+  color: var(--muted);
+}
+.qn-date {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.qn-date time {
+  color: var(--text);
+}
+
+.qn-chart {
+  position: relative;
+  height: clamp(170px, 22vw, 230px);
+  margin-top: 14px;
+  margin-left: -6px;
+}
+
+.qc-tip-what {
+  color: var(--text);
+  white-space: normal;
+}
+
+.qn p {
+  margin: 0;
+  max-width: none;
+}
