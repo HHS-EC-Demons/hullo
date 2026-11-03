@@ -27,10 +27,6 @@
   display: inline;
 }
 
-.ls-controls .choice small.ls-low {
-  color: var(--edge);
-}
-
 .ls-fireline {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
