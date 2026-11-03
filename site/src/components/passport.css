@@ -366,3 +366,11 @@
     width: 100%;
   }
 }
+
+.pp-chart-frame .hl-tip {
+  max-width: min(16rem, 42vw);
+}
+.pp-chart-frame .hl-tip-x,
+.pp-chart-frame .hl-tip-v {
+  white-space: normal;
+}
