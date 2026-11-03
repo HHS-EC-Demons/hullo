@@ -69,7 +69,7 @@ function SheetContent({
         {children}
         {showCloseButton && (
           <SheetPrimitive.Close data-slot="sheet-close" asChild>
-            <Button variant="secondary" className="press-sm press-hit absolute top-3.5 right-4 px-3.5">
+            <Button variant="secondary" className="press-sm press-nav press-hit absolute top-3.5 right-4 px-3.5">
               {closeLabel}
             </Button>
           </SheetPrimitive.Close>
