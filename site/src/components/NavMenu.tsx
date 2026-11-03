@@ -44,7 +44,7 @@ export default function NavMenu({ items, passport, extra, current, stampTotal }:
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="secondary" size="sm" className="nav-menu-btn">
+        <Button variant="secondary" className="press-sm press-hit nav-menu-btn px-3.5">
           Menu
         </Button>
       </SheetTrigger>
@@ -54,7 +54,7 @@ export default function NavMenu({ items, passport, extra, current, stampTotal }:
           <SheetDescription className="sr-only">Pages of this site with a live figure for each.</SheetDescription>
         </div>
         <nav aria-label="Chapters" className="px-5">
-          <ul className="grid gap-3 pb-1">
+          <ul className="grid gap-2.5 pb-1">
             {rows.map((item) => {
               const here = current === item.key;
               return (
@@ -62,9 +62,9 @@ export default function NavMenu({ items, passport, extra, current, stampTotal }:
                   <a
                     href={item.href}
                     aria-current={here ? 'page' : undefined}
-                    className="press grid w-full grid-cols-[1fr_auto] items-baseline justify-items-start gap-x-4 gap-y-0.5 px-4 py-3 text-left whitespace-normal"
+                    className="press press-sm grid w-full grid-cols-[1fr_auto] items-baseline justify-items-start gap-x-4 gap-y-0.5 px-3.5 py-2.5 text-left whitespace-normal"
                   >
-                    <span className={`text-lg text-text ${here ? 'font-extrabold' : 'font-bold'}`}>{item.label}</span>
+                    <span className={`text-base text-text ${here ? 'font-extrabold' : 'font-bold'}`}>{item.label}</span>
                     <span className={`mono min-w-[11ch] justify-self-end text-right text-sm font-normal ${here ? 'text-text' : 'text-muted-foreground'}`}>
                       {figureText(item, fig, stamps, stampTotal) || ' '}
                     </span>
@@ -75,10 +75,10 @@ export default function NavMenu({ items, passport, extra, current, stampTotal }:
             })}
           </ul>
         </nav>
-        <ul className="mt-auto flex flex-wrap gap-2.5 px-5 pt-6 pb-8">
+        <ul className="mt-auto flex flex-wrap gap-3 px-5 pt-6 pb-8">
           {extra.map((e) => (
             <li key={e.href}>
-              <a href={e.href} className="press min-h-11 px-4">
+              <a href={e.href} className="press press-sm press-hit px-3.5">
                 {e.label}
               </a>
             </li>
