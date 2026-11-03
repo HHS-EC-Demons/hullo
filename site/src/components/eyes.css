@@ -1,0 +1,46 @@
+.eyes {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.eyes-stage {
+  position: relative;
+  aspect-ratio: var(--eyes-ratio, 16 / 10);
+  overflow: hidden;
+  background: #000;
+  border-radius: 2px;
+}
+
+.eyes-stage picture,
+.eyes-stage img,
+.eyes-stage iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.eyes-stage img {
+  object-fit: cover;
+}
+
+.eyes-btn {
+  position: absolute;
+  left: clamp(14px, 2vw, 28px);
+  bottom: clamp(16px, 2.2vw, 30px);
+}
+
+.eyes .credit {
+  min-height: 1.45em;
+}
+
+.eyes-wide {
+  --eyes-ratio: 21 / 9;
+}
+
+@media (max-width: 900px) {
+  .eyes-wide {
+    --eyes-ratio: 4 / 3;
+  }
+}

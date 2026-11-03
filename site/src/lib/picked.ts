@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from 'react';
+
 type Listener = (key: string) => void;
 
 let current = 'voyager1';
@@ -15,5 +17,12 @@ export function setPicked(key: string): void {
 
 export function onPicked(fn: Listener): () => void {
   listeners.add(fn);
-  return () => listeners.delete(fn);
+  return () => {
+    listeners.delete(fn);
+  };
+}
+
+/** The picked probe as React state that follows every island on the page. */
+export function usePicked(): string {
+  return useSyncExternalStore(onPicked, getPicked, () => 'voyager1');
 }
