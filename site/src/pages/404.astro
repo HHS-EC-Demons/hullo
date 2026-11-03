@@ -13,17 +13,17 @@ const photo = await pic('nope-dss14', [400, 640, 960, 1280, 1566], '(max-width: 
   <div class="wrap lost">
     <header class="lost-text">
       <h1>No signal at this address</h1>
-      <p>The page may have moved.</p>
-      <p class="back"><a class={buttonVariants({ variant: 'primary' })} href={href('')}>Go to the home page</a></p>
+      <p class="back"><a class={buttonVariants({ variant: 'primary' })} href={href('')}>Go home</a></p>
     </header>
     <figure class="lost-photo">
       <picture>
         <source type="image/avif" srcset={photo.avif} sizes={photo.sizes} />
         <source type="image/webp" srcset={photo.webp} sizes={photo.sizes} />
-        <img src={photo.src} width={photo.width} height={photo.height} alt={dish.alt} loading="eager" fetchpriority="high" decoding="async" />
+        <img src={photo.src} width={photo.width} height={photo.height} alt={`${dish.alt} ${dish.caption}, ${dish.when}.`} loading="eager" fetchpriority="high" decoding="async" />
       </picture>
       <figcaption class="credit">
-        {dish.caption}, {dish.when}. <a href={dish.page} rel="external noopener">{dish.nasa_id}</a>, {dish.credit}
+        <span class="mono">2025</span>
+        <span data-credit><a href={dish.page} rel="external noopener">{dish.nasa_id}</a>, {dish.credit}</span>
       </figcaption>
     </figure>
   </div>
