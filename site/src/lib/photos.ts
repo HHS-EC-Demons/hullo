@@ -60,10 +60,11 @@ export function lro(site: string): LroCrop {
   return hit;
 }
 
-const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export function dated(iso: string): string {
-  return day.format(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`));
+  const d = new Date(`${iso.slice(0, 10)}T12:00:00Z`);
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
 }
 
 export async function pic(slug: string, widths: number[], sizes: string): Promise<Pic> {
