@@ -3,7 +3,7 @@ import type { Lifeline } from '../data/timeline';
 import { answeringOn, quietEvents } from '../lib/quiet-count';
 import { dayMs, TIMELINE_START } from '../data/timeline';
 import { Input } from '@/components/ui/input';
-import { localCalDate, localIsoDay } from '../lib/local-date';
+import { localIsoDay } from '../lib/local-date';
 import './quiet-now.css';
 
 const QuietChart = lazy(() => import('./QuietChart'));
@@ -42,9 +42,6 @@ export default function QuietNow({ lines, builtMs }: Props) {
           <span className="qn-l">went quiet</span>
         </span>
       </p>
-      <p className="qn-date">
-        As of <time dateTime={localIsoDay(now)}>{localCalDate(now)}</time>
-      </p>
       <div className="qn-chart">
         {live && (
           <Suspense fallback={null}>
@@ -58,7 +55,7 @@ export default function QuietNow({ lines, builtMs }: Props) {
         <p className="qn-birth-out" aria-live="polite">
           {then !== null && (
             <>
-              <span className="qn-birth-n">{then}</span> were answering that day
+              <span className="qn-birth-n">{then}</span> answering
             </>
           )}
         </p>
