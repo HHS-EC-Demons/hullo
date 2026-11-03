@@ -46,7 +46,7 @@ const dsnPoster: Poster = {
 const surveyor = (silentImages as { object?: string; nasa_id: string; credit: string; date: string; alt?: string }[]).find((x) => x.object === 'surveyor3')!;
 
 const TILE_WIDTHS = [360, 520, 720, 960, 1200, 1600];
-const TILE_SIZES = '(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) 31vw, 19vw';
+const TILE_SIZES = '(max-width: 639px) 46vw, (max-width: 1023px) 31vw, 19vw';
 const laser = meta('moon-laser-station');
 const ingenuity = meta('mars-two-years');
 const pluto = HOME['deep-newhorizons'];
@@ -212,10 +212,8 @@ const chapters = [
   }
   @media (max-width: 639px) {
     .tiles {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .tile-link img {
-      aspect-ratio: 4 / 5;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 14px;
     }
   }
 </style>
