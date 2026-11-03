@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { C_KM_S, dailyHours, hmsText, lightTimeAt, type DeepSpaceData } from '../lib/lighttime';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth } from '../lib/ranging';
-import { FlightSheet, MoonSheet, VoyagerSheet, int, one, six, type Flight, type MoonShot } from './Worksheets';
+import { FlightSheet, MoonSheet, VoyagerSheet, int, one, type Flight, type MoonShot } from './Worksheets';
 import { loadJson, useJson } from '../lib/client';
 import { calDate, localStamp, monthYear, MONTHS } from '../lib/dates';
 import type { Point } from './ClassCharts';
@@ -161,9 +161,8 @@ export default function Classroom({ photos, title, line }: Props) {
             <p>{line}</p>
           </header>
         }
-        facts={moon ? [['Round trip', `${six.format(moon.shot.round_trip_s)} s`]] : null}
-        rows={['Round trip']}
-        after={<MoonCheck km={moon ? (moon.shot.round_trip_s / 2) * C_KM_S : null} />}
+        facts={moon ? [['', `${one.format(moon.shot.round_trip_s)} s`]] : null}
+        rows={['']}
         onPrint={() => printNow(moonSheet.print)}
         chart={
           moon && (
@@ -171,13 +170,13 @@ export default function Classroom({ photos, title, line }: Props) {
               points={moon.points}
               marker={{ x: moon.shot.ms, y: moon.shot.round_trip_s }}
               label={`Laser round trip from ${moon.stationName} to the ${moon.reflectorName} reflector, hour by hour`}
-              xTitle="date"
-              yTitle="round trip, s"
+              xTitle=""
+              yTitle="s"
               tickX={dayTick}
-              tickY={(v) => v.toFixed(2)}
+              tickY={(v) => v.toFixed(1)}
               readX={(v) => localStamp(v, { label: false })}
-              readY={(v) => `${six.format(v)} s`}
-              xTickValues={weekTicks}
+              readY={(v) => `${one.format(v)} s`}
+              xTickValues={(lo: number, hi: number, w: number) => weekTicks(lo, hi, w).filter((_, i) => i % 2 === 0)}
             />
           )
         }
@@ -185,23 +184,23 @@ export default function Classroom({ photos, title, line }: Props) {
       <Activity
         title="Voyager 1 distance"
         photo={photos.voyager}
-        facts={voyagerS !== null ? [['Light time', hmsText(voyagerS)]] : null}
-        rows={['Light time']}
+        facts={voyagerS !== null ? [['', hmsText(voyagerS)]] : null}
+        rows={['']}
         onPrint={() => printNow(voyagerSheet.print)}
         chart={
           voyagerPoints.length > 1 && voyagerS !== null && (
             <SeriesChart
               points={voyagerPoints}
               marker={{ x: at, y: voyagerS / 3600 }}
-              refY={{ y: 24, label: '1 light day' }}
+              refY={{ y: 24, label: '' }}
               label="Voyager 1 light time, day by day"
-              xTitle="date"
-              yTitle="light time, h"
+              xTitle=""
+              yTitle="h"
               tickX={(v) => monthYear(v)}
               tickY={(v) => v.toFixed(1)}
               readX={(v) => calDate(v)}
               readY={(v) => hmsText(v * 3600)}
-              xTickValues={quarterTicks}
+              xTickValues={(lo: number, hi: number, w: number) => quarterTicks(lo, hi, w).filter((_, i) => i % 2 === 0)}
             />
           )
         }
@@ -223,12 +222,12 @@ export default function Classroom({ photos, title, line }: Props) {
         facts={
           flight
             ? [
-                ['Distance', `${int.format(flight.dist_m as number)} m`],
-                ['Time', `${one.format(flight.duration_s as number)} s`],
+                ['', `${int.format(flight.dist_m as number)} m`],
+                ['', `${one.format(flight.duration_s as number)} s`],
               ]
             : null
         }
-        rows={['Distance', 'Time']}
+        rows={['', '']}
         onPrint={() => printNow(flightSheet.print)}
       >
         <FlightPicker flights={flights} value={flight?.n ?? flightN} onChange={setFlightN} />
@@ -309,6 +308,9 @@ function Activity({ title, photo, head, facts, rows, chart, after, onPrint, chil
               decoding="async"
             />
           </picture>
+          <figcaption className="credit" data-credit>
+            {photo.when}. {photo.nasaId}, {photo.credit}
+          </figcaption>
         </figure>
       )}
       <div className="cr-body">
@@ -327,8 +329,8 @@ function Activity({ title, photo, head, facts, rows, chart, after, onPrint, chil
           {chart ? <Suspense fallback={<Skeleton className="absolute inset-0" />}>{chart}</Suspense> : <Skeleton className="absolute inset-0" />}
         </div>
         <div className="cr-print">
-          <Button variant="primary" onClick={onPrint} disabled={!facts}>
-            Print sheet
+          <Button variant="secondary" onClick={onPrint} disabled={!facts}>
+            Print
           </Button>
         </div>
       </div>

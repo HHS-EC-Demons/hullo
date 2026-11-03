@@ -33,7 +33,7 @@ const DAY = 86400000;
 const TICK = { fill: 'var(--muted)', fontFamily: 'var(--mono)', fontSize: 12.5 } as const;
 
 function seconds(km: number): string {
-  return `${((2 * km) / C_KM_S).toFixed(4)} s`;
+  return `${((2 * km) / C_KM_S).toFixed(1)} s`;
 }
 
 function Plot({ width, height, month, station, reflector, minEl, now, label }: Props & { width: number; height: number }) {
@@ -125,15 +125,12 @@ function Plot({ width, height, month, station, reflector, minEl, now, label }: P
             top={innerH}
             scale={x}
             tickValues={ticks}
-            tickFormat={(v) => {
-              const d = new Date(Number(v));
-              return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
-            }}
+            tickFormat={(v) => String(new Date(Number(v)).getDate())}
             stroke="var(--edge)"
             tickStroke="var(--edge)"
             tickLength={5}
             tickLabelProps={() => ({ ...TICK, textAnchor: 'middle', dy: 2 })}
-            label="Date"
+            label={MONTHS[new Date(t0 + 15 * DAY).getMonth()]}
             labelOffset={14}
             labelProps={{ ...TICK, textAnchor: 'middle' }}
           />
@@ -211,9 +208,9 @@ export default function MoonRangeChart(props: Props) {
       </div>
       <p className="mc-legend" aria-hidden="true" data-chart-text="">
         <span className="mc-key mc-key-on" />
-        Laser can fire
+        Can fire
         <span className="mc-key mc-key-off" />
-        Moon low
+        Low
       </p>
     </div>
   );

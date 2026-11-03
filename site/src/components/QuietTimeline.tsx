@@ -78,7 +78,7 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
     setPicked(l.id);
     setPulse((n) => n + 1);
     const f = figures(l);
-    stamp(l.id, l.answers ? `Answering for ${f.on}` : `Silent for ${f.off}`);
+    stamp(l.id, l.answers ? `Active for ${f.on}` : `Mission ended ${calDate(l.end as string)}`);
   }
 
   const pickRef = useRef(pick);
@@ -102,11 +102,11 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
           <p className="qt-key">
             <span className="qt-key-item">
               <span className="qt-key-line on" />
-              Answering
+              Active
             </span>
             <span className="qt-key-item">
               <span className="qt-key-line off" />
-              Silent
+              Ended
             </span>
           </p>
           <div className="qt-axis">
@@ -133,8 +133,8 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
             const e = l.end ? x(dayMs(l.end)) : 100;
             const f = figures(l);
             const label = l.answers
-              ? `${l.name}, ${l.startKind.toLowerCase()} ${calDate(l.start)}, still answers after ${f.on}`
-              : `${l.name}, ${l.startKind.toLowerCase()} ${calDate(l.start)}, answered for ${f.on}, silent since ${calDate(l.end as string)}`;
+              ? `${l.name}, ${l.startKind.toLowerCase()} ${calDate(l.start)}, active for ${f.on}`
+              : `${l.name}, ${l.startKind.toLowerCase()} ${calDate(l.start)}, mission ended ${calDate(l.end as string)}`;
             return (
               <li key={l.id}>
                 <button
@@ -148,7 +148,7 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
                 >
                   <span className="qt-name">{l.name}</span>
                   <span className={l.answers ? 'qt-state answers' : 'qt-state'}>
-                    {l.answers ? 'Answers' : `Silent since ${year(l.end as string)}`}
+                    {l.answers ? '' : <span className="mono">{year(l.end as string)}</span>}
                   </span>
                   <span className="qt-track">
                     <span className="qt-on" style={{ left: `${s}%`, width: `${Math.max(e - s, 0.4)}%` }} />
@@ -188,31 +188,18 @@ function Readout({ line, photo, figures }: { line: Lifeline; photo?: TimelinePho
             <img src={photo.src} width={photo.width} height={photo.height} alt={`${photo.alt} ${photo.caption}${photo.when ? `, ${photo.when}` : ''}.`} loading="lazy" decoding="async" />
           </picture>
         )}
+        {photo && (
+          <figcaption className="credit" data-credit>
+            {photo.nasaId}, {photo.credit}
+          </figcaption>
+        )}
       </figure>
       <div className="qt-text">
         <h3 className="qt-title">{line.name}</h3>
-        <dl className="qt-figs">
-          <div>
-            <dt>{line.startKind}</dt>
-            <dd className="mono">{calDate(line.start)}</dd>
-          </div>
-          {line.end && (
-            <div>
-              <dt>Last heard</dt>
-              <dd className="mono">{calDate(line.end)}</dd>
-            </div>
-          )}
-          <div>
-            <dt>{line.answers ? 'Answering for' : 'Answered for'}</dt>
-            <dd className="mono">{figures.on}</dd>
-          </div>
-          {figures.off && (
-            <div>
-              <dt>Silent for</dt>
-              <dd className="mono">{figures.off}</dd>
-            </div>
-          )}
-        </dl>
+        <p className="qt-fig">
+          <span className="qt-fig-k">{line.answers ? 'Active' : 'Mission ended'}</span>
+          <span className="mono">{line.answers ? figures.on : calDate(line.end as string)}</span>
+        </p>
       </div>
     </div>
   );

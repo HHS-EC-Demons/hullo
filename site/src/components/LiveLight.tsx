@@ -16,14 +16,12 @@ interface Props {
 
 const pad = (n: number, w = 2) => String(n).padStart(w, '0');
 
-export default function LiveLight({ data, probe, name, headline, error, speed = true, distance = true, compact = false }: Props) {
+export default function LiveLight({ data, probe, name, headline, error, speed = false, distance = true, compact = false }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const big = useRef<HTMLSpanElement>(null);
   const h = useRef<HTMLSpanElement>(null);
   const m = useRef<HTMLSpanElement>(null);
   const s = useRef<HTMLSpanElement>(null);
-  const ms = useRef<HTMLSpanElement>(null);
-  const tail = useRef<HTMLSpanElement>(null);
   const kmN = useRef<HTMLSpanElement>(null);
   const kmL = useRef<HTMLSpanElement>(null);
 
@@ -34,15 +32,12 @@ export default function LiveLight({ data, probe, name, headline, error, speed = 
           const r = rangeAt(data, probe, now);
           if (!r) return;
           const lt = r.rg_km / data.c_km_s;
-          const whole = Math.floor(lt);
-          const frac = lt - whole;
+          const whole = Math.round(lt);
           const hh = Math.floor(whole / 3600);
           const mm = Math.floor((whole % 3600) / 60);
           setText(h.current, String(hh));
           setText(m.current, pad(mm));
           setText(s.current, pad(whole % 60));
-          setText(ms.current, pad(Math.floor(frac * 1000), 3));
-          setText(tail.current, pad(Math.floor(frac * 1e5) % 100));
           const spoken = `${hh} hours and ${mm} minutes`;
           if (big.current && big.current.getAttribute('aria-label') !== spoken) big.current.setAttribute('aria-label', spoken);
           setText(kmN.current, `${km.format(r.rg_km)} km`);
@@ -66,15 +61,9 @@ export default function LiveLight({ data, probe, name, headline, error, speed = 
           <span ref={m}>00</span>
           <span className="u">min</span>
           <span ref={s}>00</span>
-          <span className="frac">
-            .<span ref={ms}>000</span>
-            <span ref={tail} className="tail">
-              00
-            </span>
-          </span>
           <span className="u last">s</span>
         </span>
-        {!compact && <span className="ps-lead">of light away right now.</span>}
+        {!compact && <span className="ps-lead">of light away now.</span>}
       </Head>
       {(distance || error) && (
         <p className="ps-km">

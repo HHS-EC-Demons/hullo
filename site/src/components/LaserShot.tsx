@@ -1,7 +1,6 @@
 import { lazy, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import type { AnimationPlaybackControls } from 'motion';
 import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
 import ChartFrame from '@/components/ui/chart-frame';
 import { Skeleton } from '@/components/ui/skeleton';
 import { loadJson, km, useJson, useNow, useReducedMotion } from '../lib/client';
@@ -13,8 +12,6 @@ import './laser.css';
 const MoonRangeChart = lazy(() => import('./MoonRangeChart'));
 
 const EARTH_R = 6371;
-const DRIFT_CM_YEAR = 3.8;
-const YEAR_MS = 365.25 * 86400000;
 const MOON_R = 1737.4;
 
 interface Fired extends Shot {
@@ -54,32 +51,6 @@ function elevationWord(el: number | null): string {
   return el === null ? '' : `${Math.round(el)}°`;
 }
 
-function Drift({ now }: { now: number | null }) {
-  const label = useId();
-  const thisYear = now ? new Date(now).getUTCFullYear() : 2026;
-  const [born, setBorn] = useState(2014);
-  const years = now ? Math.max(0, (now - Date.UTC(born, 6, 1)) / YEAR_MS) : null;
-  const cm = years === null ? null : Math.round(years * DRIFT_CM_YEAR);
-  return (
-    <div className="ls-drift">
-      <p id={label} className="ls-drift-label">
-        Born <span className="mono">{born}</span>
-      </p>
-      <Slider
-        thumbLabelledBy={label}
-        thumbValueText={(v) => `Born ${v}, the Moon is now about ${cm ?? 0} cm farther from Earth`}
-        min={1969}
-        max={thisYear}
-        step={1}
-        value={[born]}
-        onValueChange={([v]) => setBorn(v)}
-      />
-      <p className="ls-drift-out" aria-live="polite">
-        <span className="mono">{cm === null ? '\u2007\u2007' : cm} cm</span> farther
-      </p>
-    </div>
-  );
-}
 
 export default function LaserShot({ index: given, head, photo, chartTitle }: { index?: MoonIndex; head?: ReactNode; photo?: ReactNode; chartTitle?: string }) {
   const { data: fetched, error } = useJson<MoonIndex>(given ? null : 'data/moon/index.json');
@@ -143,7 +114,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
     const land = () => {
       setFlying(false);
       setFired(result);
-      stamp(reflector, `${result.round_trip_s.toFixed(4)} s round trip to ${name}, ${km.format(result.range_km)} km`);
+      stamp(reflector, `${result.round_trip_s.toFixed(1)} s round trip to ${name}, ${km.format(result.range_km)} km`);
     };
     flight.current.forEach((a) => a.stop());
     flight.current = [];
@@ -224,7 +195,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
             </Button>
             <div className="ls-readout" aria-live="polite">
               <p className={`ls-big mono${flying ? ' ls-dim' : ''}`}>
-                {shown ? shown.round_trip_s.toFixed(3) : <Skeleton className="inline-block h-[0.78em] w-[5ch] align-baseline" />}
+                {shown ? shown.round_trip_s.toFixed(1) : <Skeleton className="inline-block h-[0.78em] w-[5ch] align-baseline" />}
                 <span className="u">s</span>
               </p>
               <p className="ls-what">{what}</p>
@@ -243,7 +214,6 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
               <span>Moon</span>
             </figcaption>
           </figure>
-          <Drift now={now} />
           {error && <p className="note">Ranging data did not load.</p>}
         </div>
         {photo}

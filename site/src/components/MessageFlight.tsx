@@ -193,7 +193,7 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
         <div className="fl-silent">
           <p className="fl-silent-big">No reply</p>
           <p>
-            Silent since <span className="mono">{calDate(info.statusDate)}</span>
+            Mission ended <span className="mono">{calDate(info.statusDate)}</span>
           </p>
         </div>
       )}

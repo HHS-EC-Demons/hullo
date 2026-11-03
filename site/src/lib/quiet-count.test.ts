@@ -1,12 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { lifelines } from '../data/timeline';
-import { answeringOn, quietEvents, quietSteps } from './quiet-count';
+import { quietEvents, quietSteps } from './quiet-count';
 import { localCalDate, localIsoDay } from './local-date';
 
 const moon = JSON.parse(readFileSync(new URL('../../public/data/moon/index.json', import.meta.url), 'utf8'));
 
-describe('quiet count', () => {
+describe('active count', () => {
   const lines = lifelines(moon.reflectors);
   const events = quietEvents(lines);
 
@@ -14,19 +14,12 @@ describe('quiet count', () => {
     const silent = lines.filter((l) => !l.answers).length;
     expect(events.length).toBe(lines.length + silent);
     for (let i = 1; i < events.length; i++) expect(events[i].ms).toBeGreaterThanOrEqual(events[i - 1].ms);
-    expect(events.filter((e) => e.kind === 'went quiet').length).toBe(silent);
+    expect(events.filter((e) => e.end).length).toBe(silent);
   });
 
-  it('never counts below zero and ends on the objects that still answer', () => {
+  it('never counts below zero and ends on the active objects', () => {
     for (const e of events) expect(e.count).toBeGreaterThanOrEqual(0);
     expect(events[events.length - 1].count).toBe(lines.filter((l) => l.answers).length);
-  });
-
-  it('counts what was answering on a given day', () => {
-    expect(answeringOn(lines, '1965-01-01')).toBe(0);
-    expect(answeringOn(lines, '1967-04-20')).toBe(1);
-    expect(answeringOn(lines, '2026-11-02')).toBe(lines.filter((l) => l.answers).length);
-    expect(answeringOn(lines, '2022-12-14')).toBe(answeringOn(lines, '2022-12-16') + 1);
   });
 
   it('steps from zero at the timeline start to the count today', () => {

@@ -5,7 +5,7 @@
   --qt-on: var(--line);
   --qt-off: color-mix(in oklab, var(--lilac) 34%, var(--bg));
   --qt-top: 57px;
-  --qt-photo: min(26rem, calc((100svh - var(--qt-top)) * 0.5));
+  --qt-photo: min(11rem, calc((100svh - var(--qt-top)) * 0.22));
   position: relative;
 }
 
@@ -25,7 +25,7 @@
   min-height: calc(var(--qt-photo) * 0.75 + 40px);
   display: grid;
   align-items: start;
-  padding-block: 18px;
+  padding-block: 14px;
 }
 .qt-scale {
   display: grid;
@@ -39,8 +39,8 @@
 .qt-card {
   display: grid;
   grid-template-columns: var(--qt-photo) minmax(0, 1fr);
-  gap: 36px;
-  align-items: start;
+  gap: 24px;
+  align-items: center;
 }
 
 .qt-photo {
@@ -74,22 +74,20 @@
   letter-spacing: -0.035em;
   text-wrap: balance;
 }
-.qt-figs {
+.qt-fig {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 40px;
-  margin: 4px 0 0;
-}
-.qt-figs dt {
-  color: var(--muted);
-  font-size: var(--fs-sm);
-}
-.qt-figs dd {
+  align-items: baseline;
+  gap: 4px 14px;
   margin: 0;
   font-size: var(--fs-lg);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+}
+.qt-fig-k {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  font-weight: 400;
 }
 .qt-key {
   display: flex;
@@ -136,6 +134,7 @@
 }
 
 .qt-rows {
+  padding-top: 10px;
   position: relative;
   display: grid;
   padding-block: 8px 4px;
@@ -155,7 +154,7 @@
   border-radius: var(--radius);
   cursor: pointer;
   touch-action: manipulation;
-  scroll-margin-top: calc(var(--qt-top) + var(--qt-photo) * 0.75 + 130px);
+  scroll-margin-top: calc(var(--qt-top) + var(--qt-photo) * 0.75 + 110px);
   scroll-margin-bottom: 24px;
   -webkit-tap-highlight-color: transparent;
 }

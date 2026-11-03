@@ -94,7 +94,7 @@ function Sheet({ title, printedAt, intro, numbers, questions, answers, source }:
 }
 
 export const MoonSheet = forwardRef<HTMLDivElement, { m: MoonShot; printedAt: number }>(function MoonSheet({ m, printedAt }, ref) {
-  const t = m.shot.round_trip_s;
+  const t = Math.round(m.shot.round_trip_s * 10) / 10;
   const oneWay = t / 2;
   const km = oneWay * C_KM_S;
   const years = 100000 / MOON_RECEDES_CM;
@@ -105,7 +105,7 @@ export const MoonSheet = forwardRef<HTMLDivElement, { m: MoonShot; printedAt: nu
         printedAt={printedAt}
         intro={`At ${atText(m.shot.ms)}, the ${m.stationName} Observatory in New Mexico fires a laser pulse at the mirror that the ${m.reflectorName} crew left on the Moon. The light bounces off the mirror and comes back to the telescope.`}
         numbers={[
-          `Time for the pulse to go and come back is ${six.format(t)} s.`,
+          `Time for the pulse to go and come back is ${one.format(t)} s.`,
           `Light travels ${three.format(C_KM_S)} km every second.`,
           `The Moon moves away from Earth by about ${one.format(MOON_RECEDES_CM)} cm every year.`,
         ]}
@@ -117,10 +117,10 @@ export const MoonSheet = forwardRef<HTMLDivElement, { m: MoonShot; printedAt: nu
         ]}
         answers={[
           <>
-            {six.format(t)} s ÷ 2 = <b>{six.format(oneWay)} s</b>
+            {one.format(t)} s ÷ 2 = <b>{oneWay.toFixed(2)} s</b>
           </>,
           <>
-            {six.format(oneWay)} s × {three.format(C_KM_S)} km/s = <b>{int.format(km)} km</b>
+            {oneWay.toFixed(2)} s × {three.format(C_KM_S)} km/s = <b>{int.format(km)} km</b>
           </>,
           <>
             <b>{int.format(Math.round(km / 1000) * 1000)} km</b>
