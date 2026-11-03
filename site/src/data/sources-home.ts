@@ -1,44 +1,40 @@
-import type { Source } from './sources';
+import type { PhotoCredit, Source } from './sources';
 import probePhotos from './probe-photos.json';
 import homeImages from './home-images.json';
 import photoMeta from './photos.json';
 import silentImages from './silent-images.json';
-import { calDate } from '../lib/dates';
+import sounds from './sounds.json';
 
 interface HomeImage {
   id: string;
   group: string;
   credit: string;
-  caption: string;
-  when: string;
-  kind: string;
+  page: string;
 }
 
 const HOME = Object.entries(homeImages as Record<string, HomeImage>);
-const line = (m: HomeImage) => `${m.id}, ${m.credit}, ${m.caption}, ${m.kind === 'released' ? 'released ' : ''}${m.when}`;
-const META = photoMeta as Record<string, { id: string; title: string; date: string | null; credit: string }>;
-const metaLine = (slug: string, what: string) => {
-  const m = META[slug];
-  return m ? `${m.id}, ${m.credit}, ${what}${m.date ? `, ${calDate(m.date)}` : ''}` : '';
-};
-const SILENT = silentImages as { object?: string; nasa_id: string; credit: string; caption: string; when: string }[];
-const silentLine = (object: string) => {
-  const m = SILENT.find((x) => x.object === object);
-  return m ? `${m.nasa_id}, ${m.credit}, ${m.caption}, ${m.when}` : '';
-};
+const META = photoMeta as Record<string, { id: string; credit: string; page: string }>;
+const SILENT = silentImages as { object?: string; nasa_id: string; credit: string; page: string }[];
 
-const homePhotos = [
-  ...HOME.filter(([, m]) => m.group === 'dsn' || m.group === 'dsn-eyes').map(([, m]) => line(m)),
-  ...HOME.filter(([slug]) => slug === 'deep-newhorizons' || slug === 'home-orbit-apollo14').map(([, m]) => line(m)),
-  metaLine('moon-laser-station', 'laser beams from Goddard toward the Moon'),
-  metaLine('mars-two-years', 'Ingenuity two years after landing'),
-  silentLine('surveyor3'),
-].filter(Boolean);
+const fromHome = (page: string, pick: (slug: string, m: HomeImage) => boolean): PhotoCredit[] =>
+  HOME.filter(([slug, m]) => pick(slug, m)).map(([, m]) => ({ page, id: m.id, credit: m.credit, url: m.page }));
+const fromMeta = (page: string, slug: string): PhotoCredit[] => (META[slug] ? [{ page, id: META[slug].id, credit: META[slug].credit, url: META[slug].page }] : []);
+const fromSilent = (page: string, object: string): PhotoCredit[] =>
+  SILENT.filter((m) => m.object === object).map((m) => ({ page, id: m.nasa_id, credit: m.credit, url: m.page }));
+const plasma = sounds.find((x) => x.id === 'voyager-plasma');
 
-const deepPhotos = [
-  ...HOME.filter(([, m]) => m.group === 'deep' || m.group === 'eyes').map(([, m]) => line(m)),
-  silentLine('pioneer11'),
-].filter(Boolean);
+/** Every photo and sound on the home and Deep space pages, by page. */
+export const PHOTO_CREDITS: PhotoCredit[] = [
+  ...fromHome('Home', (_, m) => m.group === 'dsn' || m.group === 'dsn-eyes'),
+  ...fromHome('Home', (slug) => slug === 'deep-newhorizons'),
+  ...fromMeta('Home', 'moon-laser-station'),
+  ...fromMeta('Home', 'mars-two-years'),
+  ...fromHome('Home', (slug) => slug === 'home-orbit-apollo14'),
+  ...fromSilent('Home', 'surveyor3'),
+  ...fromHome('Deep space', (_, m) => m.group === 'deep' || m.group === 'eyes'),
+  ...fromSilent('Deep space', 'pioneer11'),
+  ...(plasma ? [{ page: 'Deep space', id: plasma.page.split('/').pop() ?? 'PIA17045', credit: plasma.credit, url: plasma.page }] : []),
+];
 
 export const GROUP_TITLE = 'Live data, the light-day and the message scale';
 
@@ -103,24 +99,14 @@ export const HOME_SOURCES: Source[] = [
     note: 'NASA’s Voyager and DSN pages link to eyes.nasa.gov/dsn/dsn.html, which now redirects to the app’s start page. The address used here is the one the app opens after its Enter button.',
   },
   {
-    id: 'photos-home',
-    title: 'Photos on the home page',
+    id: 'nasa-images-home',
+    title: 'Photos on the home and Deep space pages',
     publisher: 'NASA Image and Video Library',
     url: 'https://images.nasa.gov/',
     dated: 'Full resolution originals fetched by NASA ID on 2 Nov 2026',
     license: 'NASA content, generally not subject to US copyright. Credit as printed on each item page. No logos or insignia are shown.',
-    used: homePhotos.join('. ') + '.',
-    note: 'The DSN photos sit beside each complex, the Milky Way photo of DSS 15 is the poster of the DSN Now view, and the other five are the chapter photos. Each photo is scaled to at most 2400 px on its long edge and never enlarged.',
-  },
-  {
-    id: 'photos-deep-space',
-    title: 'Photos and sound on the Deep space page',
-    publisher: 'NASA Image and Video Library and NASA Photojournal',
-    url: 'https://images.nasa.gov/',
-    dated: 'Full resolution originals fetched by NASA ID on 2 Nov 2026',
-    license: 'NASA content, generally not subject to US copyright. Credit as printed on each item page. No logos or insignia are shown.',
-    used: deepPhotos.join('. ') + '. Sound, PIA17045, NASA/JPL-Caltech/University of Iowa, Voyager 1 plasma waves from Oct 2012 to May 2013.',
-    note: 'The first five photos are the frames beside the picker, one per probe. The rest are the posters of the 3D view. PIA00022 is cropped to the inside of the mosaic, ARC-1973-AC73-9253 to the dark frame without its grey scan border and KSC-73P-0116 to the spacecraft. The Voyager 2 month comes from the item’s note that the frame was taken 4 days and 20 hours before closest approach, and from NSSDCA’s Neptune flyby date of 25 Aug 1989. NASA’s library holds no frame from Pioneer 11’s own camera that this site could verify, so the Pioneer 11 frame is a photo of the spacecraft before launch. The New Horizons poster is cropped to leave out a worker’s suit patch, and the Pioneer 10 poster to drop the grey scan border.',
+    used: 'The DSN complex photos, the DSN Now poster, the chapter photos, the probe frames and the 3D view posters. Each ID and credit is listed by page under the photo credits.',
+    note: 'Each photo is scaled to at most 2400 px on its long edge and never enlarged. PIA00022 is cropped to the inside of the mosaic, ARC-1973-AC73-9253 to the dark frame without its grey scan border and KSC-73P-0116 to the spacecraft. The Voyager 2 month comes from the item’s note that the frame was taken 4 days and 20 hours before closest approach, and from NSSDCA’s Neptune flyby date of 25 Aug 1989. NASA’s library holds no frame from Pioneer 11’s own camera that this site could verify, so the Pioneer 11 frame is a photo of the spacecraft before launch. The New Horizons poster is cropped to leave out a worker’s suit patch, and the Pioneer 10 poster to drop the grey scan border.',
   },
   {
     id: 'nasa-images-probes',
