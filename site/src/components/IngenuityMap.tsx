@@ -37,7 +37,8 @@ export interface FlightPhoto {
   n: number;
   pic: Pic;
   alt: string;
-  caption: string;
+  date: string;
+  credit: string;
 }
 
 const num = { format: (v: number) => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') };
@@ -62,12 +63,6 @@ function collection(features: ReturnType<typeof line | typeof point>[]) {
 
 function total(m: number): string {
   return m < 1000 ? `${num.format(m)} m` : `${one.format(m / 1000)} km`;
-}
-
-function where(f: Flight): string {
-  if (f.hover) return `Rose straight up and landed again at ${f.to}.`;
-  if (f.dist_m === 0) return `Ended with an unplanned early landing at ${f.to}.`;
-  return `Landed at ${f.to}.`;
 }
 
 let protocolReady = false;
@@ -256,8 +251,7 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
         <p className="ig-when">
           {flight ? (
             <>
-              <span className="mono">{utcDate(Date.parse(`${flight.date}T12:00:00Z`))}</span>, sol <span className="mono">{flight.sol}</span>.{' '}
-              {where(flight)}
+              <span className="mono">{flight.date}</span>, sol <span className="mono">{flight.sol}</span>
             </>
           ) : (
             blank
@@ -269,28 +263,25 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
             <dd className="mono">{flight ? (flight.hover ? <span className="ig-hover">Hover</span> : `${num.format(flight.dist_m)} m`) : blank}</dd>
           </div>
           <div>
-            <dt>Highest</dt>
+            <dt>Height</dt>
             <dd className="mono">{flight ? `${num.format(flight.max_alt_m)} m` : blank}</dd>
           </div>
           <div>
-            <dt>In the air</dt>
+            <dt>Time</dt>
             <dd className="mono">{flight ? `${one.format(flight.duration_s)} s` : blank}</dd>
           </div>
           <div>
-            <dt>Top speed</dt>
+            <dt>Speed</dt>
             <dd className="mono">{flight ? `${speed.format(flight.max_speed_m_s)} m/s` : blank}</dd>
           </div>
           <div>
-            <dt>All flights so far</dt>
+            <dt>Total</dt>
             <dd className="mono">{flight ? total(flight.total_m) : blank}</dd>
           </div>
         </dl>
       </div>
 
       <div className="ig-control">
-        <span className="ig-control-label" aria-hidden="true">
-          Flight
-        </span>
         <Slider
           thumbLabel="Flight"
           thumbValueText={(v) => (data?.flights[v - 1] ? `Flight ${v}, ${utcDate(Date.parse(`${data.flights[v - 1].date}T12:00:00Z`))}` : `Flight ${v}`)}
@@ -302,11 +293,11 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
           onValueChange={([v]) => pick(v)}
         />
         <div className="ig-steps">
-          <Button type="button" variant="secondary" onClick={() => pick(n - 1)} disabled={!data || n <= 1}>
-            Previous flight
+          <Button type="button" variant="secondary" aria-label="Previous flight" onClick={() => pick(n - 1)} disabled={!data || n <= 1}>
+            Previous
           </Button>
-          <Button type="button" variant="secondary" onClick={() => pick(n + 1)} disabled={!data || n >= count}>
-            Next flight
+          <Button type="button" variant="secondary" aria-label="Next flight" onClick={() => pick(n + 1)} disabled={!data || n >= count}>
+            Next
           </Button>
         </div>
       </div>
@@ -314,7 +305,6 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
       <div className="ig-stage">
         <div className="ig-mapwrap">
           <div className="ig-map" ref={box} role="region" aria-label="Map of Jezero crater" />
-          <p className="ig-hint">Pinch, or hold Ctrl or ⌘ and scroll, to zoom.</p>
         </div>
         <aside className="ig-photo" aria-label="Photos from Ingenuity’s own cameras">
           <div className="ig-frame" style={{ aspectRatio: shot ? `${shot.pic.width} / ${shot.pic.height}` : '4 / 3' }}>
@@ -325,12 +315,20 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
                 <img src={shot.pic.src} width={shot.pic.width} height={shot.pic.height} alt={shot.alt} loading="lazy" decoding="async" />
               </picture>
             ) : (
-              <p className="ig-nophoto">No photo from flight {n}.</p>
+              <p className="ig-nophoto">No photo</p>
             )}
           </div>
-          <p className="credit ig-caption">{shot ? shot.caption : blank}</p>
+          <p className="credit ig-caption">
+            {shot ? (
+              <>
+                <span className="mono">{shot.date}</span>. <span data-credit>{shot.credit}.</span>
+              </>
+            ) : (
+              blank
+            )}
+          </p>
           <p id={picksId} className="ig-picks-label">
-            Flights with a photo from Ingenuity’s cameras
+            Ingenuity’s photos
           </p>
           <div className="ig-picks" role="group" aria-labelledby={picksId}>
             {photos.map((p) => (

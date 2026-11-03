@@ -9,9 +9,12 @@ interface Props {
   eager?: boolean;
   mark?: [number, number];
   class?: string;
+  what: string;
+  date: string;
+  credit: string;
 }
 
-const { slug, alt, sizes, widths = [640, 1080, 1600, 2400], eager = false, mark, class: className } = Astro.props;
+const { slug, alt, sizes, widths = [640, 800, 1080, 1600, 2400], eager = false, mark, class: className, what, date, credit } = Astro.props;
 const src = image(slug);
 const native = Math.min(src.width, 2400);
 const list = [...widths.filter((w) => w < native), native];
@@ -35,7 +38,7 @@ const p = await pic(slug, list, sizes);
     </picture>
     {mark && <span class="pf-ring" aria-hidden="true" style={`left: ${mark[0] * 100}%; top: ${mark[1] * 100}%`} />}
   </div>
-  <figcaption class="credit"><slot /></figcaption>
+  <figcaption class="credit">{what}, <span class="mono">{date}</span>. <span data-credit>{credit}.</span></figcaption>
 </figure>
 
 <style>
