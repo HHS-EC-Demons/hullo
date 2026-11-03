@@ -1,7 +1,9 @@
 import type { Source } from './sources';
+import { calDate } from '../lib/dates';
 import photos from './photos.json';
 import lro from './lro.json';
 import siteMaps from './orbit-maps.json';
+import jezero from './jezero-clock.json';
 
 export const GROUP_TITLE = 'Moon, Mars and Orbit';
 
@@ -28,7 +30,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'PDF posted Jun 2024, read 1 Nov 2026',
     license: NASA_MEDIA,
     used: 'The sol, date, horizontal distance, highest altitude, top ground speed and time in the air of each of the 72 flights, the hover flights (0 m and 0 m/s), the running total, and the totals of about 17.0 km and 128.8 minutes. Read at build time with pypdf.',
-    note: 'The Mars page shows a flight the log lists with 0 m and 0 m/s as a hover. Distances, heights, speeds and times on the map come from this log, and the paths from the JPL map.',
+    note: 'The Mars page shows a flight the log lists with 0 m and 0 m/s as a hover. Distances, heights and times in the readout and the bars of the All 72 flights chart come from this log, and the paths from the JPL map.',
   },
   {
     id: 'ingenuity-mission',
@@ -47,6 +49,35 @@ export const ORBIT_SOURCES: Source[] = [
     dated: '19 Jan 2024',
     license: NASA_MEDIA,
     used: 'Flight 72 was a quick pop-up vertical flight after an unplanned early landing on flight 71.',
+  },
+  {
+    id: 'mars24',
+    title: 'Mars24 Sunclock, Algorithm and Worked Examples',
+    publisher: 'NASA Goddard Institute for Space Studies',
+    url: jezero.algorithm,
+    dated: 'Updated 7 Jan 2025, read 2 Nov 2026',
+    license: 'NASA GISS page. Equations used, text not copied.',
+    used: 'Steps A-2, A-5 and C-2, the Mars Sol Date and Airy Mean Time, with TT minus UTC of 69.184 s, for the Jezero clock on the Mars page.',
+    note: 'The site checks its code against both worked examples on this page, Airy Mean Time 23:59:39 on 6 Jan 2000 and 13:09:55 on 4 Jan 2004.',
+  },
+  {
+    id: 'm20-raw-images',
+    title: 'Mars 2020 raw image feed',
+    publisher: 'NASA JPL',
+    url: jezero.link,
+    dated: `Image taken ${calDate(jezero.utc)}, read 2 Nov 2026`,
+    license: 'NASA/JPL raw image metadata. Facts cited.',
+    used: `One record, image ${jezero.image}, taken at ${jezero.utc.replace('T', ' ').slice(0, 19)} UTC on sol ${jezero.sol} at a local mean solar time of ${Math.floor(jezero.lmst_h)}:${String(Math.floor((jezero.lmst_h % 1) * 60)).padStart(2, '0')}. The Jezero clock on the Mars page counts sols and the time of day from this record with Mars24.`,
+    note: 'Two more records from the same feed, sol 0 and sol 1000, agree with the clock to within a minute in the site’s tests.',
+  },
+  {
+    id: 'eyes-mars2020',
+    title: 'Eyes on Mars 2020',
+    publisher: 'NASA JPL',
+    url: 'https://eyes.nasa.gov/apps/mars2020/',
+    dated: 'Opened 2 Nov 2026',
+    license: 'NASA app, shown in a frame from its own address. The page sent no X-Frame-Options or frame-ancestors header on 2 Nov 2026.',
+    used: 'The 3D app that opens on the Mars page when the button on the Perseverance selfie is pressed. Nothing from the app loads before that.',
   },
   {
     id: 'mmgis-deep-tiles',
