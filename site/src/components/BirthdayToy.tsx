@@ -1,4 +1,4 @@
-import { useId, useState, type ChangeEvent } from 'react';
+import { useEffect, useId, useState, type ChangeEvent } from 'react';
 import { Input } from '@/components/ui/input';
 import { groupInt } from '../lib/client';
 import { calDate } from '../lib/dates';
@@ -17,6 +17,9 @@ export default function BirthdayToy({ onPick }: { onPick?: (ms: number | null) =
   const id = useId();
   const [day, setDay] = useState('');
   const [out, setOut] = useState<Out>(null);
+  const [max, setMax] = useState<string | undefined>(undefined);
+
+  useEffect(() => setMax(today()), []);
 
   async function change(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -47,7 +50,7 @@ export default function BirthdayToy({ onPick }: { onPick?: (ms: number | null) =
   return (
     <div className="bt">
       <label htmlFor={`${id}-day`}>Your birthday</label>
-      <Input id={`${id}-day`} type="date" min={LAUNCH_DAY} max={today()} value={day} onChange={change} className="bt-in mono" />
+      <Input id={`${id}-day`} name="birthday" autoComplete="bday" type="date" min={LAUNCH_DAY} max={max} value={day} onChange={change} className="bt-in mono" />
       <p className="bt-out" aria-live="polite">
         {out?.kind === 'km' && (
           <>
