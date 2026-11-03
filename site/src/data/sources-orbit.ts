@@ -1,6 +1,7 @@
 import type { Source } from './sources';
 import photos from './photos.json';
 import lro from './lro.json';
+import siteMaps from './orbit-maps.json';
 
 export const GROUP_TITLE = 'Moon, Mars and Orbit';
 
@@ -95,7 +96,27 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Read 1 Nov 2026',
     license: 'The LROC terms say data products available through the PDS are in the public domain. Credit NASA/GSFC/Arizona State University.',
     used: `Crops around the six Apollo landing sites from ${lro.crops.map((c) => c.product).join(', ')}, located with the label’s map grid and the NSSDCA coordinates, fetched with range requests and stretched to 8 bits.`,
-    note: 'Each LRO view on the Orbit page keeps its own 0.5 m or 0.6 m pixels and is never scaled up in the file. The lilac ring marks the lunar module. Apollo site coordinates on the Orbit page are from NSSDCA.',
+    note: 'Each LRO view on the Orbit page keeps its own 0.5 m or 0.6 m pixels and is never scaled up in the file. The lilac ring is placed by turning the NSSDCA lunar module coordinates into a pixel with the map grid in the product’s own PDS4 label, so it marks the lunar module. The scale bars use the pixel_scale_y in that label, 0.5 m per pixel, or 0.6 m for Apollo 17, and the zoomed inset shows the same pixels at 3 times the size. Apollo site coordinates on the Orbit page are from NSSDCA.',
+  },
+  {
+    id: 'svs-moon-kit',
+    title: 'CGI Moon Kit, LROC WAC color map',
+    publisher: 'NASA Scientific Visualization Studio',
+    url: siteMaps.moon.page,
+    dated: 'Released 6 Sep 2019, map file read 2 Nov 2026',
+    license: 'The SVS help page says all SVS content is in the public domain unless otherwise noted. Credit NASA’s Scientific Visualization Studio.',
+    used: `The Moon map at the top of the Orbit page, cut from ${siteMaps.moon.file_url.split('/').pop()} (8192 by 4096 px, centered on 0° longitude) between ${Math.round(siteMaps.moon.west)}° and ${Math.round(siteMaps.moon.east)}° longitude and ${Math.round(siteMaps.moon.south)}° and ${Math.round(siteMaps.moon.north)}° latitude.`,
+    note: 'The map is built from more than 100,000 LRO Wide Angle Camera images. Each pin sits at its site’s NSSDCA latitude and longitude on this grid.',
+  },
+  {
+    id: 'usgs-mdim21-color',
+    title: 'Mars Viking Colorized Global Mosaic 232m (MDIM 2.1)',
+    publisher: 'USGS Astrogeology Science Center, from NASA Ames',
+    url: siteMaps.mars.page,
+    dated: 'Published 2 Feb 2009, read 2 Nov 2026',
+    license: 'The Astropedia page lists Access Constraints as public domain and Use Constraints as none.',
+    used: 'The Mars map at the top of the Orbit page, from the 1 km per pixel JPEG of this mosaic, turned so 240° east sits in the middle and scaled to 2400 px wide.',
+    note: 'NASA Ames warped the Viking color mosaic onto the black and white MDIM 2.1, which matches the MOLA control network to about 200 m. Each pin sits at its lander’s published latitude and east longitude on this grid.',
   },
   {
     id: 'lroc-terms',
