@@ -18,7 +18,7 @@ const photo = await pic('nope-dss14', [400, 640, 960, 1280, 1566], '(max-width: 
       <NopePing client:visible />
     </header>
     <figure class="lost-photo">
-      <picture>
+      <picture class="ph">
         <source type="image/avif" srcset={photo.avif} sizes={photo.sizes} />
         <source type="image/webp" srcset={photo.webp} sizes={photo.sizes} />
         <img src={photo.src} width={photo.width} height={photo.height} alt={`${dish.alt} ${dish.caption}, ${dish.when}.`} loading="eager" fetchpriority="high" decoding="async" />
@@ -79,7 +79,11 @@ const photo = await pic('nope-dss14', [400, 640, 960, 1280, 1566], '(max-width: 
     aspect-ratio: 1566 / 2400;
     object-fit: cover;
     border-radius: var(--radius);
-    background: var(--raised);
+  }
+  .lost-photo .ph {
+    display: block;
+    border-radius: var(--radius);
+    overflow: hidden;
   }
   @media (max-width: 860px) {
     .lost {
