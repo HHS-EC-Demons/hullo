@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useId, useMemo, useRef, useState, type React
 import { useReactToPrint } from 'react-to-print';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 import { C_KM_S, dailyHours, hmsText, lightTimeAt, type DeepSpaceData } from '../lib/lighttime';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth } from '../lib/ranging';
 import { FlightSheet, MoonSheet, VoyagerSheet, int, one, six, type Flight, type MoonShot } from './Worksheets';
@@ -160,6 +161,7 @@ export default function Classroom({ photos, title, line }: Props) {
         }
         facts={moon ? [['Round trip', `${six.format(moon.shot.round_trip_s)} s`]] : null}
         rows={['Round trip']}
+        after={<MoonCheck km={moon ? (moon.shot.round_trip_s / 2) * C_KM_S : null} />}
         onPrint={() => printNow(moonSheet.print)}
         chart={
           moon && (
@@ -245,7 +247,51 @@ function year(when: string): string {
   return when.match(/\d{4}/)?.[0] ?? '';
 }
 
-function Activity({ title, photo, head, facts, rows, chart, onPrint, children }: { title: string; photo: TopicPhoto | null; head?: ReactNode; facts: [string, string][] | null; rows: string[]; chart: ReactNode; onPrint: () => void; children?: ReactNode }) {
+function MoonCheck({ km }: { km: number | null }) {
+  const id = useId();
+  const [text, setText] = useState('');
+  const [result, setResult] = useState<{ off: number } | null>(null);
+  const guess = Number(text.replace(/[\s,]/g, ''));
+  return (
+    <form
+      className="cr-check"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (km === null || !Number.isFinite(guess) || text.trim() === '') return;
+        setResult({ off: guess - Math.round(km) });
+      }}
+    >
+      <label htmlFor={id}>Your answer (km)</label>
+      <Input
+        id={id}
+        inputMode="numeric"
+        autoComplete="off"
+        spellCheck={false}
+        value={text}
+        onChange={(e) => {
+          setText(e.target.value);
+          setResult(null);
+        }}
+        className="cr-check-input mono"
+      />
+      <Button type="submit" variant="secondary" disabled={km === null}>
+        Check
+      </Button>
+      <p className="cr-check-out" aria-live="polite">
+        {result &&
+          (Math.abs(result.off) <= 1000 ? (
+            'Spot on, within 1,000 km'
+          ) : (
+            <>
+              <span className="mono">{int.format(Math.abs(result.off))} km</span> too {result.off > 0 ? 'high' : 'low'}
+            </>
+          ))}
+      </p>
+    </form>
+  );
+}
+
+function Activity({ title, photo, head, facts, rows, chart, after, onPrint, children }: { title: string; photo: TopicPhoto | null; head?: ReactNode; facts: [string, string][] | null; rows: string[]; chart: ReactNode; after?: ReactNode; onPrint: () => void; children?: ReactNode }) {
   const id = useId();
   const first = head !== undefined;
   return (
@@ -288,6 +334,7 @@ function Activity({ title, photo, head, facts, rows, chart, onPrint, children }:
             </div>
           ))}
         </dl>
+        {after}
         <div className="cr-chart">
           <Suspense fallback={null}>{chart}</Suspense>
         </div>
