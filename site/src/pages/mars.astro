@@ -5,7 +5,6 @@ import EyesEmbed from '../components/EyesEmbed';
 import PlanetFigure from '../components/PlanetFigure.astro';
 import { readData } from '../lib/build-data';
 import { meta, pic } from '../lib/photos';
-import { calDate, monthYear } from '../lib/dates';
 import photoData from '../data/photos.json';
 import sounds from '../data/sounds.json';
 
@@ -39,9 +38,6 @@ const photos: FlightPhoto[] = await Promise.all(
   }),
 );
 
-const hero = meta('mars-two-years');
-const vanZyl = photoData['mars-van-zyl'];
-const selfie = meta('mars-selfie');
 const valinor = photoData['mars-valinor'];
 const mark = valinor.mark as [number, number];
 
@@ -52,17 +48,14 @@ const rotor: RotorClip = {
   label: 'Ingenuity’s fourth flight, recorded by Perseverance',
   stampId: 'ingenuity',
   stampDetail: 'Heard flight 4, recorded 30 Apr 2021 from 80 m away',
-  title: 'Flight 4 rotor hum',
-  what: 'SuperCam microphone',
-  date: calDate(rotors.recorded),
-  credit: rotors.credit,
+  title: 'Rotor hum',
 };
 
 const selfiePic = await pic('mars-selfie', [640, 960, 1280, 1600, 2400], '(max-width: 1360px) 92vw, 1240px');
 ---
 
 <Base title="Mars" current="mars" description="Every one of Ingenuity’s 72 flights over Jezero crater on JPL’s map, with NASA’s flight log and photos from the helicopter.">
-  <IngenuityMap client:idle photos={photos} opening={opening} flights={ing.totals.flights} rotor={rotor} chartTitle="All 72 flights">
+  <IngenuityMap client:idle photos={photos} opening={opening} flights={ing.totals.flights} rotor={rotor} chartTitle="Distance and height of all 72 flights">
     <Fragment slot="head">
       <h1 class="mars-h1">Mars</h1>
       <p class="mars-line">Built for 5 flights, Ingenuity flew {ing.totals.flights}.</p>
@@ -74,9 +67,6 @@ const selfiePic = await pic('mars-selfie', [640, 960, 1280, 1600, 2400], '(max-w
       eager
       sizes="(max-width: 860px) 92vw, 46vw"
       alt="Ingenuity standing on rocky ground, its two stacked rotors, dusty solar panel and four thin legs in sharp detail."
-      what="Ingenuity, enhanced color"
-      date={calDate(hero.date!)}
-      credit={`${hero.id}, ${hero.credit}`}
     />
   </IngenuityMap>
 
@@ -90,7 +80,6 @@ const selfiePic = await pic('mars-selfie', [640, 960, 1280, 1600, 2400], '(max-w
         poster={selfiePic}
         alt="Perseverance’s selfie on Mars, with Ingenuity standing on the ground about 3.9 m in front of the rover."
       />
-      <figcaption class="credit">Perseverance and Ingenuity, <span class="mono">{calDate(selfie.date!)}</span>. <span data-credit>{selfie.id}, {selfie.credit}.</span></figcaption>
     </figure>
   </section>
 
@@ -100,9 +89,6 @@ const selfiePic = await pic('mars-selfie', [640, 960, 1280, 1600, 2400], '(max-w
       class="mars-wide"
       sizes="100vw"
       alt="A wide panorama of Jezero crater’s floor, reddish sand scattered with pale rocks under a butterscotch sky, with low hills along the horizon."
-      what="Van Zyl Overlook"
-      date={monthYear(vanZyl.date)}
-      credit={`${vanZyl.id}, ${vanZyl.credit}`}
     />
   </section>
 
@@ -116,9 +102,6 @@ const selfiePic = await pic('mars-selfie', [640, 960, 1280, 1600, 2400], '(max-w
       sizes="100vw"
       mark={mark}
       alt="Rippled orange sand dunes with a few rocks, and Ingenuity as a tiny dark speck inside a lilac ring left of center."
-      what="Last airfield"
-      date={calDate(valinor.date)}
-      credit={`${valinor.id}, ${valinor.credit}`}
     />
   </section>
 </Base>
@@ -147,7 +130,6 @@ const selfiePic = await pic('mars-selfie', [640, 960, 1280, 1600, 2400], '(max-w
   }
   .mars-seen :global(.mars-wide),
   .mars-end :global(.mars-wide) {
-    --pf-cap-pad: calc(max(0px, (100% - var(--max)) / 2) + var(--gutter));
     max-width: 1920px;
     margin-inline: auto;
   }

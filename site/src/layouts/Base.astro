@@ -141,6 +141,18 @@ const extra = [
         </ul>
       </div>
     </footer>
+    <script is:inline>
+      (function () {
+        var done = function (img) {
+          var box = img.closest && img.closest('.ph');
+          if (box && img.complete && img.naturalWidth > 0) box.classList.add('ph-done');
+        };
+        document.addEventListener('load', function (e) { if (e.target && e.target.tagName === 'IMG') done(e.target); }, true);
+        var sweep = function () { document.querySelectorAll('.ph img').forEach(done); };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sweep);
+        else sweep();
+      })();
+    </script>
     <script>
       import { onStamp, stampCount } from '../lib/passport';
 

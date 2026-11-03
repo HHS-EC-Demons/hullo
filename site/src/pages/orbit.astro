@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import OrbitSites, { type MapProps, type Mark, type QuakeClip, type SiteProps, type ViewProps } from '../components/OrbitSites';
 import { ORBIT_SITES, type OrbitSite, type OrbitView } from '../data/orbit-sites';
 import { calDate } from '../lib/dates';
-import { LRO, image, lro, meta, pic } from '../lib/photos';
+import { image, lro, meta, pic } from '../lib/photos';
 import sounds from '../data/sounds.json';
 import siteMaps from '../data/orbit-maps.json';
 import orbitMarks from '../data/orbit-marks.json';
@@ -18,10 +18,6 @@ const WIDTHS = [640, 800, 1080, 1400, 1800];
 function widths(slug: string): number[] {
   const native = Math.min(image(slug).width, 2400);
   return [...WIDTHS.filter((w) => w < native), native];
-}
-
-function label(id: string): string {
-  return /^as\d/i.test(id) ? id.toUpperCase() : id;
 }
 
 function short(by: string): string {
@@ -43,7 +39,6 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
         alt: v.alt,
         when: calDate(date),
         by: v.by,
-        caption: `${c.product}, ${LRO.credit}.`,
         mark,
       },
     };
@@ -59,7 +54,6 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
       alt: v.alt,
       when: calDate(date),
       by: short(v.by),
-      caption: `${label(m.id)}, ${m.credit}.`,
       mark: hit ? { ring: hit.ring, ringSize: hit.ring_size, metersPerPx: hit.m_per_px } : undefined,
     },
   };
@@ -76,7 +70,6 @@ const sites: SiteProps[] = await Promise.all(
       name: s.name,
       tab: s.body === 'Moon' ? s.name.replace(/^Apollo /, '') : s.name,
       body: s.body,
-      look: s.look,
       landed: s.landed,
       then: then.props,
       now: now.props,
@@ -93,9 +86,7 @@ const quakeClip: QuakeClip = {
   label: 'InSight’s biggest marsquake as sound',
   stampId: 'insight',
   stampDetail: 'Heard the magnitude 5 quake of 4 May 2022',
-  what: 'Marsquake',
-  date: calDate(quake.recorded),
-  credit: `PIA25281, ${quake.credit}`,
+  title: 'Marsquake',
 };
 
 type MapMeta = { file: string; west: number; east: number; north: number; south: number; id: string; year: number; credit: string };
@@ -106,9 +97,6 @@ async function siteMap(body: 'Moon' | 'Mars', m: MapMeta, alt: string): Promise<
     body,
     pic: await pic(slug, widths(slug), MAP_SIZES),
     alt,
-    what: body,
-    year: m.year,
-    credit: `${m.id}, ${m.credit}`,
     pins: ORBIT_SITES.filter((s) => s.body === body).map((s) => {
       const lon = body === 'Mars' && s.lon < m.west ? s.lon + 360 : s.lon;
       return {
