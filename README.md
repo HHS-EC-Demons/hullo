@@ -13,7 +13,7 @@ Hardware left in space that still answers. Space Apps 2026, Abandoned but not Fo
 | `/moon` | Laser echo off Apollo and Lunokhod reflectors |
 | `/mars` | Ingenuity's 72 flights over Jezero crater |
 | `/orbit` | Apollo and Mars landing sites seen from orbit |
-| `/silent` | When each object went quiet |
+| `/silent` | NASA legacy hardware and when each mission ended |
 | `/passport` | Stamps and a printable certificate |
 | `/classroom` | Three printable worksheets with answer keys |
 | `/sources` | Every dataset, license and AI use |
