@@ -15,6 +15,12 @@
   min-width: 6.5rem;
 }
 
+.sc-wavebox {
+  position: relative;
+  min-width: 0;
+  height: 64px;
+}
+
 .sc-wave {
   height: 64px;
   min-width: 0;
@@ -48,7 +54,13 @@
   .sc-row {
     grid-template-columns: auto minmax(0, 1fr);
   }
-  .sc-wave {
+  .sc-wavebox {
+  position: relative;
+  min-width: 0;
+  height: 64px;
+}
+
+.sc-wave {
     grid-column: 1 / -1;
     grid-row: 1;
   }
