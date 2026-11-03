@@ -55,6 +55,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Copied 1 Nov 2026',
     license: 'JPL image use policy, any purpose without prior permission. NASA/JPL-Caltech/University of Arizona/MSSS.',
     used: '701 extra tiles of the M20_HiRISE_RGB_CTX_mosaic_25cm_v7 layer within 100 m (zoom 17) and 50 m (zoom 18) of every flight path, re-encoded as WebP, 4.6 MB.',
+    note: 'The Mars map shows this HiRISE and CTX color mosaic with north up.',
   },
   {
     id: 'ingenuity-audio',
@@ -74,6 +75,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Added 17 May 2022, quake on 4 May 2022 (sol 1,222)',
     license: `${NASA_MEDIA} Credit NASA/JPL-Caltech/CNES.`,
     used: 'The 31 s sound track of the video, the sonified signal of the estimated magnitude 5 quake, mixed to mono at 48 kbps, and its waveform.',
+    note: 'NASA turned the seismometer signal into sound. The quake was on sol 1,222.',
   },
   {
     id: 'pia17045',
@@ -92,7 +94,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Read 1 Nov 2026',
     license: 'The LROC terms say data products available through the PDS are in the public domain. Credit NASA/GSFC/Arizona State University.',
     used: `Crops around the six Apollo landing sites from ${lro.crops.map((c) => c.product).join(', ')}, located with the label’s map grid and the NSSDCA coordinates, fetched with range requests and stretched to 8 bits.`,
-    note: 'Each LRO view on the Orbit page is shown at its own 0.5 m or 0.6 m pixels, never scaled up in the file. The lilac ring marks the lunar module.',
+    note: 'Each LRO view on the Orbit page keeps its own 0.5 m or 0.6 m pixels and is never scaled up in the file. The lilac ring marks the lunar module. Apollo site coordinates on the Orbit page are from NSSDCA.',
   },
   {
     id: 'lroc-terms',
@@ -120,6 +122,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Downloaded 1 Nov 2026',
     license: HIRISE,
     used: 'PIA01881 (PSP_001521_2025) and PIA01882 (PSP_001501_2280) lander figures, ESP_021925_1650 (Spirit), ESP_050177_1780 (Opportunity’s lander), ESP_058005_1845 and PIA26515 (InSight), and PIA22223 figures 1 and 2 (Phoenix, PSP_009290_2485 and ESP_053451_2485), each shown with its own credit.',
+    note: 'Mars landing coordinates on the Orbit page are from NSSDCA, except Spirit and Phoenix, which are from the PDS Geosciences Node.',
   },
   {
     id: 'orbit-photos',
