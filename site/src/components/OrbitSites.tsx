@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ReactCompareSliderCssVars } from 'react-compare-slider';
 import { Handle, HandleRoot, Item, Provider, Root } from 'react-compare-slider/components';
 import { useReactCompareSlider } from 'react-compare-slider/hooks';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import SoundClip, { type SoundClipProps } from './SoundClip';
+import { groupInt } from '../lib/client';
 import { stamp } from '../lib/passport';
 import type { Pic } from '../lib/photos';
 import './orbit.css';
@@ -30,14 +31,18 @@ export interface SiteProps {
   name: string;
   tab: string;
   body: 'Moon' | 'Mars';
-  where: string;
-  apart: string;
   look: string;
   then: ViewProps;
   now: ViewProps;
+  landed: string;
   pair: boolean;
   stampDetail: string;
-  sound?: SoundClipProps & { what: string; date: string; credit: string };
+}
+
+export interface QuakeClip extends SoundClipProps {
+  what: string;
+  date: string;
+  credit: string;
 }
 
 export interface MapProps {
@@ -81,7 +86,7 @@ function ScaleBar({ widthPx, metersPerPx, className }: { widthPx: number; meters
   const span = widthPx * metersPerPx;
   const length = nice(span * 0.26);
   return (
-    <span className={`os-scale ${className}`} aria-hidden="true">
+    <span className={`os-scale ${className}`} aria-hidden="true" data-chart-text="">
       <span className="os-scale-bar" style={{ width: `${((length / span) * 100).toFixed(3)}cqw` }} />
       <span className="os-scale-n mono">{length} m</span>
     </span>
@@ -213,8 +218,21 @@ function SiteMap({ map, active, onPick, eager }: { map: MapProps; active: string
   );
 }
 
-export default function OrbitSites({ sites, maps, first, head }: { sites: SiteProps[]; maps: MapProps[]; first: string; head?: ReactNode }) {
+function useToday(): number | null {
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    setNow(Date.now());
+    const timer = window.setInterval(() => setNow(Date.now()), 60000);
+    return () => window.clearInterval(timer);
+  }, []);
+  return now;
+}
+
+const DAY = 86400000;
+
+export default function OrbitSites({ sites, maps, first, head, quake }: { sites: SiteProps[]; maps: MapProps[]; first: string; head?: ReactNode; quake: QuakeClip }) {
   const [active, setActive] = useState(first);
+  const now = useToday();
   const slid = useRef(new Set<string>());
   const site = sites.find((s) => s.id === active) ?? sites[0];
 
@@ -251,12 +269,18 @@ export default function OrbitSites({ sites, maps, first, head }: { sites: SitePr
               </div>
             ))}
           </div>
-          <div className="os-read" aria-live="polite">
-            <p className="os-meta">
-              <span className="mono">{site.where}</span>
-              <span className="mono">{site.apart}</span>
-            </p>
-            <p className="os-look">{site.look}</p>
+          <div className="os-read">
+            <div aria-live="polite" className="os-readtext">
+              <p className="os-days">
+                <span className="os-days-n mono">{now ? groupInt(Math.floor((now - Date.parse(`${site.landed}T00:00:00Z`)) / DAY)) : '\u2007'.repeat(6)}</span> days since landing
+              </p>
+              <p className="os-look">{site.look}</p>
+            </div>
+            <div className="os-sound">
+              <SoundClip {...quake}>
+                {quake.what}, <span className="mono">{quake.date}</span>. <span data-credit="">{quake.credit}.</span>
+              </SoundClip>
+            </div>
           </div>
         </div>
         {sites.map((s) => (
@@ -267,14 +291,6 @@ export default function OrbitSites({ sites, maps, first, head }: { sites: SitePr
               <div className="os-pair">
                 <View view={s.then} />
                 <View view={s.now} />
-              </div>
-            )}
-            {s.sound && (
-              <div className="os-sound">
-                <SoundClip {...s.sound}>
-                  {s.sound.what}, <span className="mono">{s.sound.date}</span>.{' '}
-                  <span data-credit="">{s.sound.credit}.</span>
-                </SoundClip>
               </div>
             )}
           </TabsContent>
