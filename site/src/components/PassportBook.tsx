@@ -1,4 +1,4 @@
-import { forwardRef, type CSSProperties, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
+import { forwardRef, lazy, Suspense, type CSSProperties, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,14 +8,12 @@ import { getHolder, getServerStamps, getStamps, setHolder, subscribeStamps, type
 import { href } from '../lib/paths';
 import sansFont from '@fontsource-variable/gabarito/files/gabarito-latin-wght-normal.woff2?url';
 import monoFont from '@fontsource-variable/spline-sans-mono/files/spline-sans-mono-latin-wght-normal.woff2?url';
+import { localCalDate } from '../lib/local-date';
 import './passport.css';
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const PassportChart = lazy(() => import('./PassportChart'));
 
-function dayText(ms: number): string {
-  const d = new Date(ms);
-  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-}
+const dayText = localCalDate;
 
 function tilt(id: string): number {
   let h = 0;
@@ -40,17 +38,23 @@ export interface Thumb {
 interface Props {
   site: string;
   thumbs: Record<string, Thumb>;
+  title: string;
+  line: string;
 }
 
-export default function PassportBook({ site, thumbs }: Props) {
+export default function PassportBook({ site, thumbs, title, line }: Props) {
   const stamps = useSyncExternalStore(subscribeStamps, getStamps, getServerStamps);
   const [name, setName] = useState('');
   const [printedAt, setPrintedAt] = useState(() => Date.now());
+  const [live, setLive] = useState(false);
   const sheet = useRef<HTMLDivElement>(null);
   const nameId = useId();
   const hintId = useId();
 
-  useEffect(() => setName(getHolder()), []);
+  useEffect(() => {
+    setName(getHolder());
+    setLive(true);
+  }, []);
 
   const byId = new Map(stamps.map((s) => [s.id, s]));
   const earned = STAMP_OBJECTS.filter((o) => byId.has(o.id));
@@ -67,7 +71,11 @@ export default function PassportBook({ site, thumbs }: Props) {
 
   return (
     <div className="pp">
-      <div className="pp-top">
+      <header className="page-head pp-head">
+        <div className="pp-title">
+          <h1>{title}</h1>
+          <p>{line}</p>
+        </div>
         <p className="pp-count">
           <span className="pp-count-n">{earned.length}</span>
           <span className="pp-count-of"> of {STAMP_OBJECTS.length} stamped</span>
@@ -103,9 +111,19 @@ export default function PassportBook({ site, thumbs }: Props) {
             Print certificate
           </Button>
         </form>
-      </div>
-
-      {earned.length === 0 && <p className="pp-empty">No stamps yet.</p>}
+        <section className="pp-chart" aria-labelledby="pp-chart-title">
+          <h2 id="pp-chart-title" className="pp-chart-title">
+            Stamps by page
+          </h2>
+          <div className="pp-chart-frame">
+            {live && (
+              <Suspense fallback={null}>
+                <PassportChart byId={byId} dayText={dayText} />
+              </Suspense>
+            )}
+          </div>
+        </section>
+      </header>
 
       {GROUPS.map((g) => {
         const objects = STAMP_OBJECTS.filter((o) => o.group === g.key);

@@ -1,9 +1,11 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { scaleLinear } from 'd3-scale';
 import { dayMs, span, spanText, TIMELINE_START, type Lifeline } from '../data/timeline';
 import { getStamp, stamp } from '../lib/passport';
+import { onQuietPick } from '../lib/quiet-pick';
 import { href } from '../lib/paths';
-import { useReducedMotion, utcDate } from '../lib/client';
+import { useReducedMotion } from '../lib/client';
+import { calDate } from '../lib/dates';
 import './quiet.css';
 
 export interface TimelinePhoto {
@@ -44,7 +46,20 @@ export default function QuietTimeline({ lines, photos, found, builtMs, first }: 
   const [stamped, setStamped] = useState(false);
   const reduce = useReducedMotion();
 
+  const root = useRef<HTMLDivElement>(null);
+
   useEffect(() => setNow(Date.now()), []);
+
+  useEffect(() => {
+    const head = document.querySelector('.site-head');
+    const el = root.current;
+    if (!head || !el) return;
+    const fit = () => el.style.setProperty('--qt-top', `${Math.floor(head.getBoundingClientRect().height)}px`);
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(head);
+    return () => ro.disconnect();
+  }, []);
 
   const x = useMemo(() => scaleLinear().domain([dayMs(TIMELINE_START), now]).range([0, 100]).clamp(true), [now]);
   const ticks = useMemo(() => {
@@ -70,13 +85,24 @@ export default function QuietTimeline({ lines, photos, found, builtMs, first }: 
     setStamped(getStamp(l.id) !== null);
   }
 
+  const pickRef = useRef(pick);
+  pickRef.current = pick;
+  useEffect(
+    () =>
+      onQuietPick((id) => {
+        const l = lines.find((x) => x.id === id);
+        if (l) pickRef.current(l);
+      }),
+    [lines],
+  );
+
   return (
-    <div className="qt">
+    <div className="qt" ref={root}>
       <div className="qt-sticky">
         <div className="qt-readout" aria-live="polite">
           <Readout line={shown} photo={photos[shown.id]} found={found[shown.id]} figures={figures(shown)} picked={picked !== null} stamped={stamped && shown.id === picked} />
         </div>
-        <div className="qt-scale" aria-hidden="true">
+        <div className="qt-scale" aria-hidden="true" data-tick>
           <p className="qt-key">
             <span className="qt-key-item">
               <span className="qt-key-line on" />
@@ -111,8 +137,8 @@ export default function QuietTimeline({ lines, photos, found, builtMs, first }: 
             const e = l.end ? x(dayMs(l.end)) : 100;
             const f = figures(l);
             const label = l.answers
-              ? `${l.name}, ${l.startKind.toLowerCase()} ${utcDate(dayMs(l.start))}, still answers after ${f.on}`
-              : `${l.name}, ${l.startKind.toLowerCase()} ${utcDate(dayMs(l.start))}, answered for ${f.on}, silent since ${utcDate(dayMs(l.end as string))}`;
+              ? `${l.name}, ${l.startKind.toLowerCase()} ${calDate(l.start)}, still answers after ${f.on}`
+              : `${l.name}, ${l.startKind.toLowerCase()} ${calDate(l.start)}, answered for ${f.on}, silent since ${calDate(l.end as string)}`;
             return (
               <li key={l.id}>
                 <button
@@ -182,8 +208,8 @@ function Readout({ line, photo, found, figures, picked, stamped }: { line: Lifel
       <div className="qt-text">
         <h3 className="qt-title">{line.name}</h3>
         <p className="qt-dates">
-          {line.startKind} {utcDate(dayMs(line.start))}.{' '}
-          {line.end ? `Last heard ${utcDate(dayMs(line.end))}.` : `${line.endKind}.`}
+          {line.startKind} {calDate(line.start)}.{' '}
+          {line.end ? `Last heard ${calDate(line.end)}.` : `${line.endKind}.`}
         </p>
         <dl className="qt-figs">
           <div>
@@ -203,7 +229,7 @@ function Readout({ line, photo, found, figures, picked, stamped }: { line: Lifel
             Stamped in your <a href={href('passport/')}>passport</a>.
           </p>
         ) : (
-          !picked && <p className="qt-stamped">Pick a line to compare. Each pick stamps your passport.</p>
+          !picked && <p className="qt-stamped">Pick a line. Each pick stamps your passport.</p>
         )}
       </div>
     </div>
