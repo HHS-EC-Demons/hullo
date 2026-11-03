@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import Base from '../layouts/Base.astro';
-import { SOURCE_GROUPS } from '../data/source-index';
+import { PHOTO_CREDIT_PAGES, SOURCE_GROUPS } from '../data/source-index';
 import { BRAND } from '../brand';
 
 interface Pkg {
@@ -58,14 +58,28 @@ const byLicense = [...new Set(software.map((t) => t.license))]
   .map((license) => ({ license, tools: software.filter((t) => t.license === license) }))
   .sort((a, b) => b.tools.length - a.tools.length || a.license.localeCompare(b.license));
 
-const SHARED = 4;
-const groups = SOURCE_GROUPS.map((g) => {
+const plain = (text: string): string => text.replace(/\s*\([^)]*\)/g, '').replace(/\s+([,.])/g, '$1').trim();
+
+const SHARED = 3;
+const groups = SOURCE_GROUPS.map((group) => {
+  const g = {
+    ...group,
+    items: group.items.map((s) => ({
+      ...s,
+      title: plain(s.title),
+      publisher: plain(s.publisher),
+      dated: plain(s.dated),
+      used: plain(s.used),
+      note: s.note ? plain(s.note) : s.note,
+      license: plain(s.license),
+    })),
+  };
   const counts = new Map<string, number>();
   for (const s of g.items) counts.set(s.publisher, (counts.get(s.publisher) ?? 0) + 1);
   const shared = [...new Set(g.items.map((s) => s.publisher))].filter((p) => (counts.get(p) ?? 0) >= SHARED);
   const parts = [
-    ...shared.map((publisher) => ({ publisher, items: g.items.filter((s) => s.publisher === publisher) })),
     { publisher: null as string | null, items: g.items.filter((s) => !shared.includes(s.publisher)) },
+    ...shared.map((publisher) => ({ publisher, items: g.items.filter((s) => s.publisher === publisher) })),
   ].filter((part) => part.items.length > 0);
   return { ...g, slug: `g-${g.key}`, parts };
 });
@@ -75,7 +89,6 @@ const groups = SOURCE_GROUPS.map((g) => {
   <header class="wrap page-head src-head">
     <div class="src-title">
       <h1>Sources</h1>
-      <p>Every dataset, page and photo behind this site.</p>
     </div>
     <dl class="facts" aria-label="About this site">
       <div>
@@ -122,6 +135,26 @@ const groups = SOURCE_GROUPS.map((g) => {
       </section>
     ))
   }
+
+  <section class="wrap section" aria-labelledby="photos">
+    <h2 class="group" id="photos">Photo credits</h2>
+    <div class="credits">
+      {
+        PHOTO_CREDIT_PAGES.map((p) => (
+          <div class="credit-page">
+            <h3 class="pub">{p.page}</h3>
+            <ul class="credit-list">
+              {p.credits.map((c) => (
+                <li>
+                  <a href={c.url} rel="external noopener" class="mono">{c.id}</a> <span class="credit-by">{c.credit}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
 
   <section class="wrap section" aria-labelledby="tools">
     <h2 class="group" id="tools">Software and fonts</h2>
@@ -197,6 +230,29 @@ const groups = SOURCE_GROUPS.map((g) => {
   }
   .group + .pub {
     margin-top: 0;
+  }
+  .credits {
+    display: grid;
+    gap: 8px;
+  }
+  .credit-page {
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+  }
+  .credit-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 4px 24px;
+    padding-bottom: 14px;
+  }
+  .credit-list li {
+    font-size: var(--fs-sm);
+  }
+  .credit-list a {
+    font-size: var(--fs-xs);
+  }
+  .credit-by {
+    color: var(--muted);
   }
   .list {
     display: grid;
