@@ -31,7 +31,7 @@ const mirrors = [
 ---
 
 <Base title="Moon" current="moon" description="Fire a laser from Apache Point or Grasse at an Apollo retroreflector and see the round trip time for this moment, from JPL Horizons.">
-  <LaserShot client:load index={moonIndex} chartTitle="This month">
+  <LaserShot client:idle index={moonIndex} chartTitle="This month">
     <Fragment slot="head">
       <h1 class="moon-h1">Moon</h1>
       <p class="moon-line">Lasers still bounce off Apollo mirrors.</p>

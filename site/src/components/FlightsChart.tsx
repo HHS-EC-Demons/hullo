@@ -89,7 +89,7 @@ function Plot({ width, height, flights, picked, onPick }: Props & { width: numbe
       className="hl-chart"
       tabIndex={0}
       role="group"
-      aria-label="Distance and highest altitude of each of Ingenuity's 72 flights from NASA's flight log. Arrow keys pick the flight, Shift moves 10 flights."
+      aria-label="Distance and highest altitude of each of Ingenuity’s 72 flights from NASA’s flight log. Arrow keys pick the flight, Shift moves 10 flights."
       aria-describedby={liveId}
       onKeyDown={onKey}
     >
