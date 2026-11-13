@@ -1,0 +1,24 @@
+---
+import { storyOf } from '../data/stories';
+
+interface Props {
+  id: string;
+  class?: string;
+}
+
+const { id, class: className } = Astro.props;
+const story = storyOf(id);
+---
+
+{
+  story && (
+    <dl class:list={['story', className]}>
+      {story.lines.map(([k, v]) => (
+        <div>
+          <dt>{k}</dt>
+          <dd>{v}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}

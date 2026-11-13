@@ -4,6 +4,7 @@ import { dayMs, span, spanText, TIMELINE_START, type Lifeline } from '../data/ti
 import { stamp } from '../lib/passport';
 import { onQuietPick } from '../lib/quiet-pick';
 import { useReducedMotion } from '../lib/client';
+import StoryList from './StoryList';
 import { calDate } from '../lib/dates';
 import './quiet.css';
 
@@ -78,7 +79,7 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
     setPicked(l.id);
     setPulse((n) => n + 1);
     const f = figures(l);
-    stamp(l.id, l.answers ? `Active for ${f.on}` : `Mission ended ${calDate(l.end as string)}`);
+    stamp(l.id, l.answers ? `Active for ${f.on}` : `${l.endKind} ${calDate(l.end as string)}`);
   }
 
   const pickRef = useRef(pick);
@@ -197,9 +198,10 @@ function Readout({ line, photo, figures }: { line: Lifeline; photo?: TimelinePho
       <div className="qt-text">
         <h3 className="qt-title">{line.name}</h3>
         <p className="qt-fig">
-          <span className="qt-fig-k">{line.answers ? 'Active' : 'Mission ended'}</span>
+          <span className="qt-fig-k">{line.answers ? 'Active' : line.endKind}</span>
           <span className="mono">{line.answers ? figures.on : calDate(line.end as string)}</span>
         </p>
+        <StoryList id={line.id} stack />
       </div>
     </div>
   );

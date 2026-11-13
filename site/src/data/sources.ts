@@ -20,7 +20,7 @@ export interface Source {
   note?: string;
 }
 
-const NASA_MEDIA = 'NASA content, generally not subject to US copyright. Credit NASA.';
+export const NASA_MEDIA = 'NASA content, generally not subject to US copyright. Credit NASA.';
 const photoList = SILENT_PHOTOS.map((p) => `${p.nasa_id} (${p.credit})`).join(', ');
 const pageList = Object.values(PAGE_PHOTOS)
   .map((p) => `${p.nasa_id} (${p.caption}, ${p.credit})`)

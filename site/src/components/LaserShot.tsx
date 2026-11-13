@@ -52,7 +52,7 @@ function elevationWord(el: number | null): string {
 }
 
 
-export default function LaserShot({ index: given, head, photo, chartTitle }: { index?: MoonIndex; head?: ReactNode; photo?: ReactNode; chartTitle?: string }) {
+export default function LaserShot({ index: given, head, photo, story, chartTitle }: { index?: MoonIndex; head?: ReactNode; photo?: ReactNode; story?: ReactNode; chartTitle?: string }) {
   const { data: fetched, error } = useJson<MoonIndex>(given ? null : 'data/moon/index.json');
   const index = given ?? fetched;
   const now = useNow(1000);
@@ -149,6 +149,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
   const mx = ((EARTH_R + distance) / span) * 100;
   const stationName = index?.stations.find((s) => s.id === station)?.name ?? '';
   const mirrorName = index?.reflectors.find((r) => r.id === reflector)?.name ?? '';
+  const placed = (index?.reflectors.find((r) => r.id === reflector) as { placed?: string } | undefined)?.placed;
 
   let what: ReactNode = ' ';
   if (shot) what = <>Echo <span className="mono">{shot.waited ? localStamp(shot.ms, { seconds: true, label: false }) : clock(shot.ms, true)}</span></>;
@@ -199,6 +200,11 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
                 <span className="u">s</span>
               </p>
               <p className="ls-what">{what}</p>
+              {placed && (
+                <p className="ls-age">
+                  Left <span className="mono">{placed.slice(0, 4)}</span>, still works
+                </p>
+              )}
             </div>
           </div>
           <figure className="ls-scene" style={{ ['--ex' as string]: ex.toFixed(4), ['--mx' as string]: mx.toFixed(4), ['--mr' as string]: ((MOON_R / span) * 100).toFixed(4) }}>
@@ -218,6 +224,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
         </div>
         {photo}
       </div>
+      {story && <div className="wrap story-wrap">{story}</div>}
       <section className="wrap ls-chartsec" aria-label={chartTitle}>
         <div>
           <ChartFrame className="h-[300px] md:h-[360px]">

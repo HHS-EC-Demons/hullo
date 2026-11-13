@@ -1,4 +1,6 @@
 ---
+import Story from '../components/Story.astro';
+import NextStop from '../components/NextStop.astro';
 import Base from '../layouts/Base.astro';
 import IngenuityMap, { type Flight, type FlightPhoto, type RotorClip } from '../components/IngenuityMap';
 import EyesEmbed from '../components/EyesEmbed';
@@ -43,6 +45,7 @@ const mark = valinor.mark as [number, number];
 
 const rotor: RotorClip = {
   source: 'Ingenuity flight 4, 2021. NASA/JPL-Caltech/LANL/CNES/CNRS/ISAE-Supaéro',
+  takeaway: 'Mars air is 99% thinner than Earth’s, so the blades spin about 2,400 times a minute.',
   src: rotors.file,
   peaks: rotors.peaks,
   duration: rotors.duration_s,
@@ -69,6 +72,7 @@ const selfiePic = await pic('mars-selfie', [640, 960, 1280, 1600, 2400], '(max-w
       sizes="(max-width: 860px) 92vw, 46vw"
       alt="Ingenuity standing on rocky ground, its two stacked rotors, dusty solar panel and four thin legs in sharp detail."
     />
+    <Story slot="story" id="ingenuity" />
   </IngenuityMap>
 
   <section class="wrap mars-eyes section" aria-label="Eyes on Mars 2020">
@@ -105,6 +109,7 @@ const selfiePic = await pic('mars-selfie', [640, 960, 1280, 1600, 2400], '(max-w
       alt="Rippled orange sand dunes with a few rocks, and Ingenuity as a tiny dark speck inside a lilac ring left of center."
     />
   </section>
+  <NextStop current="mars" />
 </Base>
 
 <style>
