@@ -7,7 +7,9 @@ import { onPicked, setPicked } from '../lib/picked';
 import { PROBES, probeInfo } from '../data/probes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import LiveLightView from './LiveLight';
+import StoryList from './StoryList';
 import LightDayView from './LightDay';
 import type { Message } from './MessageFlight';
 import SkyChartView from './SkyChart';
@@ -46,12 +48,22 @@ interface FormProps {
   uid: string;
   name: string;
   onSend: (text: string) => string | null;
+  ready: boolean;
   children?: React.ReactNode;
 }
 
-const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: FormProps) {
+const MessageForm = memo(function MessageForm({ uid, name, onSend, ready, children }: FormProps) {
   const [draft, setDraft] = useState('');
   const [note, setNote] = useState('');
+  const [live, setLive] = useState(false);
+  useEffect(() => {
+    setLive(true);
+    const idle = (window as unknown as { requestIdleCallback?: (f: () => void) => number }).requestIdleCallback;
+    if (idle) idle(() => void loadFlight());
+    else setTimeout(() => void loadFlight(), 1500);
+    const early = (window as unknown as { __early?: Record<string, string> }).__early?.message;
+    if (early) setDraft(early.slice(0, MAX_LEN));
+  }, []);
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -75,7 +87,6 @@ const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: F
       <div className="ps-row">
         <Input
           id={`${uid}-msg`}
-          aria-label="Pretend message"
           placeholder="Pretend message"
           name="message"
           type="text"
@@ -91,7 +102,9 @@ const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: F
             if (note) setNote('');
           }}
         />
-        <Button type="submit">Send</Button>
+        <Button type="submit" disabled={!live || !ready}>
+          Send
+        </Button>
       </div>
       <p className="ps-hint" id={`${uid}-hint`} aria-live="polite">
         {note || '\u2007'}
@@ -236,11 +249,11 @@ export default function ProbeSignal({
 
   const form = (
     <div className="ps-main">
-      <MessageForm uid={uid} name={info.name} onSend={send}>
+      <MessageForm uid={uid} name={info.name} onSend={send} ready={!!data}>
         {picker === 'form' && choices('Send to', 'ps-to')}
       </MessageForm>
       {data && mine.length > 0 && (
-        <Suspense fallback={null}>
+        <Suspense fallback={<Skeleton className="h-[260px] w-full" />}>
           <MessageFlight data={data} messages={mine} />
         </Suspense>
       )}
@@ -258,6 +271,7 @@ export default function ProbeSignal({
             {choices('Probe', 'ps-picker')}
             <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} speed={false} compact />
             {form}
+            <StoryList id={probe} stack />
           </div>
           {photo && <Frame photo={photo} />}
         </div>

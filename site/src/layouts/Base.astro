@@ -25,10 +25,10 @@ const pageFiles = Object.keys(import.meta.glob('../pages/**/*.astro'));
 const has = (name: string) => pageFiles.some((f) => f === `../pages/${name}.astro` || f === `../pages/${name}/index.astro`);
 
 const items: NavItem[] = [
-  { key: 'deep-space', href: href('deep-space/'), label: 'Deep space' },
   { key: 'moon', href: href('moon/'), label: 'Moon' },
   { key: 'mars', href: href('mars/'), label: 'Mars' },
   ...(has('orbit') ? [{ key: 'orbit', href: href('orbit/'), label: 'Orbit' }] : []),
+  { key: 'deep-space', href: href('deep-space/'), label: 'Deep space' },
   { key: 'silent', href: href('silent/'), label: 'Silent' },
 ];
 const passport: NavItem | null = has('passport') ? { key: 'passport', href: href('passport/'), label: 'Passport' } : null;
@@ -142,13 +142,30 @@ const extra = [
       </div>
     </footer>
     <script is:inline>
+      document.addEventListener('submit', function (e) { e.preventDefault(); }, true);
+      document.addEventListener('input', function (e) {
+        var t = e.target;
+        if (t && t.name) (window.__early = window.__early || {})[t.name] = t.value;
+      }, true);
       (function () {
         var done = function (img) {
           var box = img.closest && img.closest('.ph');
-          if (box && img.complete && img.naturalWidth > 0) box.classList.add('ph-done');
+          var island = box && box.closest('astro-island');
+          if (!box || (island && !island.hasAttribute('data-ph-ok'))) return;
+          if (img.complete && img.naturalWidth > 0) box.setAttribute('data-ph-done', '');
         };
         document.addEventListener('load', function (e) { if (e.target && e.target.tagName === 'IMG') done(e.target); }, true);
         var sweep = function () { document.querySelectorAll('.ph img').forEach(done); };
+        new MutationObserver(function (list) {
+          list.forEach(function (m) {
+            var t = m.target;
+            if (t.tagName !== 'ASTRO-ISLAND' || t.hasAttribute('ssr')) return;
+            setTimeout(function () {
+              t.setAttribute('data-ph-ok', '');
+              t.querySelectorAll('.ph img').forEach(done);
+            }, 1500);
+          });
+        }).observe(document.documentElement, { subtree: true, attributeFilter: ['ssr'] });
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sweep);
         else sweep();
       })();

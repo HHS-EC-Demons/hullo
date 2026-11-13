@@ -51,7 +51,7 @@
 .cr-photo img.contain {
   object-fit: contain;
 }
-.cr-photo .ph-done img.contain {
+.cr-photo [data-ph-done] img.contain {
   background: #000;
 }
 

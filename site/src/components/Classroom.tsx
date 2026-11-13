@@ -317,8 +317,8 @@ function Activity({ title, photo, head, facts, rows, chart, after, onPrint, chil
         <h2 id={id}>{title}</h2>
         {children}
         <dl className="cr-facts">
-          {(facts ?? rows.map((k): [string, string] => [k, ''])).map(([k, v]) => (
-            <div key={k}>
+          {(facts ?? rows.map((k): [string, string] => [k, ''])).map(([k, v], i) => (
+            <div key={i}>
               <dt>{k}</dt>
               <dd className="mono">{facts ? v : <Skeleton className="inline-block h-[1.1em] w-[8rem] align-middle" />}</dd>
             </div>
