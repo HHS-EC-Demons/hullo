@@ -327,7 +327,7 @@ export default function IngenuityMap({
               disabled={!data}
               onValueChange={([v]) => pick(v)}
             />
-            <div className="ig-tally" aria-label={`Planned 5 flights, flown ${n} of ${count}`}>
+            <div className="ig-tally" role="img" aria-label={`Planned 5 flights, flown ${n} of ${count}`}>
               <div className="ig-ticks" aria-hidden="true">
                 {Array.from({ length: count }, (_, i) => (
                   <span key={i} className={`ig-tick${i < 5 ? ' plan' : ''}${i < n ? ' on' : ''}`} />
