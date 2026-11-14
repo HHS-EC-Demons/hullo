@@ -1,4 +1,5 @@
 import type { Source } from './sources';
+import probePhotos from './probe-photos.json';
 
 export const GROUP_TITLE = 'Live data, the light-day and the message scale';
 
@@ -20,6 +21,15 @@ export const HOME_SOURCES: Source[] = [
     dated: 'Checked 2 Nov 2026',
     license: 'A calculation from the Horizons data listed above.',
     used: 'This site asks Horizons for its daily table in UT, which is UTC. The table crosses 86,400 s of light time at 10:16:06.996 UTC on 18 Nov 2026, 4 ms before NASA’s 10:16:07 UTC, so the countdown and the live number reach one light-day in the same second. Horizons can also label times in TDB, which runs 69.184 s ahead of UTC. A query for 10:16:07 TDB is about 10:14:57.8 UTC, 69 s earlier, and returns 86,399.994 s.',
+  },
+  {
+    id: 'nasa-images-probes',
+    title: 'Probe photos on Deep space',
+    publisher: 'NASA Image and Video Library',
+    url: 'https://images.nasa.gov/',
+    dated: 'Fetched by NASA ID on 2 Nov 2026',
+    license: 'NASA content, generally not subject to US copyright. Credit as printed on each item page.',
+    used: probePhotos.map((p) => `${p.nasa_id} (${p.credit}, ${p.center}), ${p.caption.replace(/\.$/, '')}`).join('. ') + '. The New Horizons frame is cropped to the spacecraft.',
   },
   {
     id: 'nssdca-moon-fact-sheet',

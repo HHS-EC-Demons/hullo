@@ -110,6 +110,20 @@
   text-wrap: pretty;
 }
 
+.ps-photo {
+  display: grid;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.ps-photo img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--raised);
+  border-radius: 2px;
+}
+
 .ps-form {
   display: grid;
   gap: 8px;

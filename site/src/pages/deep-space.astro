@@ -3,11 +3,36 @@ import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
 import { readData } from '../lib/build-data';
 import { asset, href } from '../lib/paths';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import probePhotos from '../data/probe-photos.json';
+import type { ProbePhoto } from '../components/ProbeSignal';
 
 const deep = readData<{ probes: { voyager1: { light_day_utc: string } } }>('deep-space.json');
 const crossing = deep.probes.voyager1.light_day_utc.slice(11, 19);
 const images = readData<{ slug: string; nasa_id: string; credit: string; width: number; height: number }[]>('images.json');
 const photo = images.find((i) => i.slug === 'pale-blue-dot')!;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/img/home-*.jpg', { eager: true });
+const widths = [360, 560, 800, 1100];
+const photos: Record<string, ProbePhoto> = {};
+for (const p of probePhotos) {
+  const img = files[`../assets/img/${p.slug}.jpg`]?.default;
+  if (!img) continue;
+  const avif = await getImage({ src: img, format: 'avif', widths });
+  const webp = await getImage({ src: img, format: 'webp', widths });
+  photos[p.probe] = {
+    avif: avif.srcSet.attribute,
+    webp: webp.srcSet.attribute,
+    src: webp.src,
+    width: img.width,
+    height: img.height,
+    alt: p.alt,
+    caption: p.caption,
+    id: p.nasa_id,
+    credit: p.credit,
+  };
+}
 ---
 
 <Base title="Deep space" current="deep-space" description="Light time and message travel time to Voyager 1 and 2, New Horizons and Pioneer 10 and 11, from JPL Horizons.">
@@ -17,7 +42,7 @@ const photo = images.find((i) => i.slug === 'pale-blue-dot')!;
   </header>
 
   <section class="wrap" aria-label="Light time">
-    <ProbeSignal client:load picker="top" status sky chart />
+    <ProbeSignal client:load picker="top" status sky chart photos={photos} />
   </section>
 
   <section class="wrap section">

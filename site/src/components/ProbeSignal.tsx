@@ -33,7 +33,20 @@ function writeMessages(list: Message[]): void {
   }
 }
 
+export interface ProbePhoto {
+  avif: string;
+  webp: string;
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  caption: string;
+  id: string;
+  credit: string;
+}
+
 interface Props {
+  photos?: Record<string, ProbePhoto>;
   initial?: string;
   picker?: 'top' | 'form';
   headline?: 'h1' | 'p';
@@ -53,6 +66,7 @@ export default function ProbeSignal({
   aside,
   sky = false,
   countdown = false,
+  photos,
 }: Props) {
   const { data, error } = useJson<DeepSpaceData>('data/deep-space.json');
   const minute = useNow(60000);
@@ -70,6 +84,7 @@ export default function ProbeSignal({
     return () => window.removeEventListener('storage', sync);
   }, []);
 
+  const photo = photos?.[probe];
   const mine = useMemo(() => messages.filter((m) => m.probe === probe).slice(-3).reverse(), [messages, probe]);
 
   function stampProbe(key: string) {
@@ -146,7 +161,7 @@ export default function ProbeSignal({
 
       {countdown && <LightDay data={data} />}
 
-      <div className={`ps-act${aside ? ' has-aside' : ''}`}>
+      <div className={`ps-act${aside || photo ? ' has-aside' : ''}`}>
         <div className="ps-main">
           <form className="ps-form" onSubmit={send} noValidate>
             {picker === 'form' && choices('Send to', 'ps-to')}
@@ -175,6 +190,18 @@ export default function ProbeSignal({
           {data && <MessageFlight data={data} messages={mine} />}
         </div>
         {aside && <p className="ps-aside">{aside}</p>}
+        {!aside && photo && (
+          <figure className="ps-photo">
+            <picture>
+              <source type="image/avif" srcSet={photo.avif} sizes="(max-width: 900px) 92vw, 24rem" />
+              <source type="image/webp" srcSet={photo.webp} sizes="(max-width: 900px) 92vw, 24rem" />
+              <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" />
+            </picture>
+            <figcaption className="credit">
+              {photo.caption} {photo.id}, {photo.credit}.
+            </figcaption>
+          </figure>
+        )}
       </div>
 
       {sky && <SkyChart highlight={probe} now={minute} />}
