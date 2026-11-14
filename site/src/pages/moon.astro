@@ -1,126 +1,132 @@
 ---
-import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import LaserShot from '../components/LaserShot';
-import { href } from '../lib/paths';
+import PlanetFigure from '../components/PlanetFigure.astro';
 import { readData } from '../lib/build-data';
-import { dated, image, meta } from '../lib/photos';
+import { utcDate } from '../lib/client';
+import { meta } from '../lib/photos';
 import type { MoonIndex } from '../lib/ranging';
 
+const dated = (iso: string): string => utcDate(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`));
 const moonIndex = readData<MoonIndex>('moon/index.json');
+const station = meta('moon-laser-station');
+const earthrise = meta('moon-earthrise');
 
 const mirrors = [
   {
     slug: 'moon-a11-reflector',
-    name: 'Apollo 11',
-    note: 'The reflector stands beyond the seismometer, with the lunar module on the right.',
+    what: 'The Apollo 11 reflector, behind the seismometer',
     alt: 'An astronaut on the grey surface beside the Apollo 11 seismometer, with the small laser reflector behind the seismometer and the lunar module in the distance.',
   },
   {
     slug: 'moon-a14-reflector',
-    name: 'Apollo 14',
-    note: 'The reflector set up on the surface, with boot prints all around.',
+    what: 'The Apollo 14 reflector, set up among boot prints',
     alt: 'The Apollo 14 laser reflector on the grey surface, a tilted panel of glass corner cubes with boot prints around the panel.',
   },
   {
     slug: 'moon-a15-reflector',
-    name: 'Apollo 15',
-    note: 'The reflector still folded on the lunar module’s storage bay, before the crew set the reflector up.',
+    what: 'The Apollo 15 reflector, still folded on the lunar module',
     alt: 'The side of the Apollo 15 lunar module, with the folded laser reflector on top of a foil wrapped storage bay and boot prints in front.',
   },
-].map((m) => ({ ...m, meta: meta(m.slug), image: image(m.slug) }));
+].map((m) => ({ ...m, meta: meta(m.slug) }));
 ---
 
 <Base title="Moon" current="moon" description="Fire a laser from Apache Point or Grasse at an Apollo retroreflector and see the round trip time for this moment, from JPL Horizons.">
-  <header class="wrap page-head">
-    <h1>Moon</h1>
-    <p>Observatories on Earth still bounce lasers off the unpowered mirrors that the Apollo 11, 14 and 15 crews left on the Moon.</p>
+  <header class="wrap page-head moon-hero">
+    <div class="moon-hero-text">
+      <h1>Moon</h1>
+      <p>Observatories still bounce lasers off mirrors the Apollo 11, 14 and 15 crews left behind.</p>
+    </div>
+    <PlanetFigure
+      slug="moon-laser-station"
+      class="moon-hero-photo"
+      eager
+      sizes="(max-width: 860px) 92vw, 36vw"
+      alt="Two green laser beams rise from a laser ranging station and an observatory dome into a deep blue night sky, both pointed at the bright full Moon."
+    >
+      Goddard’s laser ranging facility firing at the Lunar Reconnaissance Orbiter, {dated(station.date!)}. {station.id}, {station.credit}.
+    </PlanetFigure>
   </header>
 
   <section class="wrap" aria-label="Laser ranging">
     <LaserShot client:load index={moonIndex} />
   </section>
 
-  <section class="wrap section">
-    <div class="moon-more">
-      <div class="moon-text">
-        <p class="big-claim"><span class="n mono">3.8 cm</span> a year</p>
-        <p>
-          Laser ranging started at a precision of several decimeters and now reaches millimeters. More than 57 years of echoes
-          show the Moon moving away from Earth by about 3.8 cm a year.
-        </p>
-        <p class="note">
-          Each mirror is a panel of glass corner cubes, which send light straight back toward the source. Round trips here are twice
-          the station-to-mirror distance from JPL Horizons, divided by the speed of light. Lunokhod 1 and 2 are Soviet rovers whose
-          reflectors are also ranged. <a href={href('sources/')}>Sources</a>
-        </p>
-      </div>
-      <div class="mirrors" role="list" aria-label="The three Apollo reflectors">
-        {
-          mirrors.map((m) => (
-            <figure class="mirror" role="listitem">
-              <Picture
-                src={m.image}
-                formats={['avif', 'webp']}
-                widths={[360, 560, 800]}
-                sizes="(max-width: 860px) 92vw, 22vw"
-                alt={m.alt}
-                loading="lazy"
-                decoding="async"
-              />
-              <figcaption>
-                <span class="mirror-name">{m.name}</span>
-                <span class="mono mirror-date">{dated(m.meta.date)}</span>
-                <span class="credit">{m.note} {m.meta.id.toUpperCase()}, {m.meta.credit}.</span>
-              </figcaption>
-            </figure>
-          ))
-        }
-      </div>
+  <section class="moon-mirrors section" aria-labelledby="mirrors-h">
+    <h2 id="mirrors-h" class="wrap moon-h2">The three Apollo mirrors</h2>
+    <div class="moon-row">
+      {
+        mirrors.map((m) => (
+          <PlanetFigure slug={m.slug} class="moon-mirror" sizes="(max-width: 860px) 100vw, 33vw" widths={[640, 1080, 1800]} alt={m.alt}>
+            {m.what}, {dated(m.meta.date!)}. {m.meta.id.toUpperCase()}, {m.meta.credit}.
+          </PlanetFigure>
+        ))
+      }
     </div>
+  </section>
+
+  <section class="moon-drift" aria-labelledby="drift-h">
+    <div class="wrap moon-claim">
+      <h2 id="drift-h" class="big-claim"><span class="n mono">3.8 cm</span> a year</h2>
+      <p>More than 57 years of laser echoes show the Moon moving away from Earth.</p>
+    </div>
+    <PlanetFigure
+      slug="moon-earthrise"
+      class="moon-earthrise"
+      sizes="100vw"
+      alt="The blue and white Earth, partly in shadow, above the grey cratered horizon of the Moon against a black sky."
+    >
+      Earth over the Moon’s horizon, from Apollo 8 in lunar orbit, {dated(earthrise.date!)}. {earthrise.id.toUpperCase()}, {earthrise.credit}.
+    </PlanetFigure>
   </section>
 </Base>
 
 <style>
-  .moon-more {
+  .moon-hero {
     display: grid;
-    gap: 48px;
-    padding-top: 28px;
-    border-top: 1px solid var(--rule);
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 32px 64px;
+    align-items: end;
   }
-  .mirrors {
+  .moon-hero-text {
+    padding-bottom: 56px;
+  }
+  .moon-hero :global(.moon-hero-photo) {
+    --pf-ratio: 4 / 5;
+    --pf-pos: 50% 0%;
+  }
+  .moon-h2 {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 24px;
+  }
+  .moon-row {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 32px;
+    gap: 8px;
+    max-width: 1920px;
+    margin-inline: auto;
   }
-  .mirror {
+  .moon-row :global(.moon-mirror) {
+    --pf-ratio: 1;
+  }
+  .moon-row :global(.moon-mirror) {
+    --pf-cap-pad: 12px;
+  }
+  .moon-drift {
+    padding-bottom: clamp(48px, 7vw, 96px);
+  }
+  .moon-claim {
     display: grid;
-    gap: 10px;
-    margin: 0;
-    align-content: start;
+    gap: 14px;
+    padding-bottom: clamp(24px, 4vw, 48px);
   }
-  .mirror :global(img) {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1;
-    object-fit: cover;
-    background: var(--raised);
-  }
-  .mirror figcaption {
-    display: grid;
-    gap: 2px;
-  }
-  .mirror-name {
-    font-weight: 700;
-  }
-  .mirror-date {
+  .moon-claim p {
+    max-width: 30rem;
+    font-size: var(--fs-md);
     color: var(--muted);
-    font-size: var(--fs-sm);
-  }
-  .moon-text {
-    display: grid;
-    gap: 18px;
-    max-width: 34rem;
   }
   .big-claim {
     font-size: var(--fs-lg);
@@ -134,9 +140,30 @@ const mirrors = [
     letter-spacing: -0.04em;
     line-height: 1;
   }
+  .moon-drift :global(.moon-earthrise) {
+    --pf-cap-pad: calc(max(0px, (100% - var(--max)) / 2) + var(--gutter));
+    max-width: 1920px;
+    margin-inline: auto;
+  }
   @media (max-width: 860px) {
-    .mirrors {
+    .moon-hero {
       grid-template-columns: minmax(0, 1fr);
+    }
+    .moon-hero-text {
+      padding-bottom: 0;
+    }
+    .moon-hero :global(.moon-hero-photo) {
+      --pf-ratio: 4 / 3;
+    }
+    .moon-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+    .moon-row :global(.moon-mirror) {
+      --pf-cap-pad: var(--gutter);
+    }
+    .moon-drift :global(.moon-earthrise) {
+      --pf-ratio: 4 / 3;
     }
   }
 </style>

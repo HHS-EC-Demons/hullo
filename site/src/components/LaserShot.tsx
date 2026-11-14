@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import type { AnimationPlaybackControls } from 'motion';
+import { Button } from '@/components/ui/button';
 import { loadJson, km, useJson, useNow, useReducedMotion, utcTime, utcDay } from '../lib/client';
 import { stamp } from '../lib/passport';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth, type Shot } from '../lib/ranging';
@@ -191,9 +192,9 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
             </label>
           ))}
         </fieldset>
-        <button className="btn ls-fire" type="button" onClick={fire} onPointerEnter={loadMotion} onFocus={loadMotion} disabled={!loaded || flying}>
+        <Button variant="primary" size="lg" className="ls-fire" type="button" onClick={fire} onPointerEnter={loadMotion} onFocus={loadMotion} disabled={!loaded || flying}>
           {flying ? 'Pulse on its way…' : 'Fire the laser'}
-        </button>
+        </Button>
         {error && <p className="note">Ranging data did not load. Reload the page to try again.</p>}
       </div>
       <div className="ls-readout" aria-live="polite">
@@ -205,7 +206,7 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
         )}
         <p className="ls-what">
           {shown && refl && st
-            ? `Time for a pulse to go from ${st.name} to the ${refl.name} mirror and back, fired ${
+            ? `Round trip from ${st.name} to the ${refl.name} mirror, fired ${
                 shown.waited ? `on ${utcDay(shown.ms)} at ${utcTime(shown.ms)}` : `at ${utcTime(shown.ms)}`
               }.`
             : flying
@@ -213,9 +214,7 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
               : 'Pick a mirror and a station, then fire.'}
         </p>
         {shown?.waited && st && (
-          <p className="note">
-            The Moon is below {minEl}° at {st.name} right now, so the shot is timed for when the Moon climbs past {minEl}° there.
-          </p>
+          <p className="note">Timed for when the Moon climbs past {minEl}° at {st.name}.</p>
         )}
       </div>
       </div>
