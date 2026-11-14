@@ -6,22 +6,71 @@
 .ps-hero {
   display: grid;
   gap: 28px;
-  padding-top: clamp(36px, 6vw, 88px);
-  margin-bottom: clamp(36px, 5vw, 72px);
+  padding-top: clamp(20px, 3vw, 40px);
 }
 
 .ps-hero-text.page-head {
   padding: 0;
+  display: grid;
+  align-content: start;
+}
+
+.ps-hero-text.page-head h1 {
+  font-size: clamp(2.75rem, 5.4vw, 5.25rem);
+}
+
+.ps-hero-text.page-head > p:not([class]) {
+  margin-top: 12px;
 }
 
 .ps-hero-text .ps-picker {
-  margin-top: clamp(24px, 3vw, 40px);
+  margin-top: clamp(18px, 2vw, 26px);
+}
+
+.ps-hero-text .ps-live {
+  margin-top: clamp(22px, 2.6vw, 32px);
+}
+
+.ps-hero-text .ps-km {
+  margin-top: 12px;
+}
+
+.ps-hero-text .ps-form {
+  margin-top: clamp(20px, 2.4vw, 28px);
 }
 
 .ps-hero.has-frame {
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: 32px clamp(32px, 4.5vw, 72px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px clamp(32px, 4vw, 64px);
   align-items: start;
+}
+
+.ps-hero.has-frame .ps-frame {
+  position: sticky;
+  top: 76px;
+}
+
+.ps-hero.has-frame .ps-stage {
+  aspect-ratio: 1 / 1;
+}
+
+.ps-left {
+  display: grid;
+  gap: 2px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.ps-left-at {
+  min-height: 1.5em;
+  color: var(--text);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+.ps-live {
+  container-type: inline-size;
 }
 
 .ps-frame {
@@ -66,7 +115,7 @@
   contain: layout paint;
   will-change: transform;
   color: var(--laser);
-  font-size: clamp(2.25rem, 11.2vw, 9.5rem);
+  font-size: clamp(2rem, 11.4cqi, 9.25rem);
   line-height: 0.98;
   font-weight: 700;
   letter-spacing: -0.045em;
@@ -88,11 +137,7 @@
 }
 
 .ps-big .tail {
-  font-size: 0.42em;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: color-mix(in oklab, var(--laser) 72%, var(--violet));
-  margin-left: 0.04em;
+  color: color-mix(in oklab, var(--laser) 52%, var(--violet));
 }
 
 .ps-big.pending {
@@ -136,27 +181,76 @@
 }
 
 .ps-act {
-  margin-top: clamp(32px, 5vw, 56px);
+  margin-top: clamp(28px, 3.5vw, 44px);
   display: grid;
   grid-template-columns: minmax(0, 40rem);
-  gap: 32px 64px;
-  align-items: end;
-}
-
-.ps-act.has-aside {
-  grid-template-columns: minmax(0, 40rem) minmax(0, 24rem);
-  justify-content: space-between;
-}
-
-.ps-act {
+  gap: 32px clamp(32px, 4vw, 64px);
   align-items: start;
 }
 
-.ps-aside {
+.ps-act.has-side {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+}
+
+.ps-col {
+  display: grid;
+  gap: clamp(24px, 3vw, 36px);
+  align-content: start;
+}
+
+.ps-col .ld {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.ps-side {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.ps-v1 {
+  height: 300px;
+}
+
+.bt {
+  display: grid;
+  grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 20px;
+}
+
+.bt label {
+  grid-column: 1 / -1;
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+
+.bt-in {
+  color-scheme: dark;
+}
+
+.bt-out {
+  min-height: 3em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 10px;
   color: var(--muted);
-  font-size: var(--fs-md);
-  padding-top: 30px;
-  text-wrap: pretty;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+.bt-km {
+  color: var(--text);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ps-ltc {
+  min-height: 420px;
 }
 
 .ps-form {
@@ -185,7 +279,7 @@
 }
 
 .ld {
-  margin-top: clamp(36px, 5vw, 64px);
+  margin-top: clamp(28px, 3.5vw, 44px);
   padding-top: 24px;
   border-top: 1px solid var(--rule);
   display: grid;
@@ -220,8 +314,16 @@
 }
 
 .ld-note {
-  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  min-height: 1.6em;
   font-size: var(--fs-sm);
+}
+
+.ld-utc {
+  color: var(--muted);
+  font-size: var(--fs-xs);
 }
 
 .fl-list {
@@ -348,11 +450,6 @@
 
 .fl-times .mono {
   color: var(--text);
-}
-
-.fl-times .fl-utc {
-  color: var(--muted);
-  font-size: var(--fs-xs);
 }
 
 .fl-why {
@@ -495,7 +592,7 @@
 }
 
 .ltc {
-  margin-top: clamp(56px, 8vw, 104px);
+  margin-top: clamp(40px, 5vw, 64px);
   padding-top: 28px;
   border-top: 1px solid var(--rule);
 }
@@ -513,91 +610,7 @@
 
 .ltc-plot {
   position: relative;
-  min-height: 280px;
-}
-
-.ltc-plot svg {
-  display: block;
-  touch-action: pan-y;
-  overflow: visible;
-}
-
-.ltc-plot svg:focus-visible {
-  outline-offset: 6px;
-}
-
-.ltc-grid {
-  stroke: var(--rule);
-  stroke-width: 1;
-}
-
-.ltc-tick {
-  fill: var(--muted);
-  font-size: 13px;
-  font-family: var(--mono);
-}
-
-.ltc-line {
-  fill: none;
-  stroke: var(--line);
-  stroke-width: 2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-.ltc-ref {
-  stroke: var(--text);
-  stroke-width: 1;
-}
-
-.ltc-reflabel,
-.ltc-nowlabel {
-  fill: var(--text);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.ltc-now {
-  fill: var(--text);
-  stroke: var(--bg);
-  stroke-width: 2;
-}
-
-.ltc-mark {
-  fill: var(--bg);
-  stroke: var(--lilac);
-  stroke-width: 2;
-}
-
-.ltc-marklabel {
-  fill: var(--text);
-  font-size: 13px;
-  font-family: var(--mono);
-}
-
-.ltc-cross {
-  stroke: var(--muted);
-  stroke-width: 1;
-}
-
-.ltc-tip {
-  position: absolute;
-  top: -6px;
-  width: 180px;
-  display: grid;
-  gap: 2px;
-  padding: 8px 12px;
-  background: var(--bg);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  pointer-events: none;
-  font-size: var(--fs-xs);
-  color: var(--muted);
-}
-
-.ltc-tip strong {
-  color: var(--text);
-  font-size: var(--fs-sm);
+  height: 300px;
 }
 
 .ltc-table {
@@ -637,19 +650,27 @@
   .ps-hero.has-frame {
     grid-template-columns: minmax(0, 1fr);
   }
-  .ps-frame .credit {
-    min-height: calc(3 * 1.45em);
+  .ps-hero.has-frame .ps-frame {
+    position: static;
   }
-  .ps-act.has-aside {
+  .ps-hero.has-frame .ps-stage {
+    aspect-ratio: 5 / 4;
+  }
+  .ps-act.has-side {
     grid-template-columns: minmax(0, 1fr);
   }
-  .ps-aside {
-    padding: 20px 0 0;
-    border-top: 1px solid var(--rule);
+  .ps-frame .credit {
+    min-height: calc(3 * 1.45em);
   }
 }
 
 @media (max-width: 640px) {
+  .bt {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ps-v1 {
+    height: 260px;
+  }
   .ps-row {
     flex-direction: column;
   }

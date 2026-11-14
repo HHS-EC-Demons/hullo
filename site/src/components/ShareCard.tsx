@@ -1,6 +1,7 @@
 import type { Ref } from 'react';
 import { hmsText } from '../lib/lighttime';
 import { WORDMARK } from '../brand';
+import { calDate, clock } from '../lib/dates';
 
 export interface CardMessage {
   id: string;
@@ -12,16 +13,10 @@ export interface CardMessage {
   silent?: string;
 }
 
-const stamp = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hourCycle: 'h23',
-  timeZone: 'UTC',
-});
+function stamp(ms: number): string {
+  const d = new Date(ms);
+  return `${clock(ms)} ${calDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)}`;
+}
 
 const SITE = 'hhs-ec-demons.github.io/hullo';
 
@@ -46,11 +41,11 @@ export default function ShareCard({ msg, ref }: { msg: CardMessage; ref: Ref<HTM
       <p className="shc-trip mono">{trip} at the speed of light</p>
       {msg.silent && <p className="shc-silent">{msg.silent}</p>}
       <div className="shc-times mono">
-        <span>Sent {stamp.format(msg.sent)} UTC</span>
-        <span>Arrives {stamp.format(msg.arrives)} UTC</span>
+        <span>Sent {stamp(msg.sent)}</span>
+        <span>Arrives {stamp(msg.arrives)}</span>
       </div>
       <p className="shc-foot">
-        Distance from JPL Horizons. Not transmitted, kept on one device. {SITE}
+        Times in the sender’s time zone. Distance from JPL Horizons. Not transmitted, kept on one device. {SITE}
       </p>
     </div>
   );
