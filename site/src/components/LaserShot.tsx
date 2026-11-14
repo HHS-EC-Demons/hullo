@@ -163,7 +163,7 @@ export default function LaserShot() {
             </label>
           ))}
         </fieldset>
-        <fieldset className="choices">
+        <fieldset className="choices ls-stations">
           <legend>Laser station</legend>
           {(index?.stations ?? []).map((s) => (
             <label className="choice" key={s.id}>
