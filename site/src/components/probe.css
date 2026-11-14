@@ -23,6 +23,7 @@
 
 .ps-big {
   display: block;
+  color: var(--laser);
   font-size: clamp(2.6rem, 15.6vw, 11.5rem);
   line-height: 0.98;
   font-weight: 700;
@@ -35,7 +36,7 @@
   font-size: 0.34em;
   letter-spacing: -0.02em;
   font-weight: 500;
-  color: var(--ink-2);
+  color: var(--muted);
   margin-inline: 0.12em 0.42em;
 }
 
@@ -63,7 +64,7 @@
 }
 
 .ps-km-l {
-  color: var(--ink-2);
+  color: var(--muted);
   font-size: var(--fs-sm);
 }
 
@@ -73,7 +74,7 @@
   gap: 4px 12px;
   margin-top: 14px;
   font-size: var(--fs-sm);
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .ps-act {
@@ -94,7 +95,7 @@
 }
 
 .ps-aside {
-  color: var(--ink-2);
+  color: var(--muted);
   font-size: var(--fs-md);
   padding-top: 30px;
   text-wrap: pretty;
@@ -120,19 +121,19 @@
   min-width: 0;
   min-height: 48px;
   padding: 0 14px;
-  border: 1px solid var(--ink-3);
+  border: 1px solid var(--edge);
   border-radius: var(--radius);
-  background: var(--paper);
+  background: var(--bg);
   font-size: var(--fs-md);
 }
 
 .ps-row input:focus-visible {
   outline-offset: 1px;
-  border-color: var(--ink);
+  border-color: var(--text);
 }
 
 .ps-hint {
-  color: var(--ink-2);
+  color: var(--muted);
   font-size: var(--fs-sm);
   min-height: 1.55em;
 }
@@ -161,7 +162,7 @@
   align-items: center;
   gap: 12px;
   font-size: var(--fs-xs);
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .trail-track {
@@ -174,7 +175,7 @@
   position: absolute;
   inset: 6px 0 auto 0;
   height: 1px;
-  background: var(--ink-3);
+  background: var(--edge);
 }
 
 .trail-pulse {
@@ -184,16 +185,16 @@
   height: 9px;
   margin-left: -9px;
   border-radius: 2px;
-  background: var(--signal);
+  background: var(--laser);
 }
 
 .trail-when {
   font-size: var(--fs-sm);
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .trail-when .mono {
-  color: var(--ink);
+  color: var(--text);
   white-space: nowrap;
 }
 
@@ -215,7 +216,7 @@
 }
 
 .ltc-sub {
-  color: var(--ink-2);
+  color: var(--muted);
   font-size: var(--fs-sm);
 }
 
@@ -240,39 +241,39 @@
 }
 
 .ltc-tick {
-  fill: var(--ink-2);
+  fill: var(--muted);
   font-size: 13px;
   font-family: var(--mono);
 }
 
 .ltc-line {
   fill: none;
-  stroke: var(--signal);
+  stroke: var(--line);
   stroke-width: 2;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
 
 .ltc-ref {
-  stroke: var(--ink);
+  stroke: var(--text);
   stroke-width: 1;
 }
 
 .ltc-reflabel,
 .ltc-nowlabel {
-  fill: var(--ink);
+  fill: var(--text);
   font-size: 13px;
   font-weight: 700;
 }
 
 .ltc-now {
-  fill: var(--signal);
-  stroke: var(--paper);
+  fill: var(--text);
+  stroke: var(--bg);
   stroke-width: 2;
 }
 
 .ltc-cross {
-  stroke: var(--ink-2);
+  stroke: var(--muted);
   stroke-width: 1;
 }
 
@@ -283,16 +284,16 @@
   display: grid;
   gap: 2px;
   padding: 8px 12px;
-  background: var(--paper);
+  background: var(--bg);
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   pointer-events: none;
   font-size: var(--fs-xs);
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .ltc-tip strong {
-  color: var(--ink);
+  color: var(--text);
   font-size: var(--fs-sm);
 }
 
@@ -306,7 +307,7 @@
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  color: var(--ink-2);
+  color: var(--muted);
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
@@ -326,7 +327,7 @@
 
 .ltc-table th {
   font-weight: 700;
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 @media (max-width: 900px) {

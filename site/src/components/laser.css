@@ -48,13 +48,13 @@
 .ls-earth {
   left: 0;
   width: calc(var(--ex) * 2%);
-  background: var(--ink);
+  background: var(--text);
 }
 
 .ls-moon {
   left: calc((var(--mx) - var(--mr)) * 1%);
   width: calc(var(--mr) * 2%);
-  background: var(--ink-2);
+  background: var(--muted);
 }
 
 .ls-line {
@@ -63,7 +63,7 @@
   left: calc(var(--ex) * 1%);
   width: calc((var(--mx) - var(--ex) - var(--mr)) * 1%);
   height: 1px;
-  background: var(--ink-3);
+  background: var(--edge);
 }
 
 .ls-pulse {
@@ -74,7 +74,7 @@
   width: 22px;
   height: 8px;
   border-radius: 2px;
-  background: var(--signal);
+  background: var(--laser);
   opacity: 0;
   transform: translateX(calc(var(--leg) * ((var(--mx) - var(--ex) - var(--mr)) * 1cqw - 22px)));
   will-change: transform;
@@ -90,18 +90,18 @@
   gap: 12px;
   align-items: baseline;
   font-size: var(--fs-sm);
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .ls-mid {
   text-align: center;
-  color: var(--ink);
+  color: var(--text);
 }
 
 .ls-scale {
   margin-top: 6px;
   font-size: var(--fs-xs);
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .ls-readout {
@@ -112,6 +112,7 @@
 }
 
 .ls-big {
+  color: var(--laser);
   font-size: clamp(3.5rem, 16vw, 8.5rem);
   line-height: 0.95;
   font-weight: 700;
@@ -121,7 +122,7 @@
 .ls-big .u {
   font-size: 0.34em;
   margin-left: 0.14em;
-  color: var(--ink-2);
+  color: var(--muted);
   font-weight: 500;
   letter-spacing: 0;
 }
