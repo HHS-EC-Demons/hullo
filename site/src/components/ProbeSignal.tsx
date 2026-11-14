@@ -59,7 +59,7 @@ const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: F
     e.preventDefault();
     const text = draft.trim().slice(0, MAX_LEN);
     if (!text) {
-      setNote('Type a message first.');
+      setNote('Type a message first');
       return;
     }
     const problem = onSend(text);
@@ -74,7 +74,7 @@ const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: F
   return (
     <form className="ps-form" onSubmit={submit} noValidate>
       {children}
-      <label htmlFor={`${uid}-msg`}>Message</label>
+      <label htmlFor={`${uid}-msg`}>Pretend message</label>
       <div className="ps-row">
         <Input
           id={`${uid}-msg`}
@@ -95,7 +95,7 @@ const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: F
         <Button type="submit">Send</Button>
       </div>
       <p className="ps-hint" id={`${uid}-hint`} aria-live="polite">
-        {note || 'Nothing is sent.'}
+        {note || '\u2007'}
       </p>
     </form>
   );
@@ -119,7 +119,7 @@ const FRAME_SIZES = '(max-width: 900px) calc(100vw - 32px), min(50vw, 680px)';
 function Frame({ photo }: { photo: ProbePhoto }) {
   return (
     <figure className="ps-frame">
-      <div className="ps-stage">
+      <div className="ps-stage ph">
         <picture>
           <source type="image/avif" srcSet={photo.avif} sizes={FRAME_SIZES} />
           <source type="image/webp" srcSet={photo.webp} sizes={FRAME_SIZES} />
@@ -134,9 +134,6 @@ function Frame({ photo }: { photo: ProbePhoto }) {
           />
         </picture>
       </div>
-      <figcaption className="credit">
-        {photo.caption} <span data-credit="">{photo.id}, {photo.credit}.</span>
-      </figcaption>
     </figure>
   );
 }
@@ -205,10 +202,10 @@ export default function ProbeSignal({
 
   const send = useCallback(
     (text: string): string | null => {
-      if (!data) return 'The distance table is still loading. Try again in a moment.';
+      if (!data) return 'Still loading';
       const sent = Date.now();
       const arrives = arrivalAt(data, probe, sent);
-      if (arrives === null) return 'This site only carries positions for 2026 and 2027.';
+      if (arrives === null) return 'Only 2026 and 2027';
       const msg: Message = {
         id: `${sent}-${Math.random().toString(36).slice(2, 7)}`,
         probe,
@@ -253,10 +250,8 @@ export default function ProbeSignal({
 
   const statusLine = status && (
     <p className="ps-status">
-      <span className={info.answers ? 'status-on' : 'status-off'}>{info.answers ? 'Still answers' : 'Silent'}</span>
-      <span>
-        {info.status} ({calDate(info.statusDate)})
-      </span>
+      <span className={info.answers ? 'status-on' : 'status-off'}>{info.answers ? 'Still answers' : 'Silent since'}</span>
+      {!info.answers && <span className="mono">{calDate(info.statusDate)}</span>}
     </p>
   );
 
@@ -268,7 +263,7 @@ export default function ProbeSignal({
             {title && <h1>{title}</h1>}
             {line && <p>{line}</p>}
             {choices('Probe', 'ps-picker')}
-            <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} />
+            <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} speed={false} compact />
             {statusLine}
             <LightLeft data={data} probe={probe} name={info.name} />
             {form}

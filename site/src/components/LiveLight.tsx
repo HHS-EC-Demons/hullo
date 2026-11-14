@@ -11,11 +11,12 @@ interface Props {
   error: string | null;
   speed?: boolean;
   distance?: boolean;
+  compact?: boolean;
 }
 
 const pad = (n: number, w = 2) => String(n).padStart(w, '0');
 
-export default function LiveLight({ data, probe, name, headline, error, speed = true, distance = true }: Props) {
+export default function LiveLight({ data, probe, name, headline, error, speed = true, distance = true, compact = false }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const big = useRef<HTMLSpanElement>(null);
   const h = useRef<HTMLSpanElement>(null);
@@ -58,7 +59,7 @@ export default function LiveLight({ data, probe, name, headline, error, speed = 
   return (
     <div ref={root} className={error ? 'ps-live' : 'ps-live pending'}>
       <Head className="ps-claim">
-        <span className="ps-lead">{name} is</span>
+        <span className="ps-lead">{compact ? 'Light time' : `${name} is`}</span>
         <span ref={big} className="ps-big mono pending" role="img" aria-label="hours of light">
           <span ref={h}>00</span>
           <span className="u">h</span>
@@ -73,7 +74,7 @@ export default function LiveLight({ data, probe, name, headline, error, speed = 
           </span>
           <span className="u last">s</span>
         </span>
-        <span className="ps-lead">of light away right now.</span>
+        {!compact && <span className="ps-lead">of light away right now.</span>}
       </Head>
       {(distance || error) && (
         <p className="ps-km">
