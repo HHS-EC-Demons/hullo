@@ -27,12 +27,14 @@ function useMonths(keys: string[]): Record<string, MoonMonth> {
   const wanted = keys.join(',');
   useEffect(() => {
     let live = true;
-    for (const key of keys) {
-      if (months[key]) continue;
-      loadJson<MoonMonth>(`data/moon/${key}.json`)
-        .then((m) => live && setMonths((prev) => ({ ...prev, [key]: m })))
-        .catch(() => undefined);
-    }
+    const todo = keys.filter((k) => !months[k]);
+    (async () => {
+      for (const key of todo) {
+        const m = await loadJson<MoonMonth>(`data/moon/${key}.json`).catch(() => null);
+        if (!live || !m) return;
+        setMonths((prev) => ({ ...prev, [key]: m }));
+      }
+    })();
     return () => {
       live = false;
     };
@@ -84,7 +86,7 @@ function Drift({ now }: { now: number | null }) {
       </p>
       <Slider
         thumbLabelledBy={label}
-        thumbValueText={(v) => `${v}, the Moon is about ${cm ?? 0} cm farther from Earth since then`}
+        thumbValueText={(v) => `Born ${v}, the Moon is now about ${cm ?? 0} cm farther from Earth`}
         min={1969}
         max={thisYear}
         step={1}
@@ -116,9 +118,10 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
   const near = useNear(chartBox);
 
   const current = now ? monthKey(now) : null;
-  const keys = current && index ? [current, nextMonthKey(current)].filter((k) => index.months.includes(k)) : [];
-  const months = useMonths(keys);
-  const loaded = keys.length > 0 && keys.every((k) => months[k]);
+  const wanted = current && index ? [current, nextMonthKey(current)].filter((k) => index.months.includes(k)) : [];
+  const months = useMonths(wanted);
+  const keys = wanted.filter((k) => months[k]);
+  const loaded = !!current && !!months[current];
   const minEl = index?.min_elevation_deg ?? 20;
 
   const elNow = (st: string): number | null => {

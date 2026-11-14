@@ -58,7 +58,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Updated 7 Jan 2025, read 2 Nov 2026',
     license: 'NASA GISS page. Equations used, text not copied.',
     used: 'Steps A-2, A-5 and C-2, the Mars Sol Date and Airy Mean Time, with TT minus UTC of 69.184 s, for the Jezero clock on the Mars page.',
-    note: 'The site checks its code against both worked examples on this page, Airy Mean Time 23:59:39 on 6 Jan 2000 and 13:09:55 on 4 Jan 2004.',
+    note: 'The site checks its code against both worked examples on this page, Airy Mean Time 23:59:39 on 6 Jan 2000 and 13:09:55 on 3 Jan 2004.',
   },
   {
     id: 'm20-raw-images',
