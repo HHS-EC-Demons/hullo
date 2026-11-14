@@ -37,7 +37,7 @@ export interface Pic {
   sizes: string;
 }
 
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/img/{orbit,moon,mars}-*.jpg', { eager: true });
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/img/*.jpg', { eager: true });
 const META = photoMeta as Record<string, PhotoMeta>;
 
 export const LRO = lroMeta as { source: string; coordinates: string; credit: string; crops: LroCrop[] };
