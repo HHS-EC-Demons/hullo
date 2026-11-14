@@ -209,3 +209,11 @@
       'out out';
   }
 }
+
+.cr-chart .hl-tip {
+  max-width: min(16rem, 42vw);
+}
+.cr-chart .hl-tip-x,
+.cr-chart .hl-tip-v {
+  white-space: normal;
+}
