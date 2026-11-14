@@ -138,7 +138,7 @@ export default function IngenuityMap() {
           <div>
             <dt>Top speed</dt>
             <dd className="mono">
-              {flight ? (flight.max_speed_m_s !== null ? `${one.format(flight.max_speed_m_s)} m/s` : 'not listed') : '\u2007'}
+              {flight ? (flight.max_speed_m_s !== null ? `${one.format(flight.max_speed_m_s)} m/s` : <span className="ig-na">not in the data</span>) : '\u2007'}
             </dd>
           </div>
           <div>
