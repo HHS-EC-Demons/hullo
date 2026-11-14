@@ -1,14 +1,20 @@
-import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { hmsText, lightTimeAt, type DeepSpaceData } from '../lib/lighttime';
+import { C_KM_S, dailyHours, hmsText, lightTimeAt, type DeepSpaceData } from '../lib/lighttime';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth } from '../lib/ranging';
 import { FlightSheet, MoonSheet, VoyagerSheet, int, one, six, type Flight, type MoonShot } from './Worksheets';
 import { loadJson, useJson } from '../lib/client';
+import { calDate, localStamp, monthYear, MONTHS } from '../lib/dates';
+import type { Point } from './ClassCharts';
 import sansFont from '@fontsource-variable/gabarito/files/gabarito-latin-wght-normal.woff2?url';
 import monoFont from '@fontsource-variable/spline-sans-mono/files/spline-sans-mono-latin-wght-normal.woff2?url';
 import './classroom.css';
+
+const SeriesChart = lazy(() => import('./ClassCharts').then((m) => ({ default: m.SeriesChart })));
+const FlightChart = lazy(() => import('./ClassCharts').then((m) => ({ default: m.FlightChart })));
+
 
 const STATION = 'apache';
 const REFLECTOR = 'a15';
@@ -35,6 +41,12 @@ export interface TopicPhoto {
 
 interface Props {
   photos: { moon: TopicPhoto | null; voyager: TopicPhoto | null; flight: TopicPhoto | null };
+  title: string;
+  line: string;
+}
+
+interface MoonState extends MoonShot {
+  points: Point[];
 }
 
 const PRINT_FONTS = [
@@ -53,8 +65,8 @@ function usePrint(title: string) {
   return { ref, print };
 }
 
-function useMoonShot(at: number): MoonShot | null {
-  const [state, setState] = useState<MoonShot | null>(null);
+function useMoonShot(at: number): MoonState | null {
+  const [state, setState] = useState<MoonState | null>(null);
   useEffect(() => {
     let live = true;
     (async () => {
@@ -66,7 +78,11 @@ function useMoonShot(at: number): MoonShot | null {
       const month = months.find((m) => monthKey(Date.parse(m.start_utc)) === monthKey(when)) ?? months[0];
       const shot = shotAt(month, STATION, REFLECTOR, when);
       if (!shot || !live) return;
+      const t0 = Date.parse(month.start_utc);
+      const step = month.step_s * 1000;
+      const r = month.stations[STATION]?.refl[REFLECTOR]?.r_m ?? [];
       setState({
+        points: r.map((m, i) => ({ x: t0 + i * step, y: (2 * m) / 1000 / C_KM_S })),
         shot,
         stationName: index.stations.find((s) => s.id === STATION)?.name ?? STATION,
         reflectorName: index.reflectors.find((r) => r.id === REFLECTOR)?.name ?? REFLECTOR,
@@ -79,7 +95,36 @@ function useMoonShot(at: number): MoonShot | null {
   return state;
 }
 
-export default function Classroom({ photos }: Props) {
+function dayTick(ms: number): string {
+  const d = new Date(ms);
+  return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
+
+function weekTicks(lo: number, hi: number, width: number): number[] {
+  const first = new Date(lo);
+  const every = width < 360 ? 14 : 7;
+  const out: number[] = [];
+  for (let i = 0; ; i += every) {
+    const t = new Date(first.getFullYear(), first.getMonth(), first.getDate() + 1 + i).getTime();
+    if (t > hi) break;
+    out.push(t);
+  }
+  return out;
+}
+
+function quarterTicks(lo: number, hi: number, width: number): number[] {
+  const every = width < 420 ? 12 : width < 640 ? 6 : 3;
+  const a = new Date(lo);
+  const out: number[] = [];
+  for (let m = a.getUTCMonth(); ; m += every) {
+    const t = Date.UTC(a.getUTCFullYear(), m, 1);
+    if (t > hi) break;
+    if (t >= lo) out.push(t);
+  }
+  return out;
+}
+
+export default function Classroom({ photos, title, line }: Props) {
   const [at, setAt] = useState(() => Date.now());
   useEffect(() => setAt(Date.now()), []);
   const deep = useJson<DeepSpaceData>('data/deep-space.json').data;
@@ -91,6 +136,7 @@ export default function Classroom({ photos }: Props) {
   const flight = flights.find((f) => f.n === flightN) ?? flights[0] ?? null;
 
   const voyagerS = deep ? lightTimeAt(deep, 'voyager1', at) : null;
+  const voyagerPoints = useMemo(() => (deep ? dailyHours(deep, 'voyager1').map((d) => ({ x: d.ms, y: d.hours })) : []), [deep]);
 
   const moonSheet = usePrint('Moon distance worksheet');
   const voyagerSheet = usePrint('Voyager 1 distance worksheet');
@@ -106,10 +152,32 @@ export default function Classroom({ photos }: Props) {
       <Activity
         title="Moon distance"
         photo={photos.moon}
-        first
+        head={
+          <header className="page-head cr-head">
+            <h1>{title}</h1>
+            <p>{line}</p>
+          </header>
+        }
         facts={moon ? [['Round trip', `${six.format(moon.shot.round_trip_s)} s`]] : null}
         rows={['Round trip']}
         onPrint={() => printNow(moonSheet.print)}
+        chart={
+          moon && (
+            <SeriesChart
+              points={moon.points}
+              marker={{ x: moon.shot.ms, y: moon.shot.round_trip_s }}
+              markerLabel="The shot on the sheet"
+              label={`Laser round trip from ${moon.stationName} to the ${moon.reflectorName} reflector, hour by hour`}
+              xTitle="date"
+              yTitle="round trip (s)"
+              tickX={dayTick}
+              tickY={(v) => v.toFixed(2)}
+              readX={(v) => localStamp(v)}
+              readY={(v) => `${six.format(v)} s`}
+              xTickValues={weekTicks}
+            />
+          )
+        }
       />
       <Activity
         title="Voyager 1 distance"
@@ -117,10 +185,39 @@ export default function Classroom({ photos }: Props) {
         facts={voyagerS !== null ? [['Light time', hmsText(voyagerS)]] : null}
         rows={['Light time']}
         onPrint={() => printNow(voyagerSheet.print)}
+        chart={
+          voyagerPoints.length > 1 && voyagerS !== null && (
+            <SeriesChart
+              points={voyagerPoints}
+              marker={{ x: at, y: voyagerS / 3600 }}
+              markerLabel="Today"
+              refY={{ y: 24, label: '1 light day' }}
+              label="Voyager 1 light time, day by day"
+              xTitle="date"
+              yTitle="light time (h)"
+              tickX={(v) => monthYear(v)}
+              tickY={(v) => v.toFixed(1)}
+              readX={(v) => calDate(v)}
+              readY={(v) => hmsText(v * 3600)}
+              xTickValues={quarterTicks}
+            />
+          )
+        }
       />
       <Activity
         title="Ingenuity speed"
         photo={photos.flight}
+        chart={
+          flights.length > 0 && (
+            <FlightChart
+              flights={flights}
+              picked={flight?.n ?? flightN}
+              onPick={setFlightN}
+              readDist={(m) => `${int.format(m)} m`}
+              readTime={(t) => `${one.format(t)} s`}
+            />
+          )
+        }
         facts={
           flight
             ? [
@@ -148,10 +245,12 @@ function year(when: string): string {
   return when.match(/\d{4}/)?.[0] ?? '';
 }
 
-function Activity({ title, photo, first, facts, rows, onPrint, children }: { title: string; photo: TopicPhoto | null; first?: boolean; facts: [string, string][] | null; rows: string[]; onPrint: () => void; children?: ReactNode }) {
+function Activity({ title, photo, head, facts, rows, chart, onPrint, children }: { title: string; photo: TopicPhoto | null; head?: ReactNode; facts: [string, string][] | null; rows: string[]; chart: ReactNode; onPrint: () => void; children?: ReactNode }) {
   const id = useId();
+  const first = head !== undefined;
   return (
-    <section className="cr-activity" aria-labelledby={id}>
+    <section className={first ? 'cr-activity first' : 'cr-activity'} aria-labelledby={id}>
+      {head}
       {photo && (
         <figure className="cr-photo">
           <picture>
@@ -189,6 +288,9 @@ function Activity({ title, photo, first, facts, rows, onPrint, children }: { tit
             </div>
           ))}
         </dl>
+        <div className="cr-chart">
+          <Suspense fallback={null}>{chart}</Suspense>
+        </div>
         <div className="cr-print">
           <Button variant="primary" onClick={onPrint} disabled={!facts}>
             Print sheet
