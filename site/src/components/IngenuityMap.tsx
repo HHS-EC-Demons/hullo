@@ -3,6 +3,7 @@ import type { GeoJSONSource, LngLatBoundsLike, Map as MapLibreMap, StyleSpecific
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import ChartFrame from '@/components/ui/chart-frame';
+import { Skeleton } from '@/components/ui/skeleton';
 import SoundClip, { type SoundClipProps } from './SoundClip';
 import JezeroClock from './JezeroClock';
 import { stamp } from '../lib/passport';
@@ -102,9 +103,7 @@ export default function IngenuityMap({
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   const [near, setNear] = useState(false);
-  const [chartNear, setChartNear] = useState(false);
   const picksId = useId();
-  const chartBox = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   const first = useRef(true);
@@ -124,14 +123,6 @@ export default function IngenuityMap({
     io.observe(el);
     return () => io.disconnect();
   }, [near]);
-
-  useEffect(() => {
-    const el = chartBox.current;
-    if (!el || chartNear) return;
-    const io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && (setChartNear(true), io.disconnect()), { rootMargin: '200px 0px' });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [chartNear]);
 
   useEffect(() => {
     if (!data || !near || !box.current || map.current) return;
@@ -356,9 +347,9 @@ export default function IngenuityMap({
       </div>
 
       <section className="wrap ig-chartsec" aria-label={chartTitle}>
-        <div ref={chartBox}>
+        <div>
           <ChartFrame className="h-[300px] md:h-[340px]">
-            {chartNear && data && <FlightsChart flights={data.flights} picked={n} onPick={pick} />}
+            {data ? <FlightsChart flights={data.flights} picked={n} onPick={pick} /> : <Skeleton className="absolute inset-0" />}
           </ChartFrame>
         </div>
       </section>
@@ -366,9 +357,10 @@ export default function IngenuityMap({
       <div className="wrap ig-stage">
         <div className="ig-mapwrap">
           <div className="ig-map" ref={box} role="region" aria-label="Map of Jezero crater" />
+          {!mapReady && !mapFailed && <Skeleton className="absolute inset-x-0 top-0 h-full" />}
         </div>
         <aside className="ig-photo" aria-label="Photos from Ingenuity’s own cameras">
-          <div className="ig-frame" style={{ aspectRatio: shot ? `${shot.pic.width} / ${shot.pic.height}` : '4 / 3' }}>
+          <div className={`ig-frame${shot ? ' ph' : ''}`} style={{ aspectRatio: shot ? `${shot.pic.width} / ${shot.pic.height}` : '4 / 3' }}>
             {shot ? (
               <picture key={shot.n}>
                 <source type="image/avif" srcSet={shot.pic.avif} sizes={shot.pic.sizes} />
