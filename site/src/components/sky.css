@@ -11,6 +11,7 @@
 }
 
 .sky-title {
+  text-wrap: balance;
   font-size: var(--fs-lg);
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -30,6 +31,7 @@
 
 .sky-plot {
   position: relative;
+  aspect-ratio: 2 / 1;
 }
 
 .sky-plot svg {
