@@ -138,7 +138,7 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
         </span>
         <span className="fl-end">{info.name}</span>
       </div>
-      {first && <p className="fl-scale">Each step along the line is ten times longer than the one before.</p>}
+      {first && <p className="fl-scale">Each equal step along the line is ten times more travel time than the step before.</p>}
 
       <dl className="fl-times">
         <div>
@@ -222,7 +222,7 @@ export default function MessageFlight({ data, messages }: Props) {
         const name = `hullo-message-to-${card.probe}.png`;
         if (canShare) {
           setReady({ id: card.id, file: new File([blob], name, { type: 'image/png' }) });
-          setNote('The picture is ready. Tap Share the picture.');
+          setNote('The picture is ready to share.');
         } else {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
@@ -235,7 +235,7 @@ export default function MessageFlight({ data, messages }: Props) {
           setNote('The picture is saved to your downloads.');
         }
       } catch {
-        if (live) setNote('This browser could not make the picture.');
+        if (live) setNote('The picture could not be made in this browser.');
       } finally {
         if (live) {
           setBusy(null);
