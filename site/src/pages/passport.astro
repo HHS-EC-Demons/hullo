@@ -13,6 +13,6 @@ const site = Astro.site ? new URL(import.meta.env.BASE_URL, Astro.site).toString
   </header>
 
   <div class="wrap">
-    <PassportBook client:load site={site} />
+    <PassportBook client:idle site={site} />
   </div>
 </Base>
