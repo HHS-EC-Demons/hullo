@@ -17,7 +17,7 @@ export const DATASETS: Source[] = [
     title: 'Horizons System API',
     publisher: 'NASA JPL Solar System Dynamics',
     url: 'https://ssd.jpl.nasa.gov/horizons/',
-    dated: 'Queried 29 Oct 2026, one request at a time',
+    dated: 'Queried 29 and 30 Oct 2026, one request at a time',
     license: 'Public service under the SSD API fair use policy. Results are cached and shipped as files, never fetched from the browser.',
     used: 'Daily geometric distance for Voyager 1 and 2, New Horizons and Pioneer 10 and 11 from Earth, 2026 to 2027. Hourly range and elevation from Apache Point (site 705) and Caussols near Grasse (site 010) to five lunar reflectors. Daily astrometric right ascension, declination and constellation of the five probes, the Moon, Mars and Eros seen from Earth’s center, for the sky chart.',
   },
