@@ -147,7 +147,7 @@
     scroll-padding-top: 72px;
   }
 
-  @media (max-width: 1023px) {
+  @media (max-width: 767px) {
     html {
       scroll-padding-top: 68px;
     }
@@ -327,7 +327,7 @@
     border-radius: var(--press-radius);
     background: var(--p-fill);
     color: var(--p-ink);
-    box-shadow: 0 var(--press-lip-h, 4px) 0 var(--p-lip);
+    box-shadow: 0 var(--press-lip-h, 3px) 0 var(--p-lip);
     font-family: var(--sans);
     font-weight: 700;
     font-size: var(--fs-sm);
@@ -378,7 +378,7 @@
 
   .press:active,
   .btn:active {
-    transform: translateY(var(--press-lip-h, 4px));
+    transform: translateY(var(--press-lip-h, 3px));
     box-shadow: 0 0 0 var(--p-lip);
   }
 
@@ -398,11 +398,14 @@
     --p-ink: var(--muted);
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 var(--press-lip-h, 4px) 0 var(--p-lip);
+    box-shadow: 0 var(--press-lip-h, 3px) 0 var(--p-lip);
+  }
+
+  .press-nav {
+    --press-lip-h: 2px;
   }
 
   .press-sm {
-    --press-lip-h: 3px;
     --press-radius: 10px;
     min-height: 33px;
     padding: 6px 10px;
@@ -466,7 +469,7 @@
     border-radius: var(--press-radius);
     background: var(--press-fill);
     color: var(--press-ink);
-    box-shadow: 0 4px 0 var(--press-lip);
+    box-shadow: 0 3px 0 var(--press-lip);
     font-weight: 600;
     line-height: 1.25;
     transition:
@@ -482,14 +485,14 @@
   }
 
   .choice:active > input + span {
-    transform: translateY(4px);
+    transform: translateY(3px);
     box-shadow: 0 0 0 var(--press-lip);
   }
 
   .choice > input:checked + span {
     border-color: var(--lilac);
     background: var(--press-picked);
-    box-shadow: 0 4px 0 var(--lilac);
+    box-shadow: 0 3px 0 var(--lilac);
     font-weight: 700;
   }
 

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hullo type, Engraved hardware</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/michroma@5.3.0/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/barlow@5.3.0/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/barlow@5.3.0/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/barlow@5.3.0/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/azeret-mono@5.3.0/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/azeret-mono@5.3.0/700.css">
+<style>
+
+:root { --bg:#0D0A18; --ink:#EEEAF9; --muted:#A69FC0; --lilac:#B6A6FF; --green:#3DF58C; --raised:#151026; --rule:#241E38;
+  --display:'Michroma'; --text:'Barlow'; --mono:'Azeret Mono'; color-scheme: dark; }
+* { box-sizing: border-box; margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--text); font-size: 18px; line-height: 1.5; padding: 32px 16px 64px; }
+.wrap { max-width: 1200px; margin: 0 auto; display: grid; gap: 48px; }
+.tag { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.tag b { color: var(--lilac); font-weight: 400; }
+nav { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-bottom: 1px solid var(--rule); padding-bottom: 12px; }
+.brand { font-family: var(--display); font-weight: 400; font-size: 26px; letter-spacing: 0.02em; margin-right: 12px; }
+.pill { font-family: var(--text); font-weight: 600; font-size: 15px; color: var(--ink); background: #1C1533; border: 2px solid #3A3158;
+  border-radius: 10px; padding: 5px 12px; box-shadow: 0 2px 0 #2A2244; }
+.pill.on { border-color: var(--lilac); box-shadow: 0 2px 0 var(--lilac); }
+.pill .n { font-family: var(--mono); font-weight: 400; color: var(--muted); margin-left: 6px; }
+.sp { margin-left: auto; }
+h1 { font-family: var(--display); font-weight: 400; letter-spacing: 0.02em; font-size: clamp(48px, 9vw, 120px); line-height: .95; }
+.line { color: var(--muted); font-size: 20px; margin-top: 12px; }
+.lead { font-weight: 600; font-size: 20px; }
+.hero { font-family: var(--mono); font-weight: 700; color: var(--green); font-size: clamp(30px, 9.2vw, 132px); line-height: 1; letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hero .u { color: var(--muted); font-weight: 400; font-size: .42em; margin: 0 .12em; }
+.hero .t { opacity: .45; }
+.row { display: flex; flex-wrap: wrap; gap: 32px 56px; align-items: baseline; }
+.big { font-family: var(--mono); font-weight: 700; font-size: clamp(26px, 4.4vw, 44px); font-variant-numeric: tabular-nums; }
+.small { font-size: 14px; color: var(--muted); }
+.stamp { display: inline-grid; gap: 4px; text-align: center; color: var(--lilac); border: 2px solid var(--lilac); outline: 1px solid var(--lilac);
+  outline-offset: 4px; border-radius: 8px; padding: 16px 22px; transform: rotate(-3deg); }
+.stamp .k { font-family: var(--text); font-size: 14px; letter-spacing: .08em; }
+.stamp .o { font-family: var(--display); font-weight: 400; font-size: 26px; letter-spacing: 0.02em; }
+.stamp .f { font-family: var(--mono); font-size: 16px; }
+p.body { max-width: 62ch; }
+figure { max-width: 520px; }
+.ph { aspect-ratio: 5/4; background: #3a2e1c; border-radius: 6px; }
+figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; }
+figcaption .id { font-family: var(--mono); }
+.test { border-top: 1px solid var(--rule); padding-top: 24px; display: grid; gap: 20px; }
+.g200 { font-family: var(--mono); font-weight: 700; font-size: clamp(72px, 16vw, 200px); line-height: 1; white-space: nowrap; overflow: hidden; }
+.conf { font-size: clamp(44px, 8vw, 96px); line-height: 1.1; display: grid; gap: 4px; }
+.conf .m { font-family: var(--mono); }
+.conf .x { font-family: var(--text); }
+.conf .d { font-family: var(--display); font-weight: 400; }
+.g12 { font-size: 12px; display: grid; gap: 4px; }
+.g12 .m { font-family: var(--mono); }
+.tab { font-family: var(--text); font-variant-numeric: tabular-nums; font-size: 28px; display: grid; justify-content: start; }
+.tab span { text-align: right; }
+.alt { font-family: inherit; font-size: clamp(24px, 7vw, 96px); color: var(--green); white-space: nowrap; }
+@media (max-width: 600px) { .hero, .alt, .big { font-stretch: 75%; } .row { gap: 20px; } }
+</style></head>
+<body><div class="wrap">
+<p class="tag"><b>Engraved hardware</b> · Michroma / Barlow / Azeret Mono<br>Wide, square-shouldered capitals like the nameplates and panel labels on 1960s spacecraft hardware.</p>
+<nav><span class="brand">hullo</span><span class="pill">Deep space</span><span class="pill">Moon</span><span class="pill">Mars</span>
+<span class="pill">Orbit</span><span class="pill on">Silent</span><span class="pill sp">Passport<span class="n">10 of 31</span></span></nav>
+<section><h1>The silent ones</h1><p class="line">Everything we left out there.</p></section>
+<section><p class="lead">Voyager 1 is</p>
+<p class="hero">23<span class="u">h</span>57<span class="u">min</span>54.3<span class="t">81</span><span class="u">s</span></p>
+<p class="lead">of light away right now.</p></section>
+<section class="row">
+<div><p class="small">One light-day in</p><p class="big">15 d 08 h 13 min 24 s</p></div>
+<div><p class="small">From Earth's center</p><p class="big">25,864,409,487 km</p></div>
+</section>
+<section class="row">
+<div class="stamp"><span class="k">DEEP SPACE</span><span class="o">Voyager 1</span><span class="f">23 h 57 min 46 s of light away</span><span class="f">1 Nov 2026</span></div>
+<p class="body">Voyager 1 left Earth on 5 Sep 1977. Its radio signal now takes almost a full day to reach us, and NASA's 70 m dishes in Goldstone, Madrid and Canberra still listen for it.</p>
+</section>
+<figure><div class="ph"></div><figcaption>Jupiter's Great Red Spot, 1979. <span class="id">PIA00022</span>, NASA/JPL.</figcaption></figure>
+<section class="test">
+<p class="tag">Numerals at 200 px (mono)</p>
+<p class="g200">0123456789</p>
+<p class="tag">Look-alikes: mono, text, display</p>
+<div class="conf"><span class="m">0O 1lI 5S 8B</span><span class="x">0O 1lI 5S 8B</span><span class="d">0O 1lI 5S 8B</span></div>
+<p class="tag">12 px</p>
+<div class="g12"><span class="m">23 h 57 min 54.381 s · 25,864,409,487 km · PIA00022 · 0O 1lI</span><span>Launched 5 Sep 1977. Last heard 15 Dec 2022. 0O 1lI</span></div>
+<p class="tag">Tabular figures in the text face</p>
+<div class="tab"><span>1,111,111.11 km</span><span>8,888,888.88 km</span><span>2,470,135.06 km</span></div>
+
+</section>
+</div></body></html>
