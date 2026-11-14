@@ -135,7 +135,7 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
             const f = figures(l);
             const label = l.answers
               ? `${l.name}, ${l.startKind.toLowerCase()} ${calDate(l.start)}, active for ${f.on}`
-              : `${l.name}, ${l.startKind.toLowerCase()} ${calDate(l.start)}, mission ended ${calDate(l.end as string)}`;
+              : `${l.name} ${year(l.end as string)}, ${l.startKind.toLowerCase()} ${calDate(l.start)}, ${l.endKind.toLowerCase()} ${calDate(l.end as string)}`;
             return (
               <li key={l.id}>
                 <button
@@ -196,8 +196,10 @@ function Readout({ line, photo, figures }: { line: Lifeline; photo?: TimelinePho
         )}
       </figure>
       <div className="qt-text">
-        <h3 className="qt-title">{line.name}</h3>
+        <h2 className="qt-title">{line.name}</h2>
         <p className="qt-fig">
+          <span className="qt-fig-k">{line.startKind}</span>
+          <span className="mono">{line.start.slice(0, 4)}</span>
           <span className="qt-fig-k">{line.answers ? 'Active' : line.endKind}</span>
           <span className="mono">{line.answers ? figures.on : calDate(line.end as string)}</span>
         </p>
