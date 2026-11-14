@@ -6,11 +6,17 @@ export interface ProbeInfo {
   statusDate: string;
   source: string;
   lastContact?: string;
+  eyes: string;
 }
+
+/** Embed options NASA uses for Eyes on the Solar System on its New Horizons mission page, with the target swapped. */
+export const EYES_PARAMS =
+  'interactPrompt=true&featured=false&logo=false&search=false&shareButton=false&menu=false&collapseSettingsOptions=true&locked=true&hideExternalLinks=true&lighting=flood';
 
 export const PROBES: ProbeInfo[] = [
   {
     key: 'voyager1',
+    eyes: 'sc_voyager_1',
     name: 'Voyager 1',
     answers: true,
     status: '2 of 10 instruments on',
@@ -19,6 +25,7 @@ export const PROBES: ProbeInfo[] = [
   },
   {
     key: 'voyager2',
+    eyes: 'sc_voyager_2',
     name: 'Voyager 2',
     answers: true,
     status: '3 of 10 instruments on',
@@ -27,6 +34,7 @@ export const PROBES: ProbeInfo[] = [
   },
   {
     key: 'newhorizons',
+    eyes: 'sc_new_horizons',
     name: 'New Horizons',
     answers: true,
     status: 'Back from a 321 day hibernation',
@@ -35,6 +43,7 @@ export const PROBES: ProbeInfo[] = [
   },
   {
     key: 'pioneer10',
+    eyes: 'sc_pioneer_10',
     name: 'Pioneer 10',
     answers: false,
     status: 'Signal last detected',
@@ -44,6 +53,7 @@ export const PROBES: ProbeInfo[] = [
   },
   {
     key: 'pioneer11',
+    eyes: 'sc_pioneer_11',
     name: 'Pioneer 11',
     answers: false,
     status: 'Science and daily telemetry ceased',
