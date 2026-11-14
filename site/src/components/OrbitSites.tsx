@@ -85,7 +85,7 @@ function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
         itemTwo={<Picture view={site.now} />}
         keyboardIncrement="5%"
         onlyHandleDraggable={false}
-        aria-label={`Slide to compare ${site.name} in ${site.then.when} and ${site.now.when}`}
+        aria-label={`Slide to compare ${site.name} on ${site.then.when} and ${site.now.when}`}
         handle={
           <ReactCompareSliderHandle
             style={{ [ReactCompareSliderCssVars.handleColor]: 'var(--lilac)' } as CSSProperties}

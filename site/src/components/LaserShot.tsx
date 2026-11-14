@@ -149,7 +149,7 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
           <span className="ls-mid mono">{shown ? `${km.format(shown.range_km)} km` : 'About 384,400 km'}</span>
           <span>Moon</span>
         </figcaption>
-        <p className="ls-scale">Earth, Moon and the gap between them are drawn to scale.</p>
+        <p className="ls-scale">Earth, the Moon and the gap are drawn to scale.</p>
       </figure>
       <div className="ls-top">
       <div className="ls-controls">
@@ -214,7 +214,7 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
         </p>
         {shown?.waited && st && (
           <p className="note">
-            The Moon is below {minEl}° at {st.name} right now, so the shot is timed for when it climbs past {minEl}° there.
+            The Moon is below {minEl}° at {st.name} right now, so the shot is timed for when the Moon climbs past {minEl}° there.
           </p>
         )}
       </div>

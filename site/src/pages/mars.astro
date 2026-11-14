@@ -12,11 +12,11 @@ const ing = readData<{ totals: { flights: number; nasa_km: number; nasa_minutes:
 const rotors = sounds.find((s) => s.id === 'ingenuity-rotors')!;
 
 const shots: { n: number; slug: string; alt: string }[] = [
-  { n: 1, slug: 'mars-flight01', alt: 'Ingenuity’s shadow on the sand below it, from its black and white navigation camera.' },
+  { n: 1, slug: 'mars-flight01', alt: 'Ingenuity’s shadow on the sand, from the helicopter’s black and white navigation camera.' },
   { n: 2, slug: 'mars-flight02', alt: 'Reddish ground from 5 m up, crossed by the tracks of Perseverance’s wheels.' },
   { n: 5, slug: 'mars-flight05', alt: 'The floor of Jezero crater from 10 m up, sand with scattered rocks.' },
   { n: 9, slug: 'mars-flight09', alt: 'Rippled sand dunes from above, with part of Ingenuity’s landing gear in the top left corner.' },
-  { n: 26, slug: 'mars-flight26', alt: 'Perseverance’s backshell lying upright on the ground with parachute cables spread around it, from 8 m up.' },
+  { n: 26, slug: 'mars-flight26', alt: 'Perseverance’s backshell lying upright on the ground with parachute cables spread around the backshell, from 8 m up.' },
   { n: 54, slug: 'mars-flight54', alt: 'Perseverance seen from about 5 m up, a small shape near the top right of the frame.' },
   { n: 66, slug: 'mars-flight66', alt: 'Marks left by Ingenuity’s feet in the sand, seen from above.' },
   { n: 70, slug: 'mars-flight70', alt: 'A wide field of sand ripples from about 12 m up.' },
@@ -39,10 +39,10 @@ const selfie = meta('mars-selfie');
 const final = meta('mars-final-airfield');
 ---
 
-<Base title="Mars" current="mars" description="Every one of Ingenuity’s 72 flights over Jezero crater on JPL’s map, with NASA’s own flight log and photos from the helicopter.">
+<Base title="Mars" current="mars" description="Every one of Ingenuity’s 72 flights over Jezero crater on JPL’s map, with NASA’s flight log and photos from the helicopter.">
   <header class="wrap page-head">
     <h1>Mars</h1>
-    <p>Ingenuity was built for 5 test flights. It flew {ing.totals.flights} times over Jezero crater between April 2021 and January 2024.</p>
+    <p>Ingenuity was built for 5 test flights and flew {ing.totals.flights} times over Jezero crater between April 2021 and January 2024.</p>
   </header>
 
   <section class="wrap" aria-label="Ingenuity flights">
@@ -50,7 +50,7 @@ const final = meta('mars-final-airfield');
       <IngenuityMap client:visible photos={photos} />
     </div>
     <p class="credit map-credit">
-      Map is the HiRISE and CTX color mosaic from JPL’s Mars 2020 map, NASA/JPL-Caltech/University of Arizona/MSSS. Paths are from
+      The map is the HiRISE and CTX color mosaic from JPL’s Mars 2020 map, NASA/JPL-Caltech/University of Arizona/MSSS. Paths are from
       the same map. Dates, distances, heights, speeds and times are from NASA’s Ingenuity flight log. A flight the log lists with 0 m and
       0 m/s is shown as a hover. North is up.
     </p>
@@ -62,13 +62,13 @@ const final = meta('mars-final-airfield');
         <p class="big-claim"><span class="n mono">{ing.totals.nasa_km.toFixed(1)} km</span> in {ing.totals.nasa_minutes.toFixed(1)} minutes of flying</p>
         <p>
           One or more rotor blades were damaged when flight 72 landed on 18 Jan 2024, and NASA ended the mission on 25 Jan 2024. Ingenuity
-          still stands at its last airfield. Since April 2024 it wakes each day, takes a photo and logs temperatures, and keeps the data on
-          board now that Perseverance has driven out of radio range.
+          still stands at its last airfield. Since April 2024 the helicopter switches on each day, takes a photo, logs temperatures and
+          keeps the data on board, because Perseverance has driven out of radio range.
         </p>
         <p class="note">Totals from NASA’s Ingenuity flight log. Status from NASA on 25 Jan 2024 and JPL on 16 Apr 2024. <a href={href('sources/')}>Sources</a></p>
       </div>
       <div class="mars-sound">
-        <h2 class="mars-h2">Ingenuity’s rotors, heard from 80 m away</h2>
+        <h2 class="mars-h2">Ingenuity’s rotors, recorded from 80 m away</h2>
         <SoundClip
           client:visible
           src={rotors.file}
@@ -79,7 +79,7 @@ const final = meta('mars-final-airfield');
           stampDetail="Heard flight 4, recorded 30 Apr 2021 from 80 m away"
         >
           Perseverance’s SuperCam microphone recorded flight 4 on 30 Apr 2021. NASA boosted the 84 Hz hum of the blades and cut other
-          frequencies so it is easier to hear over the wind. Full clip, {Math.round(rotors.duration_s)} s. Released {dated(rotors.released)},
+          frequencies so the hum is easier to hear over the wind. Full clip, {Math.round(rotors.duration_s)} s. Released {dated(rotors.released)},
           {rotors.credit}.
         </SoundClip>
       </div>

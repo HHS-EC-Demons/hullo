@@ -192,7 +192,7 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
       made.touchZoomRotate.disableRotation();
       made.keyboard.disableRotation();
       made.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-      made.getCanvas().setAttribute('aria-label', 'Map of Jezero crater with Ingenuity’s flight paths. Arrow keys move it, plus and minus zoom.');
+      made.getCanvas().setAttribute('aria-label', 'Map of Jezero crater with Ingenuity’s flight paths. Arrow keys pan the map, plus and minus zoom.');
       made.on('load', () => {
         if (!live) return;
         map.current = made;
@@ -325,7 +325,7 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
                 <img src={shot.pic.src} width={shot.pic.width} height={shot.pic.height} alt={shot.alt} loading="lazy" decoding="async" />
               </picture>
             ) : (
-              <p className="ig-nophoto">No photo from flight {n} here. Pick a flight below to see what Ingenuity’s cameras saw.</p>
+              <p className="ig-nophoto">No photo from flight {n}. Pick a flight below for a photo from Ingenuity’s cameras.</p>
             )}
           </div>
           <p className="credit ig-caption">{shot ? shot.caption : blank}</p>

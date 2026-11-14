@@ -27,7 +27,7 @@ export const ORBIT_SITES: OrbitSite[] = [
     lat: 0.67416,
     lon: 23.47314,
     coords: 'NSSDCA',
-    then: { slug: 'orbit-apollo11-surface', by: 'Apollo 11 crew', alt: 'The lunar module Eagle on the grey surface, with an astronaut unpacking experiments beside it.' },
+    then: { slug: 'orbit-apollo11-surface', by: 'Apollo 11 crew', alt: 'The lunar module Eagle on the grey surface, with an astronaut unpacking experiments beside the module.' },
     now: { slug: 'orbit-apollo11-lro', by: 'LRO', alt: 'The Apollo 11 site from straight above, a cratered grey plain with the lunar module’s shadow inside the ring.' },
   },
   {
@@ -38,7 +38,7 @@ export const ORBIT_SITES: OrbitSite[] = [
     lat: -3.0128,
     lon: -23.4219,
     coords: 'NSSDCA',
-    then: { slug: 'orbit-apollo12-surface', by: 'Apollo 12 crew', alt: 'The robot lander Surveyor 3 in front, an astronaut beside it, and the Apollo 12 lunar module in the distance.' },
+    then: { slug: 'orbit-apollo12-surface', by: 'Apollo 12 crew', alt: 'The robot lander Surveyor 3 in front with an astronaut beside Surveyor 3, and the Apollo 12 lunar module in the distance.' },
     now: { slug: 'orbit-apollo12-lro', by: 'LRO', alt: 'The Apollo 12 site from straight above, with dark footpaths around the lunar module inside the ring.' },
   },
   {
@@ -127,7 +127,7 @@ export const ORBIT_SITES: OrbitSite[] = [
     lon: 354.473,
     coords: 'NSSDCA',
     then: { slug: 'orbit-opportunity-surface', by: 'Opportunity', alt: 'The empty lander that carried Opportunity, seen from the rover’s rear hazard camera.' },
-    now: { slug: 'orbit-opportunity-hirise', by: 'HiRISE', alt: 'Eagle crater from orbit, with Opportunity’s lander a bright spot inside it and its backshell and parachute to the lower left.' },
+    now: { slug: 'orbit-opportunity-hirise', by: 'HiRISE', alt: 'Eagle crater from orbit, with Opportunity’s lander a bright spot inside the crater and the backshell and parachute to the lower left.' },
   },
   {
     id: 'phoenix',
