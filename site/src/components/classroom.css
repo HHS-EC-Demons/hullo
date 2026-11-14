@@ -44,6 +44,10 @@
   border-radius: var(--radius);
   background: var(--raised);
 }
+.cr-photo img.contain {
+  object-fit: contain;
+  background: #000;
+}
 
 .cr-body {
   grid-area: body;
