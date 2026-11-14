@@ -181,7 +181,7 @@ select {
 }
 
 .page-head {
-  padding-block: clamp(48px, 9vw, 120px) clamp(32px, 5vw, 64px);
+  padding-block: clamp(36px, 6vw, 88px) clamp(28px, 4vw, 56px);
 }
 
 .page-head h1 {
