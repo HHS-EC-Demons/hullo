@@ -2,6 +2,7 @@ import { lazy, memo, Suspense, useCallback, useEffect, useId, useMemo, useState,
 import { arrivalAt, hmsText, lightTimeAt, replyAt, type DeepSpaceData } from '../lib/lighttime';
 import { longDate, useJson, useNow } from '../lib/client';
 import { stamp } from '../lib/passport';
+import { onPicked, setPicked } from '../lib/picked';
 import { PROBES, probeInfo } from '../data/probes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -188,8 +189,14 @@ export default function ProbeSignal({
 
   function pick(key: string) {
     setProbe(key);
+    setPicked(key);
     stampProbe(key);
   }
+
+  useEffect(() => {
+    setPicked(initial);
+    return onPicked(setProbe);
+  }, [initial]);
 
   const send = useCallback(
     (text: string): string | null => {
