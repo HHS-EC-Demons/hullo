@@ -1,18 +1,23 @@
-import { lazy, Suspense, useEffect, useId, useMemo, useState, type FormEvent } from 'react';
+import { lazy, memo, Suspense, useCallback, useEffect, useId, useMemo, useState, type FormEvent } from 'react';
 import { arrivalAt, hmsText, lightTimeAt, replyAt, type DeepSpaceData } from '../lib/lighttime';
 import { longDate, useJson, useNow } from '../lib/client';
 import { stamp } from '../lib/passport';
 import { PROBES, probeInfo } from '../data/probes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import LiveLight from './LiveLight';
-import LightDay from './LightDay';
+import LiveLightView from './LiveLight';
+import LightDayView from './LightDay';
 import type { Message } from './MessageFlight';
-import LightTimeChart from './LightTimeChart';
-import SkyChart from './SkyChart';
+import LightTimeChartView from './LightTimeChart';
+import SkyChartView from './SkyChart';
 import './probe.css';
 
-const MessageFlight = lazy(() => import('./MessageFlight'));
+const loadFlight = () => import('./MessageFlight');
+const MessageFlight = lazy(loadFlight);
+const LiveLight = memo(LiveLightView);
+const LightDay = memo(LightDayView);
+const LightTimeChart = memo(LightTimeChartView);
+const SkyChart = memo(SkyChartView);
 const STORE = 'hullo.messages.v1';
 const MAX_LEN = 80;
 
@@ -33,6 +38,62 @@ function writeMessages(list: Message[]): void {
     return;
   }
 }
+
+interface FormProps {
+  uid: string;
+  name: string;
+  onSend: (text: string) => string | null;
+  children?: React.ReactNode;
+}
+
+const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: FormProps) {
+  const [draft, setDraft] = useState('');
+  const [note, setNote] = useState('');
+
+  function submit(e: FormEvent) {
+    e.preventDefault();
+    const text = draft.trim().slice(0, MAX_LEN);
+    if (!text) {
+      setNote('Type a message first.');
+      return;
+    }
+    const problem = onSend(text);
+    if (problem) {
+      setNote(problem);
+      return;
+    }
+    setDraft('');
+    setNote('');
+  }
+
+  return (
+    <form className="ps-form" onSubmit={submit} noValidate>
+      {children}
+      <label htmlFor={`${uid}-msg`}>Message to {name}</label>
+      <div className="ps-row">
+        <Input
+          id={`${uid}-msg`}
+          name="message"
+          type="text"
+          value={draft}
+          maxLength={MAX_LEN}
+          autoComplete="off"
+          spellCheck
+          aria-describedby={`${uid}-hint`}
+          onFocus={() => void loadFlight()}
+          onChange={(e) => {
+            setDraft(e.target.value);
+            if (note) setNote('');
+          }}
+        />
+        <Button type="submit">Send</Button>
+      </div>
+      <p className="ps-hint" id={`${uid}-hint`} aria-live="polite">
+        {note || `Up to ${MAX_LEN} characters. Nothing is sent anywhere, and the message stays on this device.`}
+      </p>
+    </form>
+  );
+});
 
 export interface ProbePhoto {
   avif: string;
@@ -72,9 +133,7 @@ export default function ProbeSignal({
   const { data, error } = useJson<DeepSpaceData>('data/deep-space.json');
   const minute = useNow(60000);
   const [probe, setProbe] = useState(initial);
-  const [draft, setDraft] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
-  const [note, setNote] = useState('');
   const uid = useId();
   const info = probeInfo(probe);
 
@@ -96,42 +155,32 @@ export default function ProbeSignal({
 
   function pick(key: string) {
     setProbe(key);
-    setNote('');
     stampProbe(key);
   }
 
-  function send(e: FormEvent) {
-    e.preventDefault();
-    const text = draft.trim().slice(0, MAX_LEN);
-    if (!text) {
-      setNote('Type a message first.');
-      return;
-    }
-    if (!data) {
-      setNote('The distance table is still loading. Try again in a moment.');
-      return;
-    }
-    const sent = Date.now();
-    const arrives = arrivalAt(data, probe, sent);
-    if (arrives === null) {
-      setNote('This site only carries positions for 2026 and 2027.');
-      return;
-    }
-    const msg: Message = {
-      id: `${sent}-${Math.random().toString(36).slice(2, 7)}`,
-      probe,
-      text,
-      sent,
-      arrives,
-      reply: replyAt(data, probe, sent),
-    };
-    const next = [...readMessages(), msg];
-    writeMessages(next);
-    setMessages(next);
-    setDraft('');
-    setNote('');
-    stampProbe(probe);
-  }
+  const send = useCallback(
+    (text: string): string | null => {
+      if (!data) return 'The distance table is still loading. Try again in a moment.';
+      const sent = Date.now();
+      const arrives = arrivalAt(data, probe, sent);
+      if (arrives === null) return 'This site only carries positions for 2026 and 2027.';
+      const msg: Message = {
+        id: `${sent}-${Math.random().toString(36).slice(2, 7)}`,
+        probe,
+        text,
+        sent,
+        arrives,
+        reply: replyAt(data, probe, sent),
+      };
+      const next = [...readMessages(), msg];
+      writeMessages(next);
+      setMessages(next);
+      const lt = lightTimeAt(data, probe, sent);
+      if (lt !== null) stamp(probe, `${hmsText(lt)} of light away`);
+      return null;
+    },
+    [data, probe],
+  );
 
   const choices = (legend: string, cls: string) => (
     <fieldset className={`choices ${cls}`}>
@@ -164,30 +213,9 @@ export default function ProbeSignal({
 
       <div className={`ps-act${aside || photo ? ' has-aside' : ''}`}>
         <div className="ps-main">
-          <form className="ps-form" onSubmit={send} noValidate>
+          <MessageForm uid={uid} name={info.name} onSend={send}>
             {picker === 'form' && choices('Send to', 'ps-to')}
-            <label htmlFor={`${uid}-msg`}>Message to {info.name}</label>
-            <div className="ps-row">
-              <Input
-                id={`${uid}-msg`}
-                name="message"
-                type="text"
-                value={draft}
-                maxLength={MAX_LEN}
-                autoComplete="off"
-                spellCheck
-                aria-describedby={`${uid}-hint`}
-                onChange={(e) => {
-                  setDraft(e.target.value);
-                  if (note) setNote('');
-                }}
-              />
-              <Button type="submit">Send</Button>
-            </div>
-            <p className="ps-hint" id={`${uid}-hint`} aria-live="polite">
-              {note || `Up to ${MAX_LEN} characters. Nothing is sent anywhere, and the message stays on this device.`}
-            </p>
-          </form>
+          </MessageForm>
           {data && mine.length > 0 && (
             <Suspense fallback={null}>
               <MessageFlight data={data} messages={mine} />
