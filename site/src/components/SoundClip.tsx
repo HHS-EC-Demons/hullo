@@ -122,7 +122,7 @@ export default function SoundClip({ src, peaks, duration, label, stampId, stampD
       <div className="sc-row">
         <Button
           type="button"
-          variant="line"
+          variant="secondary"
           className="sc-play"
           onClick={toggle}
           disabled={!ready}
