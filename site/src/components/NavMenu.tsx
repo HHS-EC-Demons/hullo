@@ -44,7 +44,7 @@ export default function NavMenu({ items, passport, extra, current, stampTotal }:
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="quiet" size="sm" className="nav-menu-btn">
+        <Button variant="secondary" size="sm" className="nav-menu-btn">
           Menu
         </Button>
       </SheetTrigger>
@@ -53,32 +53,32 @@ export default function NavMenu({ items, passport, extra, current, stampTotal }:
           <SheetTitle>Chapters</SheetTitle>
           <SheetDescription className="sr-only">Pages of this site with a live figure for each.</SheetDescription>
         </div>
-        <nav aria-label="Chapters">
-          <ul className="border-t border-rule">
+        <nav aria-label="Chapters" className="px-5">
+          <ul className="grid gap-3 pb-1">
             {rows.map((item) => {
               const here = current === item.key;
               return (
-                <li key={item.key} className="border-b border-rule">
+                <li key={item.key}>
                   <a
                     href={item.href}
                     aria-current={here ? 'page' : undefined}
-                    className={`grid min-h-16 grid-cols-[1fr_auto] items-baseline gap-x-4 gap-y-0.5 px-5 py-3 no-underline ${here ? 'shadow-[inset_3px_0_0_var(--lilac)]' : ''}`}
+                    className="press grid w-full grid-cols-[1fr_auto] items-baseline justify-items-start gap-x-4 gap-y-0.5 px-4 py-3 text-left whitespace-normal"
                   >
-                    <span className={`text-lg ${here ? 'font-bold text-text' : 'font-semibold text-text'}`}>{item.label}</span>
-                    <span className="mono min-w-[11ch] text-right text-sm text-text">
-                      {figureText(item, fig, stamps, stampTotal) || ' '}
+                    <span className={`text-lg text-text ${here ? 'font-extrabold' : 'font-bold'}`}>{item.label}</span>
+                    <span className={`mono min-w-[11ch] justify-self-end text-right text-sm font-normal ${here ? 'text-text' : 'text-muted-foreground'}`}>
+                      {figureText(item, fig, stamps, stampTotal) || ' '}
                     </span>
-                    <span className="col-span-2 text-xs text-muted-foreground">{item.meaning}</span>
+                    <span className="col-span-2 text-xs font-normal text-muted-foreground">{item.meaning}</span>
                   </a>
                 </li>
               );
             })}
           </ul>
         </nav>
-        <ul className="mt-auto flex flex-wrap gap-x-6 px-5 pt-6 pb-8">
+        <ul className="mt-auto flex flex-wrap gap-2.5 px-5 pt-6 pb-8">
           {extra.map((e) => (
             <li key={e.href}>
-              <a href={e.href} className="inline-flex min-h-11 items-center text-sm">
+              <a href={e.href} className="press min-h-11 px-4">
                 {e.label}
               </a>
             </li>
