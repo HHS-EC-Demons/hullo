@@ -81,7 +81,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
       <p>NASA’s legacy hardware</p>
     </div>
     <figure class="silent-hero">
-      <picture>
+      <picture class="ph">
         <source type="image/avif" srcset={heroPic.avif} sizes={heroPic.sizes} />
         <source type="image/webp" srcset={heroPic.webp} sizes={heroPic.sizes} />
         <img src={heroPic.src} width={heroPic.width} height={heroPic.height} alt={hero.alt} loading="eager" fetchpriority="high" decoding="async" />
@@ -100,7 +100,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
         rows.map((r) => (
           <li id={r.id}>
             <figure>
-              <picture>
+              <picture class="ph">
                 <source type="image/avif" srcset={r.pic.avif} sizes={WALL} />
                 <source type="image/webp" srcset={r.pic.webp} sizes={WALL} />
                 <img src={r.pic.src} width={r.pic.width} height={r.pic.height} alt={`${r.photo.alt} ${r.photo.caption}, ${r.photo.when}.`} loading="lazy" decoding="async" />
@@ -152,7 +152,12 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
     min-height: 24rem;
     object-fit: cover;
     border-radius: var(--radius);
-    background: var(--raised);
+  }
+  .silent-hero .ph,
+  .wall .ph {
+    display: block;
+    border-radius: var(--radius);
+    overflow: hidden;
   }
   .section-title {
     text-wrap: balance;
@@ -186,7 +191,6 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
     aspect-ratio: 4 / 3;
     object-fit: cover;
     border-radius: var(--radius);
-    background: var(--raised);
   }
   .wall figcaption {
     display: grid;
