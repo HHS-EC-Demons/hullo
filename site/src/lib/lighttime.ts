@@ -7,6 +7,7 @@ export interface ProbeSeries {
   rg_km: number[];
   rr_km_s: number[];
   up_s: number[];
+  down_s: number[];
   light_day_utc: string | null;
 }
 
@@ -87,6 +88,25 @@ export function uplinkAt(data: DeepSpaceData, key: string, ms: number): number |
 export function arrivalAt(data: DeepSpaceData, key: string, sentMs: number): number | null {
   const up = uplinkAt(data, key, sentMs);
   return up === null ? null : sentMs + up * 1000;
+}
+
+/** Seconds a signal the probe sends at `ms` takes to reach Earth's center. */
+export function downlinkAt(data: DeepSpaceData, key: string, ms: number): number | null {
+  const at = locate(data, key, ms);
+  if (!at) return null;
+  const { p, i, s } = at;
+  return p.down_s[i] + (p.down_s[i + 1] - p.down_s[i]) * s;
+}
+
+/**
+ * UTC milliseconds when a reply would reach Earth's center if the probe
+ * answered the instant a message sent at `sentMs` arrived.
+ */
+export function replyAt(data: DeepSpaceData, key: string, sentMs: number): number | null {
+  const arrives = arrivalAt(data, key, sentMs);
+  if (arrives === null) return null;
+  const down = downlinkAt(data, key, arrives);
+  return down === null ? null : arrives + down * 1000;
 }
 
 /** Daily light time series in hours, for charts. */

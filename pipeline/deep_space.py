@@ -7,6 +7,8 @@ For each probe the table holds, at 00:00 UTC each day:
   up  seconds a radio message sent from Earth's center at that instant takes
       to reach the probe, counting the probe's and Earth's motion while the
       message travels
+  down  seconds a signal the probe sends at that instant takes to reach
+      Earth's center, counting Earth's motion while the signal travels
 """
 
 from __future__ import annotations
@@ -76,6 +78,16 @@ def uplink_seconds(p_geo, v_geo, e_ssb, ev_ssb, k: int) -> float:
     return float(tau)
 
 
+def downlink_seconds(p_geo, e_ssb, ev_ssb, k: int) -> float:
+    """Light time for a signal the probe sends at grid time k to reach Earth's center."""
+    probe_ssb = p_geo[k] + e_ssb[k]
+    tau = np.linalg.norm(p_geo[k]) / C_KM_S
+    for _ in range(8):
+        t = k + tau / DAY_S
+        tau = np.linalg.norm(probe_ssb - hermite(e_ssb, ev_ssb, t)) / C_KM_S
+    return float(tau)
+
+
 def light_day_crossing(jd: np.ndarray, pos: np.ndarray, vel: np.ndarray) -> str | None:
     """UTC instant when the geometric light time first reaches 86400 s."""
     rg = np.linalg.norm(pos, axis=1)
@@ -116,6 +128,8 @@ def build() -> dict:
         rr = np.einsum("ij,ij->i", p, v) / rg
         up = [uplink_seconds(p, v, e_ssb, ev_ssb, k) for k in range(len(jd) - 2)]
         up += [up[-1], up[-1]]
+        down = [downlink_seconds(p, e_ssb, ev_ssb, k) for k in range(len(jd) - 2)]
+        down += [down[-1], down[-1]]
         out["probes"][key] = {
             "name": name,
             "horizons_id": command,
@@ -123,6 +137,7 @@ def build() -> dict:
             "rg_km": [round(float(x), 1) for x in rg],
             "rr_km_s": [round(float(x), 5) for x in rr],
             "up_s": [round(float(x), 3) for x in up],
+            "down_s": [round(float(x), 3) for x in down],
             "light_day_utc": light_day_crossing(jd, p, v),
         }
     return out

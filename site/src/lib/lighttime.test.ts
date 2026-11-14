@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { arrivalAt, hmsText, lightTimeAt, rangeAt, uplinkAt, type DeepSpaceData } from './lighttime';
+import { arrivalAt, downlinkAt, hmsText, lightTimeAt, rangeAt, replyAt, uplinkAt, type DeepSpaceData } from './lighttime';
 
 const data = JSON.parse(
   readFileSync(new URL('../../public/data/deep-space.json', import.meta.url), 'utf8'),
@@ -34,6 +34,16 @@ describe('light time from the daily Horizons table', () => {
     expect(up).toBeGreaterThan(lt);
     expect(Math.abs(up - lt - (17 * lt) / data.c_km_s)).toBeLessThan(0.6);
     expect(arrivalAt(data, 'voyager1', ms)).toBeCloseTo(ms + up * 1000, 0);
+  });
+
+  it('times a reply from the arrival instant, about two light times after sending', () => {
+    const ms = Date.parse('2026-11-18T10:16:07Z');
+    const arrives = arrivalAt(data, 'voyager1', ms) as number;
+    const back = replyAt(data, 'voyager1', ms) as number;
+    const down = downlinkAt(data, 'voyager1', arrives) as number;
+    expect(back - arrives).toBeCloseTo(down * 1000, 0);
+    expect(Math.abs(down - (lightTimeAt(data, 'voyager1', arrives) as number))).toBeLessThan(10);
+    expect((back - ms) / 1000 / 86400).toBeGreaterThan(2);
   });
 
   it('returns null outside the table', () => {
