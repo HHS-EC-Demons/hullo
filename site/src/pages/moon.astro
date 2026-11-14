@@ -1,11 +1,30 @@
 ---
+import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import LaserShot from '../components/LaserShot';
-import { readData } from '../lib/build-data';
-import { asset, href } from '../lib/paths';
+import { href } from '../lib/paths';
+import { dated, image, meta } from '../lib/photos';
 
-const images = readData<{ slug: string; nasa_id: string; title: string; date: string; credit: string; width: number; height: number; page: string }[]>('images.json');
-const photo = images.find((i) => i.slug === 'apollo14-reflector')!;
+const mirrors = [
+  {
+    slug: 'moon-a11-reflector',
+    name: 'Apollo 11',
+    note: 'The reflector stands beyond the seismometer, with the lunar module on the right.',
+    alt: 'An astronaut on the grey surface beside the Apollo 11 seismometer, with the small laser reflector behind it and the lunar module in the distance.',
+  },
+  {
+    slug: 'moon-a14-reflector',
+    name: 'Apollo 14',
+    note: 'The reflector set up on the surface, with boot prints around it.',
+    alt: 'The Apollo 14 laser reflector on the grey surface, a tilted panel of glass corner cubes with boot prints around it.',
+  },
+  {
+    slug: 'moon-a15-reflector',
+    name: 'Apollo 15',
+    note: 'The reflector still folded on the lunar module’s storage bay, before the crew set it up.',
+    alt: 'The side of the Apollo 15 lunar module, with the folded laser reflector on top of a foil wrapped storage bay and boot prints in front.',
+  },
+].map((m) => ({ ...m, meta: meta(m.slug), image: image(m.slug) }));
 ---
 
 <Base title="Moon" current="moon" description="Fire a laser from Apache Point or Grasse at an Apollo retroreflector and see the round trip time for this moment, from JPL Horizons.">
@@ -20,21 +39,8 @@ const photo = images.find((i) => i.slug === 'apollo14-reflector')!;
 
   <section class="wrap section">
     <div class="moon-more">
-      <figure class="photo">
-        <img
-          src={asset(`img/${photo.slug}.jpg`)}
-          width={photo.width}
-          height={photo.height}
-          loading="lazy"
-          decoding="async"
-          alt="The Apollo 14 laser reflector on the grey lunar surface, a tilted panel of glass corner cubes with boot prints around it."
-        />
-        <figcaption class="credit">
-          Apollo 14 reflector, 5 Feb 1971. Photo {photo.nasa_id.toUpperCase()}, {photo.credit}.
-        </figcaption>
-      </figure>
       <div class="moon-text">
-        <p class="big-claim"><span class="n">3.8</span> cm a year</p>
+        <p class="big-claim"><span class="n mono">3.8 cm</span> a year</p>
         <p>
           Laser ranging started at a precision of several decimeters and now reaches millimeters. More than 57 years of echoes
           show the Moon moving away from Earth by about 3.8 cm a year.
@@ -45,6 +51,28 @@ const photo = images.find((i) => i.slug === 'apollo14-reflector')!;
           reflectors are also ranged. <a href={href('sources/')}>Sources</a>
         </p>
       </div>
+      <div class="mirrors" role="list" aria-label="The three Apollo reflectors">
+        {
+          mirrors.map((m) => (
+            <figure class="mirror" role="listitem">
+              <Picture
+                src={m.image}
+                formats={['avif', 'webp']}
+                widths={[360, 560, 800]}
+                sizes="(max-width: 860px) 92vw, 22vw"
+                alt={m.alt}
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>
+                <span class="mirror-name">{m.name}</span>
+                <span class="mono mirror-date">{dated(m.meta.date)}</span>
+                <span class="credit">{m.note} {m.meta.id.toUpperCase()}, {m.meta.credit}.</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
     </div>
   </section>
 </Base>
@@ -52,20 +80,38 @@ const photo = images.find((i) => i.slug === 'apollo14-reflector')!;
 <style>
   .moon-more {
     display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: 40px 64px;
-    align-items: start;
+    gap: 48px;
     padding-top: 28px;
     border-top: 1px solid var(--rule);
   }
-  .photo img {
+  .mirrors {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+  }
+  .mirror {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    align-content: start;
+  }
+  .mirror :global(img) {
     width: 100%;
+    height: auto;
     aspect-ratio: 1;
     object-fit: cover;
     background: var(--raised);
   }
-  .photo figcaption {
-    margin-top: 10px;
+  .mirror figcaption {
+    display: grid;
+    gap: 2px;
+  }
+  .mirror-name {
+    font-weight: 700;
+  }
+  .mirror-date {
+    color: var(--muted);
+    font-size: var(--fs-sm);
   }
   .moon-text {
     display: grid;
@@ -80,12 +126,12 @@ const photo = images.find((i) => i.slug === 'apollo14-reflector')!;
   .big-claim .n {
     display: block;
     font-size: var(--fs-xl);
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    font-weight: 700;
+    letter-spacing: -0.04em;
     line-height: 1;
   }
   @media (max-width: 860px) {
-    .moon-more {
+    .mirrors {
       grid-template-columns: minmax(0, 1fr);
     }
   }
