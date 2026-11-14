@@ -12,6 +12,7 @@
   "credit": "NASA/JPL",
   "caption": "Jupiter’s Great Red Spot, photographed by Voyager 1",
   "short": "Jupiter’s Great Red Spot, 1979",
+  "focus": "45% 50%",
   "alt": "Jupiter’s clouds in cream and orange swirls, with the oval Great Red Spot at the top and a white oval storm below it.",
   "page": "https://images.nasa.gov/details/PIA00022",
   "source_px": [
@@ -35,6 +36,7 @@
   "credit": "NASA/JPL",
   "caption": "Neptune and its Great Dark Spot, photographed by Voyager 2",
   "short": "Neptune, 1989",
+  "focus": "50% 50%",
   "alt": "Neptune, a deep blue globe with a dark oval storm near its middle edged by bright white clouds.",
   "page": "https://images.nasa.gov/details/PIA01492",
   "source_px": [
@@ -58,6 +60,7 @@
   "credit": "NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute",
   "caption": "Pluto in enhanced color, photographed by New Horizons",
   "short": "Pluto in enhanced color, 2015",
+  "focus": "50% 48%",
   "alt": "Pluto, a round world with a pale heart shaped plain on the right and dark red ground on the left, in enhanced color.",
   "page": "https://images.nasa.gov/details/PIA19952",
   "source_px": [
@@ -81,6 +84,7 @@
   "credit": "NASA",
   "caption": "Jupiter and one of its moons, top right, photographed by Pioneer 10 from 2,584,000 km",
   "short": "Jupiter and a moon, 1973",
+  "focus": "50% 50%",
   "alt": "Jupiter as a banded orange and cream globe on black, with a small orange moon to its upper right.",
   "page": "https://images.nasa.gov/details/ARC-1973-AC73-9253",
   "source_px": [
@@ -104,6 +108,7 @@
   "credit": "NASA",
   "caption": "Pioneer 11, then called Pioneer G, between the open halves of its nose cover",
   "short": "Pioneer 11 before launch, 1973",
+  "focus": "50% 35%",
   "alt": "Pioneer 11 under its round dish antenna, standing between the two open halves of its rocket nose cover.",
   "page": "https://images.nasa.gov/details/KSC-73P-0116",
   "source_px": [
@@ -127,6 +132,7 @@
   "credit": "NASA/JPL-Caltech",
   "caption": "Goldstone’s 70 m antenna at night",
   "short": "2012",
+  "focus": "50% 50%",
   "alt": "A huge white dish antenna tilted toward the night sky above lit buildings in the desert, with the Moon to the right.",
   "page": "https://images.nasa.gov/details/PIA17790",
   "source_px": [
@@ -150,6 +156,7 @@
   "credit": "NASA/JPL-Caltech",
   "caption": "Madrid’s 34 m antenna DSS 56 at night",
   "short": "Released 2021",
+  "focus": "50% 50%",
   "alt": "A white dish antenna facing straight up on a lit steel tower against a black night sky.",
   "page": "https://images.nasa.gov/details/PIA24163",
   "source_px": [
@@ -173,6 +180,7 @@
   "credit": "NASA/JPL-Caltech",
   "caption": "Canberra’s 70 m antenna DSS 43 during its 2020 upgrade, with a crane beside it",
   "short": "2020",
+  "focus": "50% 50%",
   "alt": "A giant white dish antenna under blue sky with a tall red and white crane beside it and green hills behind.",
   "page": "https://images.nasa.gov/details/PIA23797",
   "source_px": [
@@ -196,6 +204,7 @@
   "credit": "NASA/GSFC/Arizona State University",
   "caption": "The Apollo 14 site and Cone crater, seen by the Lunar Reconnaissance Orbiter",
   "short": "Apollo 14, 2009",
+  "focus": "50% 50%",
   "alt": "Grey cratered lunar ground from straight above, with the bright rim of Cone crater at top right and the astronauts’ faint trail at bottom left.",
   "page": "https://images.nasa.gov/details/PIA12897",
   "source_px": [

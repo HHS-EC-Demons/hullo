@@ -106,6 +106,7 @@ export interface ProbePhoto {
   caption: string;
   id: string;
   credit: string;
+  focus?: string;
 }
 
 const FRAME_SIZES = '(max-width: 900px) calc(100vw - 32px), min(58vw, 760px)';
@@ -117,7 +118,15 @@ function Frame({ photo }: { photo: ProbePhoto }) {
         <picture>
           <source type="image/avif" srcSet={photo.avif} sizes={FRAME_SIZES} />
           <source type="image/webp" srcSet={photo.webp} sizes={FRAME_SIZES} />
-          <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} fetchPriority="high" decoding="async" />
+          <img
+            src={photo.src}
+            width={photo.width}
+            height={photo.height}
+            alt={photo.alt}
+            fetchPriority="high"
+            decoding="async"
+            style={{ objectPosition: photo.focus ?? '50% 50%' }}
+          />
         </picture>
       </div>
       <figcaption className="credit">
