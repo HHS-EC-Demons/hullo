@@ -83,12 +83,22 @@
   max-width: 100%;
 }
 
-.os-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 24px;
-  font-size: var(--fs-sm);
+.os-readtext {
+  display: grid;
+  gap: 10px;
+}
+
+.os-days {
+  font-size: var(--fs-md);
   color: var(--muted);
+}
+
+.os-days-n {
+  display: inline-block;
+  min-width: 6ch;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text);
 }
 
 .os-look {
@@ -274,8 +284,9 @@
 }
 
 .os-sound {
-  max-width: 44rem;
-  padding-top: 18px;
+  max-width: 34rem;
+  padding-top: 16px;
+  margin-top: 8px;
   border-top: 1px solid var(--rule);
 }
 

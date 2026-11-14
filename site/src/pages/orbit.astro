@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import OrbitSites, { type MapProps, type Mark, type SiteProps, type ViewProps } from '../components/OrbitSites';
+import OrbitSites, { type MapProps, type Mark, type QuakeClip, type SiteProps, type ViewProps } from '../components/OrbitSites';
 import { ORBIT_SITES, type OrbitSite, type OrbitView } from '../data/orbit-sites';
 import { calDate } from '../lib/dates';
 import { LRO, image, lro, meta, pic } from '../lib/photos';
@@ -15,19 +15,6 @@ const WIDTHS = [640, 800, 1080, 1400, 1800];
 function widths(slug: string): number[] {
   const native = Math.min(image(slug).width, 2400);
   return [...WIDTHS.filter((w) => w < native), native];
-}
-
-function coords(site: OrbitSite): string {
-  const places = site.body === 'Moon' ? 3 : 1;
-  const lon = site.body === 'Moon' ? site.lon : ((site.lon % 360) + 360) % 360;
-  const ns = `${Math.abs(site.lat).toFixed(places)}° ${site.lat < 0 ? 'S' : 'N'}`;
-  const ew = site.body === 'Moon' ? `${Math.abs(lon).toFixed(places)}° ${lon < 0 ? 'W' : 'E'}` : `${lon.toFixed(places)}° E`;
-  return `${ns}, ${ew}`;
-}
-
-function apart(a: string, b: string): string {
-  const years = Math.floor((Date.parse(b) - Date.parse(a)) / (365.25 * 86400000));
-  return years === 1 ? '1 year apart' : `${years} years apart`;
 }
 
 function label(id: string): string {
@@ -84,30 +71,27 @@ const sites: SiteProps[] = await Promise.all(
       name: s.name,
       tab: s.body === 'Moon' ? s.name.replace(/^Apollo /, '') : s.name,
       body: s.body,
-      where: coords(s),
-      apart: apart(then.date, now.date),
       look: s.look,
+      landed: s.landed,
       then: then.props,
       now: now.props,
       pair: !!s.pair,
       stampDetail: now.detail,
-      sound:
-        s.sound === 'insight-quake'
-          ? {
-              src: quake.file,
-              peaks: quake.peaks,
-              duration: quake.duration_s,
-              label: 'InSight’s biggest marsquake as sound',
-              stampId: 'insight',
-              stampDetail: 'Heard the magnitude 5 quake of 4 May 2022',
-              what: 'Magnitude 5 marsquake as sound',
-              date: calDate(quake.recorded),
-              credit: `PIA25281, ${quake.credit}`,
-            }
-          : undefined,
     } satisfies SiteProps;
   }),
 );
+
+const quakeClip: QuakeClip = {
+  src: quake.file,
+  peaks: quake.peaks,
+  duration: quake.duration_s,
+  label: 'InSight’s biggest marsquake as sound',
+  stampId: 'insight',
+  stampDetail: 'Heard the magnitude 5 quake of 4 May 2022',
+  what: 'Marsquake',
+  date: calDate(quake.recorded),
+  credit: `PIA25281, ${quake.credit}`,
+};
 
 type MapMeta = { file: string; west: number; east: number; north: number; south: number; id: string; year: number; credit: string };
 
@@ -139,7 +123,7 @@ const maps = [
 ---
 
 <Base title="Orbit" current="orbit" description="Apollo landing sites seen by LRO and Mars landers seen by HiRISE, each next to a photo from landing, picked from maps of the Moon and Mars.">
-  <OrbitSites client:load sites={sites} maps={maps} first="apollo11">
+  <OrbitSites client:load sites={sites} maps={maps} first="apollo11" quake={quakeClip}>
     <Fragment slot="head">
       <h1 class="orbit-h1">Orbit</h1>
       <p class="orbit-line">Landing sites, seen later from orbit.</p>
