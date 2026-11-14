@@ -10,6 +10,7 @@ import { TooltipWithBounds } from '@visx/tooltip';
 import { bisector } from '@visx/vendor/d3-array';
 import type { Flight } from './Worksheets';
 
+const TIP_STYLE = { position: 'absolute', pointerEvents: 'none' } as const;
 const TICK = { fill: 'var(--muted)', fontFamily: 'var(--mono)', fontSize: 12.5 } as const;
 const MARGIN = { top: 14, right: 16, bottom: 44, left: 72 };
 
@@ -150,7 +151,7 @@ function SeriesPlot({ points, marker, markerLabel, refY, label, xTitle, yTitle, 
         </Group>
       </svg>
       {shown && (
-        <TooltipWithBounds left={MARGIN.left + x(shown.x)} top={MARGIN.top + y(shown.y)} offsetLeft={14} offsetTop={-12} unstyled className="hl-tip">
+        <TooltipWithBounds left={MARGIN.left + x(shown.x)} top={MARGIN.top + y(shown.y)} offsetLeft={14} offsetTop={-12} style={TIP_STYLE} className="hl-tip">
           <div className="hl-tip-x">{readX(shown.x)}</div>
           <div className="hl-tip-row on">
             <span className="hl-tip-key" aria-hidden="true" />
@@ -293,7 +294,7 @@ function FlightPlot({ flights, picked, onPick, readDist, readTime, width, height
         </Group>
       </svg>
       {shown && (
-        <TooltipWithBounds left={MARGIN.left + x(shown.duration_s as number)} top={MARGIN.top + y(shown.dist_m as number)} offsetLeft={14} offsetTop={-12} unstyled className="hl-tip">
+        <TooltipWithBounds left={MARGIN.left + x(shown.duration_s as number)} top={MARGIN.top + y(shown.dist_m as number)} offsetLeft={14} offsetTop={-12} style={TIP_STYLE} className="hl-tip">
           <div className="hl-tip-x">Flight {shown.n}</div>
           <div className="hl-tip-row on">
             <span className="hl-tip-key" aria-hidden="true" />

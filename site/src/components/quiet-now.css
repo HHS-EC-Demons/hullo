@@ -87,3 +87,11 @@
     grid-column: 1 / -1;
   }
 }
+
+.qn-chart .hl-tip {
+  max-width: min(16rem, 42vw);
+}
+.qn-chart .hl-tip-x,
+.qn-chart .hl-tip-v {
+  white-space: normal;
+}

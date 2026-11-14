@@ -20,6 +20,7 @@ interface Unit {
 
 const WIDE = { top: 4, right: 64, bottom: 40, left: 96 };
 const NARROW = { top: 4, right: 46, bottom: 40, left: 92 };
+const TIP_STYLE = { position: 'absolute', pointerEvents: 'none' } as const;
 const TICK = { fill: 'var(--muted)', fontFamily: 'var(--mono)', fontSize: 12.5 } as const;
 
 function Plot({ byId, dayText, width, height }: Props & { width: number; height: number }) {
@@ -142,7 +143,7 @@ function Plot({ byId, dayText, width, height }: Props & { width: number; height:
           top={MARGIN.top + (y(shown.row) ?? 0)}
           offsetLeft={12}
           offsetTop={-36}
-          unstyled
+          style={TIP_STYLE}
           className="hl-tip"
         >
           <div className="hl-tip-x">{tipText(shown)}</div>

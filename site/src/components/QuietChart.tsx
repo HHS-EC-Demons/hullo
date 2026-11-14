@@ -20,6 +20,7 @@ interface Props {
 }
 
 const MARGIN = { top: 26, right: 14, bottom: 46, left: 30 };
+const TIP_STYLE = { position: 'absolute', pointerEvents: 'none' } as const;
 const TICK = { fill: 'var(--muted)', fontFamily: 'var(--mono)', fontSize: 12.5 } as const;
 
 function nearest(events: QuietEvent[], ms: number): number {
@@ -164,7 +165,7 @@ function Plot({ events, nowMs, markMs = null, markCount = null, width, height }:
         </Group>
       </svg>
       {shown && (
-        <TooltipWithBounds left={MARGIN.left + x(shown.ms)} top={MARGIN.top + y(shown.count)} offsetLeft={14} offsetTop={-12} unstyled className="hl-tip">
+        <TooltipWithBounds left={MARGIN.left + x(shown.ms)} top={MARGIN.top + y(shown.count)} offsetLeft={14} offsetTop={-12} style={TIP_STYLE} className="hl-tip">
           <div className="hl-tip-x">{calDate(shown.ms)}</div>
           <div className="hl-tip-row on">
             <span className="hl-tip-key" aria-hidden="true" />
