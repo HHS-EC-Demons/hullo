@@ -8,7 +8,8 @@ straight from its Photojournal or HiRISE file when the library does not
 hold that figure, cropped and scaled, and written to
 site/src/assets/img/<slug>.jpg. Their metadata goes to
 site/src/data/photos.json. Each credit is the one printed on the item's
-Photojournal, NASA or HiRISE page. HiRISE pages ask for the credit
+Photojournal, NASA or HiRISE page. The date is when the photo was taken, as
+the item's page states it, or None when the page gives no such date. HiRISE pages ask for the credit
 NASA/JPL/University of Arizona where no other credit is printed.
 
 Run with .venv/bin/python images.py, or as the images step of build.py.
@@ -69,8 +70,8 @@ PHOTOS = [
     {"slug": "orbit-apollo16-surface", "id": "as16-113-18334", "credit": "NASA", "date": "1972-04-21"},
     {"slug": "orbit-apollo17-surface", "id": "as17-134-20382", "credit": "NASA", "date": "1972-12-13"},
     {"slug": "orbit-viking1-surface", "id": "PIA00381", "credit": "NASA/JPL", "date": "1976-07-20"},
-    {"slug": "orbit-viking2-surface", "id": "PIA00568", "credit": "NASA/JPL", "date": "1976-09-03"},
-    {"slug": "orbit-spirit-surface", "id": "PIA04995", "credit": "NASA/JPL/Cornell", "date": "2004-01-06",
+    {"slug": "orbit-viking2-surface", "id": "PIA00568", "credit": "NASA/JPL", "date": None},
+    {"slug": "orbit-spirit-surface", "id": "PIA04995", "credit": "NASA/JPL/Cornell", "date": None,
      "crop": (0.04, 0.04, 0.96, 0.7)},
     {"slug": "orbit-opportunity-surface", "id": "PIA05182", "credit": "NASA/JPL", "date": "2004-01-31"},
     {"slug": "orbit-viking1-hirise", "id": "PIA01881", "credit": "NASA/JPL-Caltech/University of Arizona",

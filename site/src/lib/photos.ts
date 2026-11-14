@@ -7,7 +7,7 @@ export interface PhotoMeta {
   id: string;
   observation: string | null;
   title: string;
-  date: string;
+  date: string | null;
   credit: string;
   page: string;
   width: number;

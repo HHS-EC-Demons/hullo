@@ -38,6 +38,7 @@ function Picture({ view, eager }: { view: ViewProps; eager?: boolean }) {
         height={view.pic.height}
         alt={view.alt}
         loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : undefined}
         decoding="async"
         draggable={false}
       />
