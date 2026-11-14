@@ -1,6 +1,14 @@
 import SILENT_PHOTOS from './silent-images.json';
 import PAGE_PHOTOS from './page-images.json';
 
+/** One photo shown on a page, listed under that page on Sources. */
+export interface PhotoCredit {
+  page: string;
+  id: string;
+  credit: string;
+  url: string;
+}
+
 export interface Source {
   id: string;
   title: string;
