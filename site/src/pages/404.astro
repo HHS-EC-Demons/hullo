@@ -2,21 +2,79 @@
 import Base from '../layouts/Base.astro';
 import { href } from '../lib/paths';
 import { buttonVariants } from '../components/ui/button';
+import PAGE_PHOTOS from '../data/page-images.json';
+import { pic } from '../lib/photos';
+
+const dish = PAGE_PHOTOS['nope-dss14'];
+const photo = await pic('nope-dss14', [400, 640, 960, 1280, 1566], '(max-width: 860px) 100vw, 460px');
 ---
 
 <Base title="No signal" description="This address does not lead to a page.">
-  <header class="wrap page-head lost">
-    <h1>No signal at this address</h1>
-    <p>The page may have moved. Every chapter starts from the home page.</p>
-    <p class="back"><a class={buttonVariants()} href={href('')}>Go to the home page</a></p>
-  </header>
+  <div class="wrap lost">
+    <header class="lost-text">
+      <h1>No signal at this address</h1>
+      <p>The page may have moved.</p>
+      <p class="back"><a class={buttonVariants({ variant: 'primary' })} href={href('')}>Go to the home page</a></p>
+    </header>
+    <figure class="lost-photo">
+      <picture>
+        <source type="image/avif" srcset={photo.avif} sizes={photo.sizes} />
+        <source type="image/webp" srcset={photo.webp} sizes={photo.sizes} />
+        <img src={photo.src} width={photo.width} height={photo.height} alt={dish.alt} loading="eager" fetchpriority="high" decoding="async" />
+      </picture>
+      <figcaption class="credit">
+        {dish.caption}, {dish.when}. <a href={dish.page} rel="external noopener">{dish.nasa_id}</a>, {dish.credit}
+      </figcaption>
+    </figure>
+  </div>
 </Base>
 
 <style>
   .lost {
-    min-height: 60dvh;
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 32px 64px;
+    align-items: center;
+    padding-block: clamp(36px, 6vw, 88px);
   }
-  .back {
+  .lost-text h1 {
+    font-size: var(--fs-display);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .lost-text p {
+    margin-top: 20px;
+    font-size: var(--fs-md);
+    color: var(--muted);
+  }
+  .lost-text .back {
     margin-top: 32px;
+    padding-bottom: 4px;
+  }
+  .lost-photo {
+    margin: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .lost-photo img {
+    display: block;
+    width: 100%;
+    max-height: 78svh;
+    height: auto;
+    aspect-ratio: 1566 / 2400;
+    object-fit: cover;
+    border-radius: var(--radius);
+    background: var(--raised);
+  }
+  @media (max-width: 860px) {
+    .lost {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .lost-photo img {
+      aspect-ratio: 4 / 5;
+      max-height: none;
+    }
   }
 </style>
