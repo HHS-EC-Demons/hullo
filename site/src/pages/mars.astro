@@ -1,14 +1,15 @@
 ---
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import IngenuityMap, { type FlightPhoto } from '../components/IngenuityMap';
+import IngenuityMap, { type Flight, type FlightPhoto } from '../components/IngenuityMap';
 import SoundClip from '../components/SoundClip';
 import { readData } from '../lib/build-data';
 import { href } from '../lib/paths';
 import { dated, image, meta, pic } from '../lib/photos';
 import sounds from '../data/sounds.json';
 
-const ing = readData<{ totals: { flights: number; nasa_km: number; nasa_minutes: number }; mission_page: string }>('ingenuity.json');
+const ing = readData<{ totals: { flights: number; nasa_km: number; nasa_minutes: number }; mission_page: string; flights: Flight[] }>('ingenuity.json');
+const opening = { ...ing.flights[0], path: [] };
 const rotors = sounds.find((s) => s.id === 'ingenuity-rotors')!;
 
 const shots: { n: number; slug: string; alt: string }[] = [
@@ -47,7 +48,7 @@ const final = meta('mars-final-airfield');
 
   <section class="wrap" aria-label="Ingenuity flights">
     <div class="map-slot">
-      <IngenuityMap client:visible photos={photos} />
+      <IngenuityMap client:visible photos={photos} opening={opening} flights={ing.totals.flights} />
     </div>
     <p class="credit map-credit">
       The map is the HiRISE and CTX color mosaic from JPL’s Mars 2020 map, NASA/JPL-Caltech/University of Arizona/MSSS. Paths are from
