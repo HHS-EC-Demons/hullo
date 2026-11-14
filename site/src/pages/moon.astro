@@ -4,6 +4,7 @@ import LaserShot from '../components/LaserShot';
 import PlanetFigure from '../components/PlanetFigure.astro';
 import { readData } from '../lib/build-data';
 import { meta } from '../lib/photos';
+import { calDate } from '../lib/dates';
 import type { MoonIndex } from '../lib/ranging';
 
 const moonIndex = readData<MoonIndex>('moon/index.json');
@@ -30,26 +31,23 @@ const mirrors = [
 ---
 
 <Base title="Moon" current="moon" description="Fire a laser from Apache Point or Grasse at an Apollo retroreflector and see the round trip time for this moment, from JPL Horizons.">
-  <header class="wrap page-head moon-hero">
-    <div class="moon-hero-text">
-      <h1>Moon</h1>
-      <p>Lasers still bounce off Apollo mirrors.</p>
-    </div>
+  <LaserShot client:load index={moonIndex} chartTitle="This month">
+    <Fragment slot="head">
+      <h1 class="moon-h1">Moon</h1>
+      <p class="moon-line">Lasers still bounce off Apollo mirrors.</p>
+    </Fragment>
     <PlanetFigure
+      slot="photo"
       slug="moon-laser-station"
       class="moon-hero-photo"
       eager
       sizes="(max-width: 860px) 92vw, 36vw"
       alt="Two green laser beams rise from a laser ranging station and an observatory dome into a deep blue night sky, both pointed at the bright full Moon."
-      what="Goddard lasers aimed at LRO"
-      date={station.date!}
+      what="Goddard lasers"
+      date={calDate(station.date!)}
       credit={`${station.id}, ${station.credit}`}
     />
-  </header>
-
-  <section class="wrap" aria-label="Laser ranging">
-    <LaserShot client:load index={moonIndex} />
-  </section>
+  </LaserShot>
 
   <section class="moon-mirrors section" aria-label="The Apollo mirrors">
     <div class="moon-row">
@@ -62,7 +60,7 @@ const mirrors = [
             widths={[640, 800, 1080, 1800]}
             alt={m.alt}
             what={m.what}
-            date={m.meta.date!}
+            date={calDate(m.meta.date!)}
             credit={`${m.meta.id.toUpperCase()}, ${m.meta.credit}`}
           />
         ))
@@ -70,33 +68,34 @@ const mirrors = [
     </div>
   </section>
 
-  <section class="moon-drift" aria-labelledby="drift-h">
-    <div class="wrap moon-claim">
-      <h2 id="drift-h" class="big-claim"><span class="n mono">3.8 cm</span> farther every year</h2>
-    </div>
+  <section class="moon-drift" aria-label="Earthrise">
     <PlanetFigure
       slug="moon-earthrise"
       class="moon-earthrise"
       sizes="100vw"
       alt="The blue and white Earth, partly in shadow, above the grey cratered horizon of the Moon against a black sky."
-      what="Earthrise, Apollo 8"
-      date={earthrise.date!}
+      what="Earthrise"
+      date={calDate(earthrise.date!)}
       credit={`${earthrise.id.toUpperCase()}, ${earthrise.credit}`}
     />
   </section>
 </Base>
 
 <style>
-  .moon-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: 32px 64px;
-    align-items: end;
+  .moon-h1 {
+    font-size: var(--fs-display);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.035em;
   }
-  .moon-hero-text {
-    padding-bottom: 56px;
+  .moon-line {
+    margin-top: 16px;
+    max-width: var(--measure);
+    font-size: var(--fs-md);
+    color: var(--muted);
+    text-wrap: pretty;
   }
-  .moon-hero :global(.moon-hero-photo) {
+  :global(.moon-hero-photo) {
     --pf-ratio: 4 / 5;
     --pf-pos: 50% 0%;
   }
@@ -116,36 +115,13 @@ const mirrors = [
   .moon-drift {
     padding-bottom: clamp(48px, 7vw, 96px);
   }
-  .moon-claim {
-    display: grid;
-    gap: 14px;
-    padding-bottom: clamp(24px, 4vw, 48px);
-  }
-  .big-claim {
-    font-size: var(--fs-lg);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .big-claim .n {
-    display: block;
-    font-size: var(--fs-xl);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1;
-  }
   .moon-drift :global(.moon-earthrise) {
     --pf-cap-pad: calc(max(0px, (100% - var(--max)) / 2) + var(--gutter));
     max-width: 1920px;
     margin-inline: auto;
   }
   @media (max-width: 860px) {
-    .moon-hero {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .moon-hero-text {
-      padding-bottom: 0;
-    }
-    .moon-hero :global(.moon-hero-photo) {
+    :global(.moon-hero-photo) {
       --pf-ratio: 4 / 3;
     }
     .moon-row {
