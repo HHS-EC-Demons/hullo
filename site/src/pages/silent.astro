@@ -1,16 +1,72 @@
 ---
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import QuietTimeline, { type TimelinePhoto } from '../components/QuietTimeline';
 import { SILENT } from '../data/silent';
-import { sourceById } from '../data/sources';
+import { sourceById } from '../data/source-index';
+import { lifelines, type ReflectorInfo } from '../data/timeline';
+import PHOTO_META from '../data/silent-images.json';
+import { readData } from '../lib/build-data';
+import { asset } from '../lib/paths';
 
 const fmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/img/silent-*.jpg', { eager: true });
+const WIDTHS = [320, 640];
+
+const photos: Record<string, TimelinePhoto> = {};
+for (const m of PHOTO_META) {
+  const file = files[`../assets/img/silent-${m.object}.jpg`]?.default;
+  if (!file) continue;
+  const name = SILENT.find((s) => s.id === m.object)?.name ?? m.object;
+  const [avif, webp, fallback] = await Promise.all([
+    getImage({ src: file, widths: WIDTHS, format: 'avif' }),
+    getImage({ src: file, widths: WIDTHS, format: 'webp' }),
+    getImage({ src: file, width: 640, format: 'jpg' }),
+  ]);
+  photos[m.object] = {
+    avif: avif.srcSet.attribute,
+    webp: webp.srcSet.attribute,
+    src: fallback.src,
+    width: 640,
+    height: 480,
+    alt: `${name}. ${m.title}`,
+    nasaId: m.nasa_id,
+    credit: m.credit,
+    page: m.page,
+  };
+}
+
+interface PublicImage {
+  slug: string;
+  nasa_id: string;
+  title: string;
+  credit: string;
+  width: number;
+  height: number;
+  page: string;
+}
+const publicImages = readData<PublicImage[]>('images.json');
+for (const [id, slug] of [['a11', 'apollo11-reflector'], ['a14', 'apollo14-reflector']] as const) {
+  const m = publicImages.find((p) => p.slug === slug);
+  if (!m) continue;
+  const src = asset(`img/${slug}.jpg`);
+  photos[id] = { avif: '', webp: '', src, width: m.width, height: m.height, alt: m.title, nasaId: m.nasa_id, credit: m.credit, page: m.page };
+}
+
+const moon = readData<{ reflectors: ReflectorInfo[] }>('moon/index.json');
+const lines = lifelines(moon.reflectors);
+const builtMs = Date.now();
+
 const rows = SILENT.map((s) => ({
   ...s,
   when: fmt.format(Date.parse(`${s.date}T12:00:00Z`)),
+  photo: photos[s.id],
   links: s.sources
     .map((id) => sourceById(id))
     .filter((x) => x !== undefined)
-    .map((l) => ({ url: l.url, text: linkText(l.publisher, l.title) })),
+    .map((l) => ({ url: l.url, text: linkText(l.publisher, l.title), title: l.title }))
+    .map((l, i, all) => (all.findIndex((o) => o.text === l.text) < i ? { ...l, text: l.title } : l)),
 }));
 
 function linkText(publisher: string, title: string): string {
@@ -20,17 +76,23 @@ function linkText(publisher: string, title: string): string {
 }
 ---
 
-<Base title="The silent ones" current="silent" description="NASA hardware that no longer answers, with what each one found and the last date it was heard from.">
+<Base title="The silent ones" current="silent" description="NASA hardware that no longer answers, with when each one went quiet, what it found and a photo.">
   <header class="wrap page-head">
     <h1>The silent ones</h1>
-    <p>Hardware that no longer answers, with what it found and the last date anyone heard from it.</p>
+    <p>Hardware that no longer answers, next to the few that still do.</p>
   </header>
 
-  <section class="wrap" aria-label="Silent hardware">
+  <section class="wrap timeline" aria-labelledby="quiet">
+    <h2 id="quiet" class="section-title">When they went quiet</h2>
+    <QuietTimeline client:visible lines={lines} photos={photos} builtMs={builtMs} first="insight" />
+  </section>
+
+  <section class="wrap" aria-labelledby="list">
+    <h2 id="list" class="section-title">Each one, with what it found</h2>
     <ol class="silent">
       {
         rows.map((r) => (
-          <li class="row">
+          <li class="row" id={r.id}>
             <p class="when">
               <time class="mono" datetime={r.date}>
                 {r.when}
@@ -38,7 +100,7 @@ function linkText(publisher: string, title: string): string {
               <span class="status">{r.status}</span>
             </p>
             <div class="who">
-              <h2>{r.name}</h2>
+              <h3>{r.name}</h3>
               <p class="what">
                 {r.what}, {r.place}
               </p>
@@ -49,6 +111,18 @@ function linkText(publisher: string, title: string): string {
                 {r.statusLine}.{r.links.map((l, i) => [i > 0 ? ', ' : ' ', <a href={l.url} rel="external noopener">{l.text}</a>])}
               </p>
             </div>
+            {r.photo && (
+              <figure class="shot">
+                <picture>
+                  <source type="image/avif" srcset={r.photo.avif} sizes="(max-width: 860px) 100vw, 240px" />
+                  <source type="image/webp" srcset={r.photo.webp} sizes="(max-width: 860px) 100vw, 240px" />
+                  <img src={r.photo.src} width={r.photo.width} height={r.photo.height} alt={r.photo.alt} loading="lazy" decoding="async" />
+                </picture>
+                <figcaption class="credit">
+                  <a href={r.photo.page} rel="external noopener">{r.photo.nasaId}</a>, {r.photo.credit}
+                </figcaption>
+              </figure>
+            )}
           </li>
         ))
       }
@@ -57,15 +131,26 @@ function linkText(publisher: string, title: string): string {
 </Base>
 
 <style>
+  .section-title {
+    text-wrap: balance;
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+  }
+  .timeline {
+    margin-bottom: clamp(56px, 8vw, 112px);
+  }
   .silent {
     border-bottom: 1px solid var(--rule);
   }
   .row {
     display: grid;
-    grid-template-columns: minmax(0, 2.4fr) minmax(0, 3fr) minmax(0, 6fr);
+    grid-template-columns: minmax(0, 2.2fr) minmax(0, 2.8fr) minmax(0, 5fr) minmax(0, 2.6fr);
     gap: 8px 32px;
     padding-block: 26px;
     border-top: 1px solid var(--rule);
+    scroll-margin-top: 16px;
   }
   .when {
     display: grid;
@@ -81,7 +166,7 @@ function linkText(publisher: string, title: string): string {
     font-size: var(--fs-sm);
     font-weight: 700;
   }
-  .who h2 {
+  .who h3 {
     text-wrap: balance;
     font-size: var(--fs-lg);
     line-height: 1.15;
@@ -96,6 +181,7 @@ function linkText(publisher: string, title: string): string {
   .found {
     display: grid;
     gap: 8px;
+    align-content: start;
     max-width: 40rem;
   }
   .found p:first-child {
@@ -106,10 +192,38 @@ function linkText(publisher: string, title: string): string {
     color: var(--muted);
     font-size: var(--fs-sm);
   }
+  .shot {
+    margin: 0;
+    display: grid;
+    gap: 6px;
+    align-content: start;
+  }
+  .shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius);
+    background: var(--raised);
+  }
+  @media (max-width: 1100px) {
+    .row {
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 3fr) minmax(0, 5fr);
+    }
+    .shot {
+      grid-column: 3;
+      max-width: 22rem;
+    }
+  }
   @media (max-width: 860px) {
     .row {
       grid-template-columns: minmax(0, 1fr);
       gap: 10px;
+    }
+    .shot {
+      grid-column: auto;
+      max-width: 28rem;
     }
     .when {
       grid-auto-flow: column;
