@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import QuietTimeline, { type TimelinePhoto } from '../components/QuietTimeline';
+import QuietNow from '../components/QuietNow';
 import { SILENT } from '../data/silent';
 import { lifelines, type ReflectorInfo } from '../data/timeline';
 import SILENT_PHOTOS from '../data/silent-images.json';
@@ -9,7 +10,7 @@ import PHOTOS from '../data/photos.json';
 import PROBE_PHOTOS from '../data/probe-photos.json';
 import { readData } from '../lib/build-data';
 import { pic } from '../lib/photos';
-import { utcDate } from '../lib/client';
+import { calDate } from '../lib/dates';
 
 const READOUT = '(max-width: 860px) 120px, 416px';
 const WALL = '(max-width: 640px) 100vw, (max-width: 1179px) 50vw, 300px';
@@ -23,7 +24,7 @@ interface PublicImage {
 }
 
 function shortDate(iso: string): string {
-  return utcDate(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`));
+  return calDate(iso);
 }
 
 const hero = PAGE_PHOTOS['silent-hero'];
@@ -91,6 +92,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
         <span data-credit><a href={hero.page} rel="external noopener">{hero.nasa_id}</a>, {hero.credit}</span>
       </figcaption>
     </figure>
+    <QuietNow client:idle lines={lines} builtMs={builtMs} />
   </header>
 
   <section class="wrap timeline" aria-labelledby="quiet">
@@ -132,19 +134,34 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
   .silent-head {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      'title photo'
+      'now photo';
     gap: 28px 56px;
-    align-items: end;
+    align-items: start;
+    padding-top: clamp(28px, 4vw, 56px);
+  }
+  .silent-title {
+    grid-area: title;
   }
   .silent-hero {
+    grid-area: photo;
+    align-self: stretch;
     margin: 0;
     display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
     gap: 8px;
+  }
+  .silent-hero picture {
+    display: block;
+    min-height: 0;
   }
   .silent-hero img {
     display: block;
     width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
+    height: 100%;
+    min-height: 24rem;
     object-fit: cover;
     border-radius: var(--radius);
     background: var(--raised);
@@ -206,6 +223,17 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
   @media (max-width: 959px) {
     .silent-head {
       grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
+      grid-template-areas:
+        'title'
+        'photo'
+        'now';
+      row-gap: 24px;
+    }
+    .silent-hero img {
+      height: auto;
+      min-height: 0;
+      aspect-ratio: 3 / 2;
     }
   }
   @media (max-width: 640px) {
