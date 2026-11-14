@@ -86,7 +86,7 @@ export const DATASETS: Source[] = [
     url: 'https://images.nasa.gov/',
     dated: 'Downloaded 29 Oct 2026',
     license: `${NASA_MEDIA} No logos or insignia are used.`,
-    used: 'Photos AS14-67-9386 of the Apollo 14 reflector and AS11-37-5551 of the Apollo 11 reflector (NASA), PIA24648 of Ingenuity (NASA/JPL-Caltech/ASU/MSSS) and PIA23645, the Pale Blue Dot (NASA/JPL-Caltech). Each is shown unaltered apart from crop and scale.',
+    used: 'Photos AS14-67-9386 of the Apollo 14 reflector, AS11-37-5551 of the Apollo 11 reflector (NASA) and PIA24648 of Ingenuity (NASA/JPL-Caltech/ASU/MSSS). Each is shown unaltered apart from crop and scale.',
   },
   {
     id: 'nasa-images-silent',
@@ -109,15 +109,6 @@ export const DATASETS: Source[] = [
 ];
 
 export const FACTS: Source[] = [
-  {
-    id: 'jpl-pale-blue-dot',
-    title: 'Pale Blue Dot Revisited (PIA23645)',
-    publisher: 'NASA JPL Photojournal',
-    url: 'https://photojournal.jpl.nasa.gov/catalog/PIA23645',
-    dated: 'Added 12 Feb 2020',
-    license: NASA_MEDIA,
-    used: 'The date Voyager 1 took the frames, 14 Feb 1990, the distance of about 6 billion km and the credit NASA/JPL-Caltech.',
-  },
   {
     id: 'nasa-voyager-status',
     title: 'Where are Voyager 1 and Voyager 2 now?',
