@@ -15,9 +15,11 @@ import { calDate } from '../lib/dates';
 interface Props {
   events: QuietEvent[];
   nowMs: number;
+  markMs?: number | null;
+  markCount?: number | null;
 }
 
-const MARGIN = { top: 12, right: 14, bottom: 46, left: 40 };
+const MARGIN = { top: 26, right: 14, bottom: 46, left: 30 };
 const TICK = { fill: 'var(--muted)', fontFamily: 'var(--mono)', fontSize: 12.5 } as const;
 
 function nearest(events: QuietEvent[], ms: number): number {
@@ -26,7 +28,7 @@ function nearest(events: QuietEvent[], ms: number): number {
   return best;
 }
 
-function Plot({ events, nowMs, width, height }: Props & { width: number; height: number }) {
+function Plot({ events, nowMs, markMs = null, markCount = null, width, height }: Props & { width: number; height: number }) {
   const tipId = useId();
   const [at, setAt] = useState<number | null>(null);
   const steps = useMemo(() => quietSteps(events, nowMs), [events, nowMs]);
@@ -97,10 +99,10 @@ function Plot({ events, nowMs, width, height }: Props & { width: number; height:
             hideTicks
             tickFormat={(v) => String(v)}
             tickLabelProps={() => ({ ...TICK, textAnchor: 'end', dx: -6, dy: 4 })}
-            label="objects answering"
-            labelOffset={18}
-            labelProps={{ ...TICK, textAnchor: 'middle' }}
           />
+          <text x={-MARGIN.left + 2} y={-12} {...TICK}>
+            objects answering
+          </text>
           <AxisBottom
             top={innerH}
             scale={x}
@@ -127,6 +129,15 @@ function Plot({ events, nowMs, width, height }: Props & { width: number; height:
             fill="none"
           />
           <circle cx={x(last.ms)} cy={y(last.count)} r={5} fill="var(--laser)" stroke="var(--bg)" strokeWidth={2} />
+          {markMs !== null && markCount !== null && (
+            <g pointerEvents="none">
+              <Line from={{ x: x(markMs), y: 0 }} to={{ x: x(markMs), y: innerH }} stroke="var(--text)" strokeWidth={1.5} />
+              <circle cx={x(markMs)} cy={y(markCount)} r={5.5} fill="var(--text)" stroke="var(--bg)" strokeWidth={2} />
+              <text x={x(markMs) + (x(markMs) > innerW - 60 ? -8 : 8)} y={10} textAnchor={x(markMs) > innerW - 60 ? 'end' : 'start'} {...TICK} fill="var(--text)">
+                you
+              </text>
+            </g>
+          )}
           {shown && (
             <g pointerEvents="none">
               <Line from={{ x: x(shown.ms), y: 0 }} to={{ x: x(shown.ms), y: innerH }} stroke="var(--muted)" strokeWidth={1} />

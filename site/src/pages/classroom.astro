@@ -22,7 +22,7 @@ async function borrowed(slug: string, caption: string, alt: string): Promise<Top
 }
 
 const photos = {
-  moon: await own('class-moon'),
+  moon: { ...(await own('class-moon')), fit: 'contain' as const },
   voyager: await own('class-voyager1'),
   flight: await borrowed(
     'mars-selfie',

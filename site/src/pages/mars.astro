@@ -1,10 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
-import IngenuityMap, { type Flight, type FlightPhoto } from '../components/IngenuityMap';
+import IngenuityMap, { type Flight, type FlightPhoto, type RotorClip } from '../components/IngenuityMap';
+import EyesEmbed from '../components/EyesEmbed';
 import PlanetFigure from '../components/PlanetFigure.astro';
-import SoundClip from '../components/SoundClip';
 import { readData } from '../lib/build-data';
 import { meta, pic } from '../lib/photos';
+import { calDate, monthYear } from '../lib/dates';
 import photoData from '../data/photos.json';
 import sounds from '../data/sounds.json';
 
@@ -44,76 +45,70 @@ const selfie = meta('mars-selfie');
 const valinor = photoData['mars-valinor'];
 const mark = valinor.mark as [number, number];
 
-function span(from: string, to: string): string {
-  return from.slice(0, 7) === to.slice(0, 7) ? `${from} to ${to.slice(5)}` : `${from} to ${to}`;
-}
+const rotor: RotorClip = {
+  src: rotors.file,
+  peaks: rotors.peaks,
+  duration: rotors.duration_s,
+  label: 'Ingenuity’s fourth flight, recorded by Perseverance',
+  stampId: 'ingenuity',
+  stampDetail: 'Heard flight 4, recorded 30 Apr 2021 from 80 m away',
+  title: 'Flight 4 rotor hum',
+  what: 'SuperCam microphone',
+  date: calDate(rotors.recorded),
+  credit: rotors.credit,
+};
+
+const selfiePic = await pic('mars-selfie', [640, 960, 1280, 1600, 2400], '(max-width: 1360px) 92vw, 1240px');
 ---
 
 <Base title="Mars" current="mars" description="Every one of Ingenuity’s 72 flights over Jezero crater on JPL’s map, with NASA’s flight log and photos from the helicopter.">
-  <header class="wrap page-head mars-hero">
-    <div class="mars-hero-text">
-      <h1>Mars</h1>
-      <p>Built for 5 flights, Ingenuity flew {ing.totals.flights}.</p>
-    </div>
+  <IngenuityMap client:load photos={photos} opening={opening} flights={ing.totals.flights} rotor={rotor} chartTitle="All 72 flights">
+    <Fragment slot="head">
+      <h1 class="mars-h1">Mars</h1>
+      <p class="mars-line">Built for 5 flights, Ingenuity flew {ing.totals.flights}.</p>
+    </Fragment>
     <PlanetFigure
+      slot="photo"
       slug="mars-two-years"
       class="mars-hero-photo"
       eager
       sizes="(max-width: 860px) 92vw, 46vw"
       alt="Ingenuity standing on rocky ground, its two stacked rotors, dusty solar panel and four thin legs in sharp detail."
       what="Ingenuity, enhanced color"
-      date={hero.date!}
+      date={calDate(hero.date!)}
       credit={`${hero.id}, ${hero.credit}`}
     />
-  </header>
+  </IngenuityMap>
 
-  <section class="wrap" aria-label="Ingenuity flights">
-    <div class="map-slot">
-      <IngenuityMap client:visible photos={photos} opening={opening} flights={ing.totals.flights} />
-    </div>
-    <p class="credit map-credit" data-credit>M20_HiRISE_RGB_CTX_mosaic_25cm_v7, NASA/JPL-Caltech/University of Arizona/MSSS.</p>
+  <section class="wrap mars-eyes section" aria-label="Eyes on Mars 2020">
+    <figure class="mars-eyes-fig">
+      <EyesEmbed
+        client:visible
+        src="https://eyes.nasa.gov/apps/mars2020/"
+        title="Eyes on Mars 2020, NASA’s 3D view of Perseverance in Jezero crater"
+        button="Open Eyes on Mars 2020"
+        poster={selfiePic}
+        alt="Perseverance’s selfie on Mars, with Ingenuity standing on the ground about 3.9 m in front of the rover."
+      />
+      <figcaption class="credit">Perseverance and Ingenuity, <span class="mono">{calDate(selfie.date!)}</span>. <span data-credit>{selfie.id}, {selfie.credit}.</span></figcaption>
+    </figure>
   </section>
 
-  <section class="mars-seen section" aria-label="Seen by Perseverance">
+  <section class="mars-seen" aria-label="Seen by Perseverance">
     <PlanetFigure
       slug="mars-van-zyl"
       class="mars-wide"
       sizes="100vw"
       alt="A wide panorama of Jezero crater’s floor, reddish sand scattered with pale rocks under a butterscotch sky, with low hills along the horizon."
       what="Van Zyl Overlook"
-      date={span(vanZyl.date, vanZyl.until)}
+      date={monthYear(vanZyl.date)}
       credit={`${vanZyl.id}, ${vanZyl.credit}`}
     />
-    <div class="wrap mars-pair">
-      <PlanetFigure
-        slug="mars-selfie"
-        sizes="(max-width: 860px) 92vw, 54vw"
-        alt="Perseverance’s selfie on Mars, with Ingenuity standing on the ground about 3.9 m in front of the rover."
-        what="Perseverance and Ingenuity"
-        date={selfie.date!}
-        credit={`${selfie.id}, ${selfie.credit}`}
-      />
-      <div class="mars-sound">
-        <h2 class="mars-h3">Flight 4 rotor hum</h2>
-        <SoundClip
-          client:visible
-          src={rotors.file}
-          peaks={rotors.peaks}
-          duration={rotors.duration_s}
-          label="Ingenuity’s fourth flight, recorded by Perseverance"
-          stampId="ingenuity"
-          stampDetail="Heard flight 4, recorded 30 Apr 2021 from 80 m away"
-        >
-          SuperCam microphone, <span class="mono">{rotors.recorded}</span>. <span data-credit>{rotors.credit}.</span>
-        </SoundClip>
-      </div>
-    </div>
   </section>
 
   <section class="mars-end" aria-labelledby="end-h">
     <div class="wrap mars-claim">
       <h2 id="end-h" class="big-claim"><span class="n mono">{ing.totals.nasa_km.toFixed(1)} km</span> in {ing.totals.nasa_minutes.toFixed(1)} minutes</h2>
-      <p>Rotor damage on flight 72 ended the mission.</p>
     </div>
     <PlanetFigure
       slug="mars-valinor"
@@ -121,36 +116,34 @@ function span(from: string, to: string): string {
       sizes="100vw"
       mark={mark}
       alt="Rippled orange sand dunes with a few rocks, and Ingenuity as a tiny dark speck inside a lilac ring left of center."
-      what="Ingenuity at its last airfield"
-      date={valinor.date}
+      what="Last airfield"
+      date={calDate(valinor.date)}
       credit={`${valinor.id}, ${valinor.credit}`}
     />
   </section>
 </Base>
 
 <style>
-  .mars-hero {
+  .mars-h1 {
+    font-size: var(--fs-display);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+  .mars-line {
+    margin-top: 16px;
+    max-width: var(--measure);
+    font-size: var(--fs-md);
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+  .mars-eyes {
+    padding-bottom: clamp(24px, 4vw, 48px);
+  }
+  .mars-eyes-fig {
     display: grid;
-    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
-    gap: 32px 64px;
-    align-items: end;
-  }
-  .mars-hero-text {
-    padding-bottom: 56px;
-  }
-  .map-slot {
-    min-height: calc(clamp(420px, 46vw, 600px) + 300px);
-  }
-  .map-credit {
-    margin-top: 14px;
-    max-width: 48rem;
-  }
-  .mars-h3 {
-    font-size: var(--fs-lg);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    text-wrap: balance;
+    gap: 12px;
+    margin: 0;
   }
   .mars-seen :global(.mars-wide),
   .mars-end :global(.mars-wide) {
@@ -158,30 +151,13 @@ function span(from: string, to: string): string {
     max-width: 1920px;
     margin-inline: auto;
   }
-  .mars-pair {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: 40px 64px;
-    align-items: end;
-    margin-top: clamp(40px, 6vw, 80px);
-  }
-  .mars-sound {
-    display: grid;
-    gap: 18px;
-    padding-bottom: 28px;
-  }
   .mars-end {
-    padding-bottom: clamp(48px, 7vw, 96px);
+    padding-block: clamp(48px, 7vw, 96px);
   }
   .mars-claim {
     display: grid;
     gap: 14px;
     padding-bottom: clamp(24px, 4vw, 48px);
-  }
-  .mars-claim p {
-    max-width: 30rem;
-    font-size: var(--fs-md);
-    color: var(--muted);
   }
   .big-claim {
     font-size: var(--fs-lg);
@@ -196,16 +172,6 @@ function span(from: string, to: string): string {
     line-height: 1;
   }
   @media (max-width: 860px) {
-    .mars-hero,
-    .mars-pair {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .mars-hero-text {
-      padding-bottom: 0;
-    }
-    .map-slot {
-      min-height: calc(clamp(360px, 92vw, 520px) + 900px);
-    }
     .mars-seen :global(.mars-wide) {
       --pf-ratio: 16 / 9;
       --pf-pos: 42% 50%;

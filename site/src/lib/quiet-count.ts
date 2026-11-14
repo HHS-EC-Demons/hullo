@@ -44,3 +44,8 @@ export function quietSteps(events: QuietEvent[], nowMs: number): QuietStep[] {
   out.push({ ms: Math.max(nowMs, out[out.length - 1].ms), count: events.length ? events[events.length - 1].count : 0 });
   return out;
 }
+
+/** How many of `lines` were answering on the day `iso` ("2014-06-01"). */
+export function answeringOn(lines: Lifeline[], iso: string): number {
+  return lines.filter((l) => l.start <= iso && (l.end === null || l.end > iso)).length;
+}

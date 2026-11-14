@@ -44,6 +44,10 @@
   border-radius: var(--radius);
   background: var(--raised);
 }
+.cr-photo img.contain {
+  object-fit: contain;
+  background: #000;
+}
 
 .cr-body {
   grid-area: body;
@@ -168,5 +172,40 @@
   }
   .cr-sheets .ws:last-child {
     break-after: auto;
+  }
+}
+
+.cr-check {
+  display: grid;
+  grid-template-columns: minmax(0, 13rem) auto minmax(0, 1fr);
+  grid-template-areas:
+    'label label label'
+    'input button out';
+  align-items: center;
+  gap: 6px 12px;
+}
+.cr-check label {
+  grid-area: label;
+  font-weight: 600;
+}
+.cr-check-input {
+  grid-area: input;
+  min-height: 48px;
+}
+.cr-check button {
+  grid-area: button;
+}
+.cr-check-out {
+  grid-area: out;
+  min-height: 1.55em;
+  color: var(--text);
+}
+@media (max-width: 520px) {
+  .cr-check {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'label label'
+      'input button'
+      'out out';
   }
 }
