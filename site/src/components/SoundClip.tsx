@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import type WaveSurfer from 'wavesurfer.js';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { stamp } from '../lib/passport';
 import { asset } from '../lib/paths';
 import './sound.css';
@@ -130,18 +131,21 @@ export default function SoundClip({ src, peaks, duration, label, stampId, stampD
         >
           {playing ? 'Pause' : 'Play'}
         </Button>
-        <div
-          ref={wave}
-          className="sc-wave"
-          role="slider"
-          tabIndex={0}
-          aria-label={`${label}, playback position`}
-          aria-valuemin={0}
-          aria-valuemax={Math.round(duration)}
-          aria-valuenow={now}
-          aria-valuetext={`${clock(now)} of ${clock(duration)}`}
-          onKeyDown={onKey}
-        />
+        <div className="sc-wavebox">
+          <div
+            ref={wave}
+            className="sc-wave"
+            role="slider"
+            tabIndex={0}
+            aria-label={`${label}, playback position`}
+            aria-valuemin={0}
+            aria-valuemax={Math.round(duration)}
+            aria-valuenow={now}
+            aria-valuetext={`${clock(now)} of ${clock(duration)}`}
+            onKeyDown={onKey}
+          />
+          {!ready && <Skeleton className="absolute inset-0" />}
+        </div>
         <p className="sc-time mono" aria-hidden="true">
           <span ref={time}>0:00</span>
           <span className="sc-of"> / {clock(duration)}</span>

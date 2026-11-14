@@ -105,7 +105,7 @@ function Overlay({ pic, mark }: { pic: Pic; mark: Mark }) {
         aria-hidden="true"
         style={{ left: `${fx * 100}%`, top: `${fy * 100}%`, width: `${mark.ringSize * 100}%` }}
       />
-      <span className={`os-inset os-inset-${vert}${side}`} aria-hidden="true">
+      <span className={`os-inset os-inset-${vert}${side} ph`} aria-hidden="true">
         <span className="os-inset-img" style={insetStyle}>
           <Picture pic={pic} alt="" sizes={`${Math.round(ZOOM * 100)}vw`} />
         </span>
@@ -122,7 +122,7 @@ function View({ view, eager }: { view: ViewProps; eager?: boolean }) {
       <p className="os-when">
         <span className="mono">{view.when}</span> <span className="os-by">{view.by}</span>
       </p>
-      <div className="os-frame" style={{ aspectRatio: `${view.pic.width} / ${view.pic.height}` }}>
+      <div className="os-frame ph" style={{ aspectRatio: `${view.pic.width} / ${view.pic.height}` }}>
         <Picture pic={view.pic} alt={view.alt} eager={eager} />
         {view.mark && <Overlay pic={view.pic} mark={view.mark} />}
       </div>
@@ -145,13 +145,13 @@ function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
       <Provider {...slider}>
         <Root className="os-compare" style={{ aspectRatio: `${site.then.pic.width} / ${site.then.pic.height}` }}>
           <Item item="itemOne">
-            <div className="os-frame os-frame-fill">
+            <div className="os-frame os-frame-fill ph">
               <Picture pic={site.then.pic} alt={site.then.alt} />
               {site.then.mark && <Overlay pic={site.then.pic} mark={site.then.mark} />}
             </div>
           </Item>
           <Item item="itemTwo">
-            <div className="os-frame os-frame-fill">
+            <div className="os-frame os-frame-fill ph">
               <Picture pic={site.now.pic} alt={site.now.alt} />
               {site.now.mark && <Overlay pic={site.now.pic} mark={site.now.mark} />}
             </div>
@@ -179,7 +179,7 @@ function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
 function SiteMap({ map, active, onPick, eager }: { map: MapProps; active: string; onPick: (id: string) => void; eager?: boolean }) {
   return (
     <figure className={`os-map os-map-${map.body.toLowerCase()}`}>
-      <div className="os-map-frame" style={{ aspectRatio: `${map.pic.width} / ${map.pic.height}` }}>
+      <div className="os-map-frame ph" style={{ aspectRatio: `${map.pic.width} / ${map.pic.height}` }}>
         <Picture pic={map.pic} alt={map.alt} eager={eager} />
         {map.pins.map((p) => (
           <Tooltip key={p.id}>
