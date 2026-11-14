@@ -44,9 +44,9 @@ BODIES = [
     {"key": "pioneer10", "name": "Pioneer 10", "short": "P10", "command": "-23", "kind": "probe"},
     {"key": "pioneer11", "name": "Pioneer 11", "short": "P11", "command": "-24", "kind": "probe"},
     {"key": "moon", "name": "Moon", "short": "Moon", "command": "301", "kind": "world",
-     "holds": "Apollo mirrors, Surveyor 3, Lunar Prospector, LCROSS"},
+     "holds": "the Apollo mirrors"},
     {"key": "mars", "name": "Mars", "short": "Mars", "command": "499", "kind": "world",
-     "holds": "Ingenuity, Viking 1 and 2, Pathfinder, Spirit, Opportunity, Phoenix, InSight"},
+     "holds": "Ingenuity"},
     {"key": "eros", "name": "Eros", "short": "Eros", "command": "433;", "kind": "world",
      "holds": "NEAR Shoemaker"},
 ]
