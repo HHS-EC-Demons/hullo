@@ -1,0 +1,149 @@
+---
+import Base from '../layouts/Base.astro';
+import { DATASETS, FACTS, TOOLS, type Source } from '../data/sources';
+import { BRAND } from '../brand';
+
+const groups: { title: string; items: Source[] }[] = [
+  { title: 'Data', items: DATASETS },
+  { title: 'Facts and dates', items: FACTS },
+];
+---
+
+<Base title="Sources" current="sources" description={`Every dataset, page and tool ${BRAND} uses, with its license and credit.`}>
+  <header class="wrap page-head">
+    <h1>Sources</h1>
+    <p>Every dataset, page and tool this site uses, with its license and credit.</p>
+  </header>
+
+  <section class="wrap about" aria-labelledby="about">
+    <h2 id="about" class="sr-only">About this site</h2>
+    <dl class="facts">
+      <div>
+        <dt>Written for</dt>
+        <dd>Readers 10 to 14 years old, and anyone curious.</dd>
+      </div>
+      <div>
+        <dt>Use of AI</dt>
+        <dd>
+          The code and the research behind this site were built with help from Claude by Anthropic. Every number on the site is
+          computed from the data below or quoted from a dated source on this page. No images are AI generated.
+        </dd>
+      </div>
+      <div>
+        <dt>NASA</dt>
+        <dd>Made for the NASA Space Apps Challenge 2026. This project is not endorsed by NASA.</dd>
+      </div>
+      <div>
+        <dt>Accuracy</dt>
+        <dd>
+          Probe light time is the geometric distance from Earth's center divided by the speed of light, the convention of NASA's
+          one light-day date. Moon round trips are twice the station to reflector distance divided by the speed of light, shown to
+          the millisecond, with reflector positions in the DE421 mean Earth frame. A shot needs the Moon at least 20° above the
+          station's horizon, a limit this site chose. Pioneer 10 and 11 positions are extrapolated from old tracking.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  {
+    groups.map((g) => (
+      <section class="wrap section" aria-labelledby={`g-${g.title}`}>
+        <h2 class="group" id={`g-${g.title}`}>
+          {g.title}
+        </h2>
+        <ul class="list">
+          {g.items.map((s) => (
+            <li>
+              <p class="title">
+                <a href={s.url} rel="external noopener">
+                  {s.title}
+                </a>
+              </p>
+              <p class="meta">
+                {s.publisher}. {s.dated}.
+              </p>
+              <p class="used">{s.used}</p>
+              <p class="license">{s.license}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  <section class="wrap section" aria-labelledby="tools">
+    <h2 class="group" id="tools">Software and fonts</h2>
+    <ul class="list tools">
+      {
+        TOOLS.map((t) => (
+          <li>
+            <p class="title">{t.name}</p>
+            <p class="license">{t.note}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .facts {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .facts div {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
+    gap: 6px 32px;
+    padding-block: 20px;
+    border-top: 1px solid var(--rule);
+  }
+  .facts dt {
+    font-weight: 700;
+  }
+  .facts dd {
+    margin: 0;
+    max-width: 44rem;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  .group {
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+  }
+  .list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 48px;
+  }
+  .list li {
+    display: grid;
+    gap: 4px;
+    align-content: start;
+    padding-block: 18px;
+    border-top: 1px solid var(--rule);
+  }
+  .title {
+    font-weight: 700;
+  }
+  .meta,
+  .license {
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  .used {
+    max-width: 38rem;
+  }
+  @media (max-width: 860px) {
+    .facts div {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
