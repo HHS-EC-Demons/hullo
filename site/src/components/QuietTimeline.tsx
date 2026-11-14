@@ -182,7 +182,7 @@ function Readout({ line, photo, figures }: { line: Lifeline; photo?: TimelinePho
     <div className="qt-card">
       <figure className="qt-photo">
         {photo && (
-          <picture>
+          <picture className="ph">
             {photo.avif && <source type="image/avif" srcSet={photo.avif} sizes={SIZES} />}
             {photo.webp && <source type="image/webp" srcSet={photo.webp} sizes={SIZES} />}
             <img src={photo.src} width={photo.width} height={photo.height} alt={`${photo.alt} ${photo.caption}${photo.when ? `, ${photo.when}` : ''}.`} loading="lazy" decoding="async" />

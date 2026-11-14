@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { rangeAt, type DeepSpaceData } from '../lib/lighttime';
 import { groupInt, useJson } from '../lib/client';
 import { setText, useFrames } from '../lib/frames';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Props {
   fromMs: number;
@@ -32,6 +33,14 @@ export default function VoyagerSince({ fromMs, stamped }: Props) {
     [data, fromMs, since],
     true,
   );
+
+  if (!data)
+    return (
+      <div className="pp-since">
+        <Skeleton className="h-[1.2rem] w-[9rem]" />
+        <Skeleton className="h-[2rem] w-[8rem]" />
+      </div>
+    );
 
   return (
     <div ref={root} className="pp-since" role="group">

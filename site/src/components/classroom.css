@@ -41,10 +41,17 @@
   min-height: 22rem;
   object-fit: cover;
   border-radius: var(--radius);
-  background: var(--raised);
+}
+.cr-photo .ph {
+  display: block;
+  min-height: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 .cr-photo img.contain {
   object-fit: contain;
+}
+.cr-photo .ph-done img.contain {
   background: #000;
 }
 
