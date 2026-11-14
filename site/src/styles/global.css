@@ -146,12 +146,12 @@
     text-rendering: optimizeLegibility;
     scrollbar-color: var(--thumb) var(--bg);
     scrollbar-width: thin;
-    scroll-padding-top: 88px;
+    scroll-padding-top: 72px;
   }
 
-  @media (max-width: 959px) {
+  @media (max-width: 1023px) {
     html {
-      scroll-padding-top: 76px;
+      scroll-padding-top: 68px;
     }
   }
 
@@ -342,7 +342,7 @@
     border-radius: var(--press-radius);
     background: var(--p-fill);
     color: var(--p-ink);
-    box-shadow: 0 4px 0 var(--p-lip);
+    box-shadow: 0 var(--press-lip-h, 4px) 0 var(--p-lip);
     font-family: var(--sans);
     font-weight: 700;
     font-size: var(--fs-sm);
@@ -393,7 +393,7 @@
 
   .press:active,
   .btn:active {
-    transform: translateY(4px);
+    transform: translateY(var(--press-lip-h, 4px));
     box-shadow: 0 0 0 var(--p-lip);
   }
 
@@ -413,7 +413,22 @@
     --p-ink: var(--muted);
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 4px 0 var(--p-lip);
+    box-shadow: 0 var(--press-lip-h, 4px) 0 var(--p-lip);
+  }
+
+  .press-sm {
+    --press-lip-h: 3px;
+    --press-radius: 10px;
+    min-height: 33px;
+    padding: 6px 10px;
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+
+  .press-hit::before {
+    content: '';
+    position: absolute;
+    inset: -6px -4px;
   }
 
   .btn-quiet {
