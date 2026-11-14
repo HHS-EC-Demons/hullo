@@ -23,6 +23,7 @@
 
 .ps-big {
   display: block;
+  contain: layout paint;
   color: var(--laser);
   font-size: clamp(2.25rem, 11.2vw, 9.5rem);
   line-height: 0.98;
@@ -64,6 +65,11 @@
   gap: 2px 14px;
   margin-top: clamp(20px, 3vw, 32px);
   min-height: 1.6em;
+}
+
+.ps-live.pending .ps-km-n,
+.ps-live.pending .ps-km-l {
+  visibility: hidden;
 }
 
 .ps-km-n {

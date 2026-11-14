@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useJson, utcDate } from '../lib/client';
+import { groupInt, useJson, utcDate } from '../lib/client';
 import { decText, hammer, offsetFromCenter, positionsOn, raText, skyDay, type SkyIndex, type SkyMonth, type SkyStars } from '../lib/sky';
 import { probeInfo } from '../data/probes';
 import './sky.css';
@@ -32,15 +32,29 @@ function insideEllipse(x: number, y: number, cx: number, cy: number, rx: number,
 export default function SkyChart({ highlight, now }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
-  const { data: index } = useJson<SkyIndex>('data/sky/index.json');
-  const { data: sky, error } = useJson<SkyStars>('data/sky/stars.json');
+  const [near, setNear] = useState(false);
+  const { data: index } = useJson<SkyIndex>(near ? 'data/sky/index.json' : null);
+  const { data: sky, error } = useJson<SkyStars>(near ? 'data/sky/stars.json' : null);
 
   useEffect(() => {
     const el = box.current;
     if (!el) return;
     const ro = new ResizeObserver(([entry]) => setWidth(Math.round(entry.contentRect.width)));
     ro.observe(el);
-    return () => ro.disconnect();
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '600px 0px' },
+    );
+    io.observe(el);
+    return () => {
+      ro.disconnect();
+      io.disconnect();
+    };
   }, []);
 
   const want = now ? skyDay(now) : null;
@@ -170,7 +184,7 @@ export default function SkyChart({ highlight, now }: Props) {
         <h2 className="sky-title">Where they are in our sky</h2>
         <p className="sky-sub">
           Seen from Earth on <span className="mono">{shownMs ? `${utcDate(shownMs)}, 00:00 UTC` : ' '}</span>, among the{' '}
-          {index ? index.star_count.toLocaleString('en-US') : '2,847'} stars brighter than magnitude {sky?.mag_limit ?? 5.5}.
+          {index ? groupInt(index.star_count) : '2,847'} stars brighter than magnitude {sky?.mag_limit ?? 5.5}.
         </p>
       </figcaption>
       <div className="sky-plot" ref={box}>

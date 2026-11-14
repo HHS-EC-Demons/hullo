@@ -48,6 +48,7 @@ export default function LiveLight({ data, probe, name, headline, error }: Props)
             `from Earth’s center, ${Math.abs(r.rr_km_s).toFixed(2)} km ${r.rr_km_s >= 0 ? 'farther' : 'closer'} each second`,
           );
           big.current?.classList.remove('pending');
+          root.current?.classList.remove('pending');
         }
       : null,
     [data, probe],
@@ -56,7 +57,7 @@ export default function LiveLight({ data, probe, name, headline, error }: Props)
   const Head = headline;
 
   return (
-    <div ref={root} className="ps-live">
+    <div ref={root} className={error ? 'ps-live' : 'ps-live pending'}>
       <Head className="ps-claim">
         <span className="ps-lead">{name} is</span>
         <span ref={big} className="ps-big mono pending" aria-hidden="true">
@@ -80,10 +81,10 @@ export default function LiveLight({ data, probe, name, headline, error }: Props)
       </Head>
       <p className="ps-km">
         <span className="mono ps-km-n" ref={kmN}>
-          {' '}
+          00,000,000,000 km
         </span>
         <span className="ps-km-l" ref={kmL}>
-          {error ? 'Distance data did not load. Reload the page to try again.' : ' '}
+          {error ? 'Distance data did not load. Reload the page to try again.' : 'from Earth’s center, 00.00 km farther each second'}
         </span>
       </p>
     </div>
