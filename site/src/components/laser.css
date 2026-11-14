@@ -22,6 +22,11 @@
   display: inline;
 }
 
+.ls-stations {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .ls-stations .choice small {
   display: block;
   margin-left: 0;

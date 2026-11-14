@@ -39,8 +39,9 @@ function elevationWord(el: number | null, min: number): string {
   return `Moon ${Math.round(el)}° up`;
 }
 
-export default function LaserShot() {
-  const { data: index, error } = useJson<MoonIndex>('data/moon/index.json');
+export default function LaserShot({ index: given }: { index?: MoonIndex }) {
+  const { data: fetched, error } = useJson<MoonIndex>(given ? null : 'data/moon/index.json');
+  const index = given ?? fetched;
   const now = useNow(1000);
   const reduced = useReducedMotion();
   const uid = useId();

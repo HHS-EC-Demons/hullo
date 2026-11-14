@@ -3,7 +3,11 @@ import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import LaserShot from '../components/LaserShot';
 import { href } from '../lib/paths';
+import { readData } from '../lib/build-data';
 import { dated, image, meta } from '../lib/photos';
+import type { MoonIndex } from '../lib/ranging';
+
+const moonIndex = readData<MoonIndex>('moon/index.json');
 
 const mirrors = [
   {
@@ -34,7 +38,7 @@ const mirrors = [
   </header>
 
   <section class="wrap" aria-label="Laser ranging">
-    <LaserShot client:load />
+    <LaserShot client:load index={moonIndex} />
   </section>
 
   <section class="wrap section">
