@@ -168,7 +168,7 @@ function Readout({ line, photo, found, figures, picked, stamped }: { line: Lifel
             </picture>
             <figcaption className="credit">
               {photo.caption}
-              {photo.when ? `, ${photo.when}` : ''}{' '}
+              {photo.when ? `, ${photo.when}` : ''}.{' '}
               <span data-credit>
                 <a href={photo.page} rel="external noopener">
                   {photo.nasaId}
