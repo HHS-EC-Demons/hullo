@@ -4,6 +4,10 @@ import '@fontsource-variable/spline-sans-mono/wght.css';
 import '../styles/global.css';
 import { BRAND, BRAND_LINE, WORDMARK } from '../brand';
 import { href, asset } from '../lib/paths';
+import { readData } from '../lib/build-data';
+import { SILENT } from '../data/silent';
+import { STAMP_TOTAL } from '../data/stamps';
+import NavMenu, { type NavItem } from '../components/NavMenu';
 import sansFont from '@fontsource-variable/gabarito/files/gabarito-latin-wght-normal.woff2?url';
 import monoFont from '@fontsource-variable/spline-sans-mono/files/spline-sans-mono-latin-wght-normal.woff2?url';
 
@@ -14,16 +18,29 @@ interface Props {
 }
 
 const { title, description = BRAND_LINE, current = '' } = Astro.props;
+const ORBIT_FIGURE = '';
 const pageTitle = title ? `${title} · ${BRAND}` : BRAND;
 const site = Astro.site ? new URL(import.meta.env.BASE_URL, Astro.site).toString() : '';
 const ogImage = site ? new URL('og.png?v=3', site).toString() : asset('og.png?v=3');
 
-const nav = [
-  { path: 'deep-space/', label: 'Deep space', key: 'deep-space' },
-  { path: 'moon/', label: 'Moon', key: 'moon' },
-  { path: 'mars/', label: 'Mars', key: 'mars' },
-  { path: 'silent/', label: 'Silent', key: 'silent' },
-  { path: 'sources/', label: 'Sources', key: 'sources' },
+const pageFiles = Object.keys(import.meta.glob('../pages/**/*.astro'));
+const has = (name: string) => pageFiles.some((f) => f === `../pages/${name}.astro` || f === `../pages/${name}/index.astro`);
+
+const mars = readData<{ totals: { flights: number } }>('ingenuity.json');
+
+const items: NavItem[] = [
+  { key: 'deep-space', href: href('deep-space/'), label: 'Deep space', live: 'v1', meaning: 'Voyager 1’s light time right now' },
+  { key: 'moon', href: href('moon/'), label: 'Moon', live: 'moon', meaning: 'Laser echo from Apache Point to the Apollo 15 mirror right now' },
+  { key: 'mars', href: href('mars/'), label: 'Mars', figure: `${mars.totals.flights} flights`, meaning: 'Flights Ingenuity made over Jezero crater' },
+  ...(has('orbit') ? [{ key: 'orbit', href: href('orbit/'), label: 'Orbit', figure: ORBIT_FIGURE, meaning: 'Hardware seen again from orbit' }] : []),
+  { key: 'silent', href: href('silent/'), label: 'Silent', figure: `${SILENT.length} objects`, meaning: 'Hardware that no longer answers' },
+];
+const passport: NavItem | null = has('passport')
+  ? { key: 'passport', href: href('passport/'), label: 'Passport', live: 'stamps', meaning: 'Stamps collected on this device' }
+  : null;
+const extra = [
+  ...(has('classroom') ? [{ href: href('classroom/'), label: 'Classroom' }] : []),
+  { href: href('sources/'), label: 'Sources' },
 ];
 ---
 
@@ -81,19 +98,38 @@ const nav = [
     <header class="site-head">
       <div class="wrap head-row">
         <a class="wordmark" href={href('')} aria-label={`${BRAND} home`} translate="no">{WORDMARK}</a>
-        <nav aria-label="Chapters">
-          <ul>
+        <nav class="bar" aria-label="Chapters">
+          <ul class="bar-list">
             {
-              nav.map((item) => (
+              items.map((item) => (
                 <li>
-                  <a href={href(item.path)} aria-current={current === item.key ? 'page' : undefined}>
-                    {item.label}
+                  <a class="bar-item" href={item.href} aria-current={current === item.key ? 'page' : undefined}>
+                    <span class="bar-label">{item.label}</span>
+                    <span class="bar-fig mono" data-live={item.live} aria-hidden={item.live ? 'true' : undefined}>
+                      {item.figure || '\u2007'}
+                    </span>
+                    {item.live && <span class="sr-only">, {item.meaning}</span>}
+                    {current === item.key && <span class="bar-mark" aria-hidden="true" />}
                   </a>
                 </li>
               ))
             }
           </ul>
+          {
+            passport && (
+              <a class="bar-item bar-passport" href={passport.href} aria-current={current === passport.key ? 'page' : undefined}>
+                <span class="bar-label">{passport.label}</span>
+                <span class="bar-fig mono" data-live="stamps" data-total={STAMP_TOTAL}>
+                  {`0 of ${STAMP_TOTAL}`}
+                </span>
+                {current === passport.key && <span class="bar-mark" aria-hidden="true" />}
+              </a>
+            )
+          }
         </nav>
+        <div class="bar-menu">
+          <NavMenu client:media="(max-width: 959px)" items={items} passport={passport} extra={extra} current={current} stampTotal={STAMP_TOTAL} />
+        </div>
       </div>
     </header>
     <main id="main">
@@ -103,23 +139,68 @@ const nav = [
       <div class="wrap foot-row">
         <a class="wordmark small" href={href('')} aria-label={`${BRAND} home`} translate="no">{WORDMARK}</a>
         <p>Made for the NASA Space Apps Challenge 2026. Not endorsed by NASA. Every number has a <a href={href('sources/')}>source</a>.</p>
+        <ul class="foot-links">
+          {
+            extra.map((e) => (
+              <li>
+                <a href={e.href}>{e.label}</a>
+              </li>
+            ))
+          }
+        </ul>
       </div>
     </footer>
+    <script>
+      import { shortHms, subscribeFigures } from '../lib/nav-live';
+      import { onStamp, stampCount } from '../lib/passport';
+
+      const v1 = document.querySelectorAll<HTMLElement>('.bar [data-live="v1"]');
+      const moon = document.querySelectorAll<HTMLElement>('.bar [data-live="moon"]');
+      const stamps = document.querySelectorAll<HTMLElement>('.bar [data-live="stamps"]');
+
+      const showStamps = (n: number) =>
+        stamps.forEach((el) => {
+          el.textContent = `${n} of ${el.dataset.total}`;
+        });
+      showStamps(stampCount());
+      onStamp(showStamps);
+
+      const start = () =>
+        subscribeFigures((f) => {
+          const a = f.v1LightS === null ? '\u2007' : shortHms(f.v1LightS);
+          const b = f.moonEchoS === null ? '\u2007' : `${f.moonEchoS.toFixed(2)} s echo`;
+          v1.forEach((el) => el.textContent !== a && (el.textContent = a));
+          moon.forEach((el) => el.textContent !== b && (el.textContent = b));
+        });
+      let started = false;
+      const go = () => {
+        if (started) return;
+        started = true;
+        if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1500 });
+        else setTimeout(start, 300);
+      };
+      const wide = window.matchMedia('(min-width: 960px)');
+      if (wide.matches) go();
+      else wide.addEventListener('change', (e) => e.matches && go());
+    </script>
   </body>
 </html>
 
 <style>
   .site-head {
-    position: relative;
-    z-index: 5;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--bg);
+    border-bottom: 1px solid var(--rule);
+    view-transition-name: site-head;
   }
   .head-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px 32px;
-    min-height: 76px;
-    flex-wrap: wrap;
+    gap: 12px 36px;
+    min-height: 72px;
   }
   .wordmark {
     color: var(--text);
@@ -134,29 +215,74 @@ const nav = [
   .wordmark.small {
     font-size: 1.5rem;
   }
-  nav ul {
+  .bar {
     display: flex;
-    flex-wrap: wrap;
-    gap: 2px 26px;
+    align-items: stretch;
+    flex: 1;
+    align-self: stretch;
   }
-  nav a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    text-decoration: none;
+  .bar-list {
+    display: flex;
+    align-items: stretch;
+    border-right: 1px solid var(--rule);
+  }
+  .bar-item {
+    position: relative;
+    display: grid;
+    align-content: center;
+    gap: 2px;
+    height: 100%;
+    min-height: 72px;
+    padding-inline: 20px 26px;
+    border-left: 1px solid var(--rule);
     color: var(--muted);
+    text-decoration: none;
+    transition: background-color 150ms var(--ease);
+  }
+  .bar-item:hover {
+    background: var(--raised);
+  }
+  .bar-label {
     font-size: var(--fs-sm);
-  }
-  nav a:hover {
+    font-weight: 600;
+    line-height: 1.2;
     color: var(--text);
   }
-  nav a[aria-current='page'] {
+  .bar-fig {
+    font-size: 0.875rem;
+    line-height: 1.3;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .bar-item [data-live='v1'],
+  .bar-item [data-live='moon'] {
+    min-width: 11ch;
+  }
+  .bar-item[aria-current='page'] .bar-label {
+    font-weight: 800;
+  }
+  .bar-item[aria-current='page'] .bar-fig {
     color: var(--text);
-    font-weight: 700;
-    text-decoration: underline;
-    text-decoration-color: var(--line);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.35em;
+  }
+  .bar-item:focus-visible {
+    outline-offset: -2px;
+    border-radius: 2px;
+  }
+  .bar-mark {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 3px;
+    background: var(--lilac);
+    view-transition-name: bar-mark;
+  }
+  .bar-passport {
+    margin-left: auto;
+    border-right: 1px solid var(--rule);
+  }
+  .bar-menu {
+    display: none;
   }
   .site-foot {
     margin-top: clamp(64px, 10vw, 140px);
@@ -174,12 +300,34 @@ const nav = [
     font-size: var(--fs-sm);
     max-width: 44rem;
   }
-  @media (max-width: 640px) {
-    .head-row {
-      padding-top: 10px;
+  .foot-links {
+    display: flex;
+    gap: 4px 24px;
+    margin-left: auto;
+  }
+  .foot-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: var(--fs-sm);
+  }
+  @media (max-width: 1180px) {
+    .bar-item {
+      padding-inline: 14px 16px;
     }
-    nav ul {
-      gap: 0 18px;
+  }
+  @media (max-width: 959px) {
+    .bar {
+      display: none;
+    }
+    .bar-menu {
+      display: block;
+    }
+    .head-row {
+      min-height: 60px;
+    }
+    .foot-links {
+      margin-left: 0;
     }
   }
 </style>
