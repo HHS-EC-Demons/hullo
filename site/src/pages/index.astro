@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
+import DsnNow from '../components/DsnNow';
 import { BRAND_LINE } from '../brand';
 import { asset, href } from '../lib/paths';
 import { readData } from '../lib/build-data';
@@ -58,8 +59,10 @@ const chapters = [
 
 <Base>
   <section class="wrap hero">
-    <ProbeSignal client:load headline="h1" aside={BRAND_LINE} sky />
+    <ProbeSignal client:load headline="h1" aside={BRAND_LINE} picker="form" countdown sky />
   </section>
+
+  <DsnNow client:visible />
 
   <section class="wrap chapters" aria-label="Chapters">
     <ul>
