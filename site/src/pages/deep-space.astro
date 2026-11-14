@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
+import SoundClip from '../components/SoundClip';
+import sounds from '../data/sounds.json';
 import { readData } from '../lib/build-data';
 import { asset, href } from '../lib/paths';
 import { getImage } from 'astro:assets';
@@ -12,6 +14,7 @@ const deep = readData<{ probes: { voyager1: { light_day_utc: string } } }>('deep
 const crossing = deep.probes.voyager1.light_day_utc.slice(11, 19);
 const images = readData<{ slug: string; nasa_id: string; credit: string; width: number; height: number }[]>('images.json');
 const photo = images.find((i) => i.slug === 'pale-blue-dot')!;
+const plasma = sounds.find((s) => s.id === 'voyager-plasma')!;
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/img/home-*.jpg', { eager: true });
 const widths = [360, 560, 800, 1100];
@@ -43,6 +46,23 @@ for (const p of probePhotos) {
 
   <section class="wrap" aria-label="Light time">
     <ProbeSignal client:load picker="top" status sky chart photos={photos} />
+  </section>
+
+  <section class="wrap section listen" aria-labelledby="listen-h">
+    <h2 id="listen-h">Interstellar plasma, heard by Voyager 1</h2>
+    <SoundClip
+      client:visible
+      src={plasma.file}
+      peaks={plasma.peaks}
+      duration={plasma.duration_s}
+      label="Voyager 1 hearing interstellar plasma"
+      stampId="voyager1"
+      stampDetail="Heard interstellar plasma, recorded Oct 2012 to May 2013"
+    >
+      Voyager 1’s plasma wave instrument picked up vibrations of dense interstellar plasma in Oct and Nov 2012 and in Apr and May
+      2013. The sound plays back the frequency and strength of those waves. Full clip, 61 s. PIA17045, released 12 Sep 2013,
+      NASA/JPL-Caltech/University of Iowa.
+    </SoundClip>
   </section>
 
   <section class="wrap section">
@@ -83,6 +103,19 @@ for (const p of probePhotos) {
 </Base>
 
 <style>
+  .listen {
+    display: grid;
+    gap: 24px;
+    padding-bottom: 0;
+  }
+  .listen h2 {
+    font-size: var(--fs-xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
   .facts {
     display: grid;
     grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
