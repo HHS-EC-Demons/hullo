@@ -46,40 +46,6 @@
   max-width: none;
 }
 
-.qn-birth {
-  display: grid;
-  grid-template-columns: auto minmax(0, 11.5rem) minmax(0, 1fr);
-  align-items: center;
-  gap: 8px 14px;
-  margin-top: 6px;
-}
-.qn-birth label {
-  font-weight: 600;
-}
-.qn-birth-input {
-  min-height: 44px;
-  font-family: var(--mono);
-  font-size: var(--fs-sm);
-  color-scheme: dark;
-}
-.qn .qn-birth-out {
-  min-height: 1.55em;
-  color: var(--muted);
-}
-.qn-birth-n {
-  color: var(--text);
-  font-family: var(--mono);
-  font-weight: 700;
-}
-@media (max-width: 520px) {
-  .qn-birth {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-  .qn-birth-out {
-    grid-column: 1 / -1;
-  }
-}
-
 .qn-chart .hl-tip {
   max-width: min(16rem, 42vw);
 }

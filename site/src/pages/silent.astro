@@ -74,7 +74,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
 }));
 ---
 
-<Base title="The silent ones" current="silent" description="NASA hardware that no longer answers, with the date each one went quiet and a photo of each.">
+<Base title="The silent ones" current="silent" description="NASA legacy hardware, with launch dates, end of mission dates and a photo of each.">
   <header class="wrap page-head silent-head">
     <div class="silent-title">
       <h1>The silent ones</h1>
@@ -86,11 +86,12 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
         <source type="image/webp" srcset={heroPic.webp} sizes={heroPic.sizes} />
         <img src={heroPic.src} width={heroPic.width} height={heroPic.height} alt={hero.alt} loading="eager" fetchpriority="high" decoding="async" />
       </picture>
+      <figcaption class="credit" data-credit>{hero.date.slice(0, 4)}. {hero.nasa_id}, {hero.credit}</figcaption>
     </figure>
     <QuietNow client:idle lines={lines} builtMs={builtMs} />
   </header>
 
-  <section class="wrap timeline" aria-label="When each object went quiet">
+  <section class="wrap timeline" aria-label="Mission timeline">
     <QuietTimeline client:idle lines={lines} photos={photos} builtMs={builtMs} first="insight" />
   </section>
 
@@ -110,6 +111,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
                 <time class="wall-when mono" datetime={r.date}>
                   {r.date.slice(0, 4)}
                 </time>
+                <span class="credit" data-credit>{r.photo.nasaId}, {r.photo.credit}</span>
               </figcaption>
             </figure>
           </li>

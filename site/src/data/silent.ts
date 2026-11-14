@@ -1,6 +1,8 @@
 export interface Silent {
   id: string;
   name: string;
+  short?: string;
+  ended?: 'Last contact' | 'Mission ended';
   place: string;
   what: string;
   found: string;
@@ -120,6 +122,7 @@ export const SILENT: Silent[] = [
   {
     id: 'near',
     name: 'NEAR Shoemaker',
+    short: 'NEAR',
     place: 'Asteroid Eros',
     what: 'Orbiter',
     found: 'First spacecraft to orbit an asteroid and the first to touch down on one.',
@@ -146,6 +149,7 @@ export const SILENT: Silent[] = [
   {
     id: 'pathfinder',
     name: 'Mars Pathfinder and Sojourner',
+    short: 'Pathfinder',
     place: 'Mars',
     what: 'Lander and small rover',
     found: 'Tested a rover on Mars at the mouth of one of the largest flood channels on the planet.',
@@ -159,6 +163,7 @@ export const SILENT: Silent[] = [
   {
     id: 'pioneer11',
     name: 'Pioneer 11',
+    ended: 'Mission ended',
     place: 'Deep space',
     what: 'Probe',
     found: 'First to explore Saturn and its main rings.',
@@ -172,6 +177,7 @@ export const SILENT: Silent[] = [
   {
     id: 'viking1',
     name: 'Viking 1 Lander',
+    short: 'Viking 1',
     place: 'Mars',
     what: 'Lander',
     found: 'Sent its first picture from the surface 25 seconds after landing and carried a biology experiment to test the soil.',
@@ -185,6 +191,7 @@ export const SILENT: Silent[] = [
   {
     id: 'viking2',
     name: 'Viking 2 Lander',
+    short: 'Viking 2',
     place: 'Mars',
     what: 'Lander',
     found: 'Worked on the surface for 1,281 Mars days.',
@@ -198,6 +205,7 @@ export const SILENT: Silent[] = [
   {
     id: 'alsep',
     name: 'Apollo science stations',
+    short: 'Apollo stations',
     place: 'Moon',
     what: 'Instrument stations left by Apollo 12, 14, 15, 16 and 17',
     found: 'Recorded moonquakes, including ones made on purpose by crashing used rocket stages and landers into the Moon.',

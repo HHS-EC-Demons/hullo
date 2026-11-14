@@ -4,6 +4,7 @@ import { SILENT } from './silent';
 export interface Lifeline {
   id: string;
   name: string;
+  short: string;
   place: string;
   start: string;
   startKind: 'Launched' | 'Turned on' | 'Placed';
@@ -30,30 +31,32 @@ const LAUNCHES: Record<string, { start: string; source: string }> = {
 };
 
 /**
- * One line per object for the "When the hardware went quiet" timeline: the silent
- * hardware, the probes that still answer and the NASA laser reflectors,
- * oldest start first.
+ * One line per object for the Silent timeline: the hardware whose mission
+ * ended or that NASA last heard from, the active probes and the NASA laser
+ * reflectors, oldest start first. The end wording follows NASA's own pages.
  */
 export function lifelines(reflectors: ReflectorInfo[]): Lifeline[] {
   const silent: Lifeline[] = SILENT.map((s) => ({
     id: s.id,
     name: s.name,
+    short: s.short ?? s.name,
     place: s.place,
     start: s.start,
     startKind: s.startKind,
     end: s.date,
-    endKind: s.statusLine,
+    endKind: s.ended ?? (s.status === 'Silent' ? 'Last contact' : 'Mission ended'),
     answers: false,
     sources: s.sources,
   }));
   const probes: Lifeline[] = PROBES.filter((p) => p.answers && LAUNCHES[p.key]).map((p) => ({
     id: p.key,
     name: p.name,
+    short: p.name,
     place: 'Deep space',
     start: LAUNCHES[p.key].start,
     startKind: 'Launched',
     end: null,
-    endKind: 'Still answers',
+    endKind: 'Active',
     answers: true,
     sources: [LAUNCHES[p.key].source, p.source],
   }));
@@ -62,11 +65,12 @@ export function lifelines(reflectors: ReflectorInfo[]): Lifeline[] {
     .map((r) => ({
       id: r.id,
       name: `${r.name} reflector`,
+      short: `${r.name} reflector`,
       place: 'Moon',
       start: r.placed,
       startKind: 'Placed',
       end: null,
-      endKind: 'Still returns laser pulses',
+      endKind: 'Active',
       answers: true,
       sources: [r.source, 'ilrs-lunar'],
     }));

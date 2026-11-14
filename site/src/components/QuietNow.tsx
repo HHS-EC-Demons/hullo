@@ -1,10 +1,7 @@
-import { lazy, Suspense, useEffect, useId, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import type { Lifeline } from '../data/timeline';
-import { answeringOn, quietEvents } from '../lib/quiet-count';
-import { dayMs, TIMELINE_START } from '../data/timeline';
-import { Input } from '@/components/ui/input';
+import { quietEvents } from '../lib/quiet-count';
 import { Skeleton } from '@/components/ui/skeleton';
-import { localIsoDay } from '../lib/local-date';
 import './quiet-now.css';
 
 const QuietChart = lazy(() => import('./QuietChart'));
@@ -22,46 +19,30 @@ export default function QuietNow({ lines, builtMs }: Props) {
     setLive(true);
   }, []);
 
-  const [birthday, setBirthday] = useState('');
-  const birthId = useId();
   const events = useMemo(() => quietEvents(lines), [lines]);
-  const today = localIsoDay(now);
-  const valid = /^\d{4}-\d{2}-\d{2}$/.test(birthday) && birthday >= TIMELINE_START && birthday <= today;
-  const then = valid ? answeringOn(lines, birthday) : null;
-  const answering = lines.filter((l) => l.answers).length;
-  const quiet = lines.length - answering;
+  const active = lines.filter((l) => l.answers).length;
+  const ended = lines.length - active;
 
   return (
     <div className="qn">
       <p className="qn-count">
         <span className="qn-fig">
-          <span className="qn-n on">{answering}</span>
-          <span className="qn-l">still answer</span>
+          <span className="qn-n on">{active}</span>
+          <span className="qn-l">active</span>
         </span>
         <span className="qn-fig">
-          <span className="qn-n">{quiet}</span>
-          <span className="qn-l">went quiet</span>
+          <span className="qn-n">{ended}</span>
+          <span className="qn-l">ended</span>
         </span>
       </p>
       <div className="qn-chart">
         {live ? (
           <Suspense fallback={<Skeleton className="absolute inset-0" />}>
-            <QuietChart events={events} nowMs={now} markMs={valid ? dayMs(birthday) : null} markCount={then} />
+            <QuietChart events={events} nowMs={now} />
           </Suspense>
         ) : (
           <Skeleton className="absolute inset-0" />
         )}
-      </div>
-      <div className="qn-birth">
-        <label htmlFor={birthId}>Your birthday</label>
-        <Input id={birthId} type="date" min={TIMELINE_START} max={today} value={birthday} onChange={(e) => setBirthday(e.target.value)} className="qn-birth-input" />
-        <p className="qn-birth-out" aria-live="polite">
-          {then !== null && (
-            <>
-              <span className="qn-birth-n">{then}</span> answering
-            </>
-          )}
-        </p>
       </div>
     </div>
   );

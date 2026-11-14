@@ -244,7 +244,7 @@ function FlightPlot({ flights, picked, onPick, readDist, readTime, width, height
             hideAxisLine
             hideTicks
             tickLabelProps={() => ({ ...TICK, textAnchor: 'end', dx: -6, dy: 4 })}
-            label="distance, m"
+            label="m"
             labelOffset={48}
             labelProps={{ ...TICK, textAnchor: 'middle' }}
           />
@@ -257,7 +257,7 @@ function FlightPlot({ flights, picked, onPick, readDist, readTime, width, height
             tickStroke="var(--edge)"
             tickLength={5}
             tickLabelProps={() => ({ ...TICK, textAnchor: 'middle', dy: 2 })}
-            label="time in air, s"
+            label="s"
             labelOffset={14}
             labelProps={{ ...TICK, textAnchor: 'middle' }}
           />
@@ -302,7 +302,6 @@ function FlightPlot({ flights, picked, onPick, readDist, readTime, width, height
         </TooltipWithBounds>
       )}
       <p id={liveId} className="sr-only" aria-live="polite">
-        {`Flight ${pickedFlight.n}, ${readDist(pickedFlight.dist_m as number)} in ${readTime(pickedFlight.duration_s as number)}`}
       </p>
     </div>
   );
