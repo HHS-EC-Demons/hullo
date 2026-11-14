@@ -30,7 +30,7 @@ const LAUNCHES: Record<string, { start: string; source: string }> = {
 };
 
 /**
- * One line per object for the "When they went quiet" timeline: the silent
+ * One line per object for the "When the hardware went quiet" timeline: the silent
  * hardware, the probes that still answer and the NASA laser reflectors,
  * oldest start first.
  */

@@ -94,14 +94,14 @@ function linkText(publisher: string, title: string): string {
 }
 ---
 
-<Base title="The silent ones" current="silent" description="NASA hardware that no longer answers, with when each one went quiet, what it found and a photo.">
+<Base title="The silent ones" current="silent" description="NASA hardware that no longer answers, with the date each one went quiet, what each one found and a photo.">
   <header class="wrap page-head">
     <h1>The silent ones</h1>
     <p>Hardware that no longer answers, next to the few that still do.</p>
   </header>
 
   <section class="wrap timeline" aria-labelledby="quiet">
-    <h2 id="quiet" class="section-title">When they went quiet</h2>
+    <h2 id="quiet" class="section-title">When the hardware went quiet</h2>
     <QuietTimeline client:idle lines={lines} photos={photos} builtMs={builtMs} first="insight" />
   </section>
 
