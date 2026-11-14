@@ -45,10 +45,7 @@ const chapters = [
         chapters.map((c) => (
           <li>
             <a href={href(c.path)} class="chapter">
-              <span class="ch-num">
-                {c.value}
-                <span class="ch-unit">{c.unit}</span>
-              </span>
+              <span class="ch-num">{c.value}<span class="ch-unit">{c.unit}</span></span>
               <span class="ch-name">{c.name}</span>
               <span class="ch-line">{c.line}</span>
               <span class="ch-go" aria-hidden="true">
@@ -87,11 +84,11 @@ const chapters = [
     white-space: nowrap;
   }
   .ch-unit {
-    font-size: 0.42em;
+    font-size: max(1rem, 0.42em);
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--ink-2);
-    margin-left: 0.25em;
+    margin-left: 0.22em;
   }
   .ch-name {
     font-size: var(--fs-lg);
