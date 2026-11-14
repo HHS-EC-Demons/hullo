@@ -229,3 +229,9 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.ls-age {
+  color: var(--lilac);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}

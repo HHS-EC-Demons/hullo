@@ -1,4 +1,6 @@
 ---
+import Story from '../components/Story.astro';
+import NextStop from '../components/NextStop.astro';
 import Base from '../layouts/Base.astro';
 import LaserShot from '../components/LaserShot';
 import PlanetFigure from '../components/PlanetFigure.astro';
@@ -37,6 +39,7 @@ const mirrors = [
       sizes="(max-width: 860px) 92vw, 36vw"
       alt="Two green laser beams rise from a laser ranging station and an observatory dome into a deep blue night sky, both pointed at the bright full Moon."
     />
+    <Story slot="story" id="moon" />
   </LaserShot>
 
   <section class="moon-mirrors section" aria-label="The Apollo mirrors">
@@ -63,6 +66,7 @@ const mirrors = [
       alt="The blue and white Earth, partly in shadow, above the grey cratered horizon of the Moon against a black sky."
     />
   </section>
+  <NextStop current="moon" />
 </Base>
 
 <style>

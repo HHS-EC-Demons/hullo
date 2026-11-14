@@ -85,6 +85,7 @@ export default function IngenuityMap({
   flights,
   head,
   photo,
+  story,
   rotor,
   chartTitle,
 }: {
@@ -93,6 +94,7 @@ export default function IngenuityMap({
   flights: number;
   head?: ReactNode;
   photo?: ReactNode;
+  story?: ReactNode;
   rotor: RotorClip;
   chartTitle: string;
 }) {
@@ -325,6 +327,21 @@ export default function IngenuityMap({
               disabled={!data}
               onValueChange={([v]) => pick(v)}
             />
+            <div className="ig-tally" aria-label={`Planned 5 flights, flown ${n} of ${count}`}>
+              <div className="ig-ticks" aria-hidden="true">
+                {Array.from({ length: count }, (_, i) => (
+                  <span key={i} className={`ig-tick${i < 5 ? ' plan' : ''}${i < n ? ' on' : ''}`} />
+                ))}
+              </div>
+              <p className="ig-tally-row" aria-hidden="true">
+                <span>
+                  Planned <span className="mono">5</span>
+                </span>
+                <span>
+                  Flown <span className="mono">{n}</span> of <span className="mono">{count}</span>
+                </span>
+              </p>
+            </div>
           </div>
         </div>
         <div className="ig-right">
@@ -335,6 +352,8 @@ export default function IngenuityMap({
           </div>
         </div>
       </div>
+
+      {story && <div className="wrap story-wrap">{story}</div>}
 
       <section className="wrap ig-chartsec" aria-label={chartTitle}>
         <div>

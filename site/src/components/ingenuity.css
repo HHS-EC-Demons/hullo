@@ -109,7 +109,7 @@
 
 .ig-control {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   gap: 12px 24px;
 }
@@ -351,5 +351,43 @@
 @media (max-width: 860px) {
   .ig-hero {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.ig-tally {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+.ig-ticks {
+  display: grid;
+  grid-template-columns: repeat(72, minmax(0, 1fr));
+  gap: 2px;
+  height: 18px;
+}
+.ig-tick {
+  border-radius: 1px;
+  background: var(--rule);
+  transition: background-color 120ms var(--ease);
+}
+.ig-tick.plan {
+  box-shadow: inset 0 0 0 1px var(--text);
+}
+.ig-tick.on {
+  background: var(--lilac);
+}
+.ig-tally-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.ig-tally-row .mono {
+  color: var(--text);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ig-tick {
+    transition: none;
   }
 }

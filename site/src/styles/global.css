@@ -310,6 +310,66 @@
     line-height: 1.45;
   }
 
+  .story {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px clamp(16px, 3vw, 40px);
+    margin: 0;
+  }
+
+  .story > div {
+    display: grid;
+    gap: 4px;
+    align-content: start;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .story dt {
+    color: var(--lilac);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+  }
+
+  .story dd {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+
+  .story.stack {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .story.stack > div {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 12px;
+    padding-top: 8px;
+  }
+
+  .story.stack dd {
+    font-size: 1rem;
+  }
+
+  .story-wrap {
+    padding-block: clamp(24px, 3vw, 40px) 0;
+  }
+
+  .takeaway {
+    max-width: 60ch;
+    font-size: 1.0625rem;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 767px) {
+    .story {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
   .press,
   .btn {
     --p-fill: transparent;
@@ -500,7 +560,8 @@
     animation: var(--animate-pulse);
   }
 
-  .ph.ph-done::before {
+  .ph.ph-done::before,
+  .ph[data-ph-done]::before {
     animation: none;
   }
 

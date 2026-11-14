@@ -698,3 +698,7 @@
     font-size: clamp(1.5rem, 7vw, 2.1rem);
   }
 }
+
+.ps-story {
+  grid-column: 1 / -1;
+}
