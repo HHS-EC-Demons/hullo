@@ -52,7 +52,8 @@
   "credit": "NASA",
   "width": 1200,
   "height": 900,
-  "page": "https://images.nasa.gov/details/KSC-2009-1745"
+  "page": "https://images.nasa.gov/details/KSC-2009-1745",
+  "alt": "LCROSS, wrapped in gold foil, on a stand in a clean room in Florida."
  },
  {
   "object": "phoenix",
@@ -85,7 +86,8 @@
   "credit": "NASA",
   "width": 1200,
   "height": 900,
-  "page": "https://images.nasa.gov/details/ARC-1972-AC72-2135"
+  "page": "https://images.nasa.gov/details/ARC-1972-AC72-2135",
+  "alt": "Pioneer 10 at Cape Kennedy before launch, a foil wrapped body under a wide silver dish, with a technician standing behind."
  },
  {
   "object": "near",
@@ -96,7 +98,8 @@
   "credit": "NASA",
   "width": 694,
   "height": 520,
-  "page": "https://images.nasa.gov/details/9701593"
+  "page": "https://images.nasa.gov/details/9701593",
+  "alt": "NEAR Shoemaker before launch at Kennedy Space Center, a gold body with a white dish on top and solar panels on the sides."
  },
  {
   "object": "lunarprospector",
@@ -107,7 +110,8 @@
   "credit": "NASA",
   "width": 1200,
   "height": 900,
-  "page": "https://images.nasa.gov/details/KSC-97PC1803"
+  "page": "https://images.nasa.gov/details/KSC-97PC1803",
+  "alt": "Lunar Prospector, a dark drum covered in solar cells, with two technicians preparing the spacecraft."
  },
  {
   "object": "pathfinder",
@@ -118,7 +122,8 @@
   "credit": "NASA/JPL",
   "width": 1200,
   "height": 900,
-  "page": "https://images.nasa.gov/details/PIA01122"
+  "page": "https://images.nasa.gov/details/PIA01122",
+  "alt": "The Sojourner rover, small and six wheeled with a flat solar panel on top, on rocky Martian ground."
  },
  {
   "object": "pioneer11",
@@ -129,7 +134,8 @@
   "credit": "NASA",
   "width": 1200,
   "height": 900,
-  "page": "https://images.nasa.gov/details/9139575"
+  "page": "https://images.nasa.gov/details/9139575",
+  "alt": "The Atlas-Centaur rocket carrying Pioneer 11 lifting off at night in a cloud of smoke."
  },
  {
   "object": "viking1",

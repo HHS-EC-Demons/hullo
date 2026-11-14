@@ -3,7 +3,8 @@
 Each photo is fetched from the NASA Image and Video Library by its NASA ID,
 cropped to 4:3 around a focus point, scaled to 1200 px wide and saved to
 site/src/assets/img/silent-<object id>.jpg so astro:assets can serve AVIF and
-WebP. The title, date, center and credit from the library go to
+WebP. The title, date, center and credit from the library, and alt text where the
+library title does not describe the photo, go to
 site/src/data/silent-images.json. The script stops if the library's credit
 for a JPL photo differs from the credit written here.
 
@@ -35,14 +36,20 @@ ITEMS = [
     {"object": "opportunity", "id": "PIA22222", "credit": "NASA/JPL-Caltech", "focus": (0.52, 0.45), "zoom": 1.25},
     {"object": "cassini", "id": "PIA04603", "credit": "NASA/JPL", "focus": (0.5, 0.42), "zoom": 1.0},
     {"object": "spirit", "id": "PIA12007", "credit": "NASA/JPL-Caltech", "focus": (0.5, 0.58), "zoom": 1.0},
-    {"object": "lcross", "id": "KSC-2009-1745", "credit": "NASA", "focus": (0.45, 0.5), "zoom": 1.0},
+    {"object": "lcross", "id": "KSC-2009-1745", "credit": "NASA", "focus": (0.45, 0.5), "zoom": 1.0,
+     "alt": "LCROSS, wrapped in gold foil, on a stand in a clean room in Florida."},
     {"object": "phoenix", "id": "KSC-07PD-1090", "credit": "NASA", "focus": (0.5, 0.64), "zoom": 1.3},
     {"object": "galileo", "id": "s34-72-070", "credit": "NASA", "focus": (0.47, 0.5), "zoom": 2.6},
-    {"object": "pioneer10", "id": "ARC-1972-AC72-2135", "credit": "NASA", "focus": (0.5, 0.55), "zoom": 1.36},
-    {"object": "near", "id": "9701593", "credit": "NASA", "focus": (0.5, 0.45), "zoom": 1.0},
-    {"object": "lunarprospector", "id": "KSC-97PC1803", "credit": "NASA", "focus": (0.5, 0.45), "zoom": 1.0},
-    {"object": "pathfinder", "id": "PIA01122", "credit": "NASA/JPL", "focus": (0.5, 0.55), "zoom": 1.0},
-    {"object": "pioneer11", "id": "9139575", "credit": "NASA", "focus": (0.5, 0.5), "zoom": 1.0},
+    {"object": "pioneer10", "id": "ARC-1972-AC72-2135", "credit": "NASA", "focus": (0.5, 0.55), "zoom": 1.36,
+     "alt": "Pioneer 10 at Cape Kennedy before launch, a foil wrapped body under a wide silver dish, with a technician standing behind."},
+    {"object": "near", "id": "9701593", "credit": "NASA", "focus": (0.5, 0.45), "zoom": 1.0,
+     "alt": "NEAR Shoemaker before launch at Kennedy Space Center, a gold body with a white dish on top and solar panels on the sides."},
+    {"object": "lunarprospector", "id": "KSC-97PC1803", "credit": "NASA", "focus": (0.5, 0.45), "zoom": 1.0,
+     "alt": "Lunar Prospector, a dark drum covered in solar cells, with two technicians preparing the spacecraft."},
+    {"object": "pathfinder", "id": "PIA01122", "credit": "NASA/JPL", "focus": (0.5, 0.55), "zoom": 1.0,
+     "alt": "The Sojourner rover, small and six wheeled with a flat solar panel on top, on rocky Martian ground."},
+    {"object": "pioneer11", "id": "9139575", "credit": "NASA", "focus": (0.5, 0.5), "zoom": 1.0,
+     "alt": "The Atlas-Centaur rocket carrying Pioneer 11 lifting off at night in a cloud of smoke."},
     {"object": "viking1", "id": "PIA00381", "credit": "NASA/JPL", "focus": (0.82, 0.5), "zoom": 1.0},
     {"object": "viking2", "id": "PIA00568", "credit": "NASA/JPL", "focus": (0.5, 0.55), "zoom": 1.0},
     {"object": "alsep", "id": "as12-47-6919", "credit": "NASA", "focus": (0.5, 0.5), "zoom": 1.0},
@@ -99,6 +106,7 @@ def build() -> list[dict]:
             "width": img.width,
             "height": img.height,
             "page": f"https://images.nasa.gov/details/{nasa_id}",
+            **({"alt": item["alt"]} if "alt" in item else {}),
         })
         print(f"{item['object']:16} {nasa_id:22} {img.width}x{img.height}")
     META.write_text(json.dumps(meta, indent=1, ensure_ascii=False) + "\n")
