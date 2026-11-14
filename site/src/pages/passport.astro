@@ -9,7 +9,7 @@ import PHOTOS from '../data/photos.json';
 import PROBE_PHOTOS from '../data/probe-photos.json';
 import { readData } from '../lib/build-data';
 import { pic } from '../lib/photos';
-import { utcDate } from '../lib/client';
+import { calDate } from '../lib/dates';
 
 const site = Astro.site ? new URL(import.meta.env.BASE_URL, Astro.site).toString().replace(/^https?:\/\//, '').replace(/\/$/, '') : BRAND;
 
@@ -32,7 +32,7 @@ interface LibraryPhoto {
 
 function day(iso: string | null): string {
   if (!iso) return '';
-  return iso.length > 4 ? utcDate(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`)) : iso;
+  return iso.length > 4 ? calDate(iso) : iso;
 }
 
 const library = PHOTOS as Record<string, LibraryPhoto>;
@@ -70,12 +70,7 @@ for (const o of STAMP_OBJECTS) {
 ---
 
 <Base title="Passport" current="passport" description={`Stamps for each spacecraft and instrument you reach on ${BRAND}, with the real figure from that moment.`}>
-  <header class="wrap page-head">
-    <h1>Passport</h1>
-    <p>Every object you reach leaves a stamp here.</p>
-  </header>
-
   <div class="wrap">
-    <PassportBook client:idle site={site} thumbs={thumbs} />
+    <PassportBook client:idle site={site} thumbs={thumbs} title="Passport" line="Every object you reach leaves a stamp here." />
   </div>
 </Base>
