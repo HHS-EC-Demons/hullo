@@ -7,11 +7,12 @@ import { SILENT } from '../data/silent';
 import { sourceById } from '../data/source-index';
 import { lifelines, type ReflectorInfo } from '../data/timeline';
 import PHOTO_META from '../data/silent-images.json';
+import PHOTOS from '../data/photos.json';
 import { readData } from '../lib/build-data';
-import { asset } from '../lib/paths';
 
 const fmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/img/silent-*.jpg', { eager: true });
+const reflectorFiles = import.meta.glob<{ default: ImageMetadata }>(['../assets/img/home-apollo11-reflector.jpg', '../assets/img/moon-a14-reflector.jpg'], { eager: true });
 const WIDTHS = [320, 640];
 
 const photos: Record<string, TimelinePhoto> = {};
@@ -42,16 +43,33 @@ interface PublicImage {
   nasa_id: string;
   title: string;
   credit: string;
-  width: number;
-  height: number;
   page: string;
 }
-const publicImages = readData<PublicImage[]>('images.json');
-for (const [id, slug] of [['a11', 'apollo11-reflector'], ['a14', 'apollo14-reflector']] as const) {
-  const m = publicImages.find((p) => p.slug === slug);
-  if (!m) continue;
-  const src = asset(`img/${slug}.jpg`);
-  photos[id] = { avif: '', webp: '', src, width: m.width, height: m.height, alt: m.title, nasaId: m.nasa_id, credit: m.credit, page: m.page };
+const a11 = readData<PublicImage[]>('images.json').find((p) => p.slug === 'apollo11-reflector');
+const a14 = PHOTOS['moon-a14-reflector'];
+const reflectors = [
+  { id: 'a11', file: 'home-apollo11-reflector', meta: a11 && { id: a11.nasa_id, title: a11.title, credit: a11.credit, page: a11.page } },
+  { id: 'a14', file: 'moon-a14-reflector', meta: a14 },
+];
+for (const r of reflectors) {
+  const file = reflectorFiles[`../assets/img/${r.file}.jpg`]?.default;
+  if (!file || !r.meta) continue;
+  const [avif, webp, fallback] = await Promise.all([
+    getImage({ src: file, widths: WIDTHS, format: 'avif' }),
+    getImage({ src: file, widths: WIDTHS, format: 'webp' }),
+    getImage({ src: file, width: 640, format: 'jpg' }),
+  ]);
+  photos[r.id] = {
+    avif: avif.srcSet.attribute,
+    webp: webp.srcSet.attribute,
+    src: fallback.src,
+    width: 640,
+    height: Math.round((640 * file.height) / file.width),
+    alt: r.meta.title,
+    nasaId: r.meta.id,
+    credit: r.meta.credit,
+    page: r.meta.page,
+  };
 }
 
 const moon = readData<{ reflectors: ReflectorInfo[] }>('moon/index.json');
