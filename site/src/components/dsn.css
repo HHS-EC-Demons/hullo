@@ -35,12 +35,6 @@
   color: var(--text);
 }
 
-.dsn-none {
-  font-size: var(--fs-md);
-  font-weight: 700;
-  min-height: 1.5em;
-}
-
 .dsn-sites {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -61,7 +55,6 @@
 
 .dsn-frame {
   aspect-ratio: 4 / 3;
-  background: var(--raised);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -131,7 +124,7 @@
 
 .dsn-eyes {
   --eyes-ratio: auto;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr);
 }
 
 .dsn-eyes .eyes-stage {
