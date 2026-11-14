@@ -195,6 +195,9 @@
   white-space: nowrap;
 }
 .qt-state.answers {
+  color: var(--text);
+}
+.qt-row[aria-pressed='true'] .qt-state.answers {
   color: var(--ok);
 }
 
