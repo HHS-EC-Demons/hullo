@@ -1,4 +1,5 @@
 ---
+import NextStop from '../components/NextStop.astro';
 import Base from '../layouts/Base.astro';
 import OrbitSites, { type MapProps, type Mark, type QuakeClip, type SiteProps, type ViewProps } from '../components/OrbitSites';
 import { ORBIT_SITES, type OrbitSite, type OrbitView } from '../data/orbit-sites';
@@ -83,6 +84,7 @@ const sites: SiteProps[] = await Promise.all(
 
 const quakeClip: QuakeClip = {
   source: 'InSight, 2022. PIA25281, NASA/JPL-Caltech/CNES',
+  takeaway: 'InSight felt 1,319 marsquakes, which let scientists study Mars’ crust, mantle and core.',
   src: quake.file,
   peaks: quake.peaks,
   duration: quake.duration_s,
@@ -125,6 +127,7 @@ const maps = [
       <p class="orbit-line">Landing sites from orbit.</p>
     </Fragment>
   </OrbitSites>
+  <NextStop current="orbit" />
 </Base>
 
 <style>

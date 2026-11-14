@@ -1,4 +1,5 @@
 ---
+import NextStop from '../components/NextStop.astro';
 import Base from '../layouts/Base.astro';
 import QuietTimeline, { type TimelinePhoto } from '../components/QuietTimeline';
 import QuietNow from '../components/QuietNow';
@@ -119,6 +120,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
       }
     </ol>
   </section>
+  <NextStop current="silent" />
 </Base>
 
 <style>

@@ -1,0 +1,135 @@
+---
+import { JOURNEY, hulloTime, nextStop, type StopKey } from '../data/journey';
+import homeImages from '../data/home-images.json';
+import { href } from '../lib/paths';
+import { pic } from '../lib/photos';
+
+interface Props {
+  current: StopKey;
+}
+
+const { current } = Astro.props;
+const next = nextStop(current);
+const index = JOURNEY.findIndex((s) => s.key === current);
+const HOME = homeImages as Record<string, { alt?: string }>;
+const SIZES = '(max-width: 767px) calc(100vw - 32px), 360px';
+const photo = next ? await pic(next.slug, [360, 540, 720], SIZES) : null;
+const value = next ? hulloTime(next.key, Date.now()) : '';
+---
+
+<section class="wrap next-stop" aria-label="Next stop">
+  <p class="ns-count mono">{index + 1} of {JOURNEY.length}</p>
+  {
+    next && photo ? (
+      <a class="ns-link" href={href(next.path)}>
+        <span class="ns-img ph">
+          <picture>
+            <source type="image/avif" srcset={photo.avif} sizes={SIZES} />
+            <source type="image/webp" srcset={photo.webp} sizes={SIZES} />
+            <img
+              src={photo.src}
+              width={photo.width}
+              height={photo.height}
+              alt={HOME[next.slug]?.alt ?? next.alt}
+              loading="lazy"
+              decoding="async"
+              style={`object-position: ${next.focus}`}
+            />
+          </picture>
+        </span>
+        <span class="ns-text">
+          <span class="ns-k">Next stop</span>
+          <span class="ns-name">{next.name}</span>
+          <span class="ns-v mono">{value}</span>
+        </span>
+      </a>
+    ) : (
+      <a class="ns-link ns-end" href={href('passport/')}>
+        <span class="ns-text">
+          <span class="ns-k">Trip done</span>
+          <span class="ns-name">Your passport</span>
+        </span>
+      </a>
+    )
+  }
+</section>
+
+<style>
+  .next-stop {
+    display: grid;
+    gap: 14px;
+    padding-block: clamp(40px, 6vw, 72px) 0;
+    border-top: 1px solid var(--rule);
+  }
+  .ns-count {
+    color: var(--muted);
+    font-size: var(--fs-sm);
+  }
+  .ns-link {
+    display: grid;
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    gap: clamp(16px, 3vw, 40px);
+    align-items: center;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .ns-link.ns-end {
+    grid-template-columns: 1fr;
+  }
+  .ns-img {
+    display: block;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .ns-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 300ms var(--ease);
+  }
+  .ns-text {
+    display: grid;
+    gap: 4px;
+  }
+  .ns-k {
+    color: var(--muted);
+    font-size: var(--fs-sm);
+  }
+  .ns-name {
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .ns-v {
+    color: var(--lilac);
+    font-size: var(--fs-lg);
+  }
+  @media (hover: hover) {
+    .ns-link:hover .ns-img img {
+      transform: scale(1.03);
+    }
+    .ns-link:hover .ns-name {
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      text-decoration-thickness: 3px;
+    }
+  }
+  .ns-link:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 6px;
+    border-radius: var(--radius);
+  }
+  @media (max-width: 639px) {
+    .ns-link {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ns-img img {
+      transition: none;
+    }
+  }
+</style>

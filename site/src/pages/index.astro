@@ -7,6 +7,7 @@ import silentImages from '../data/silent-images.json';
 import { href } from '../lib/paths';
 import { meta, pic } from '../lib/photos';
 import homeImages from '../data/home-images.json';
+import { JOURNEY, hulloTime } from '../data/journey';
 
 interface HomeImage {
   slug: string;
@@ -52,57 +53,15 @@ const ingenuity = meta('mars-two-years');
 const pluto = HOME['deep-newhorizons'];
 const apollo14 = HOME['home-orbit-apollo14'];
 
-const chapters = [
-  {
-    path: 'deep-space/',
-    name: 'Deep space',
-    pic: await pic(pluto.slug, TILE_WIDTHS, TILE_SIZES),
-    focus: '50% 50%',
-    alt: pluto.alt,
-    caption: 'Pluto, 2015',
-    credit: credit(pluto.id, pluto.credit),
-  },
-  {
-    path: 'moon/',
-    name: 'Moon',
-    pic: await pic('moon-laser-station', TILE_WIDTHS, TILE_SIZES),
-    focus: '50% 0%',
-    alt: 'Two green laser beams rising from an observatory into a dark blue night sky toward the bright Moon.',
-    caption: `Goddard laser, ${laser.date!.slice(0, 4)}`,
-    credit: credit(laser.id, laser.credit),
-  },
-  {
-    path: 'mars/',
-    name: 'Mars',
-    pic: await pic('mars-two-years', TILE_WIDTHS, TILE_SIZES),
-    focus: '45% 50%',
-    alt: 'Ingenuity, a small helicopter with two long rotor blades on four thin legs, standing on rocky reddish ground.',
-    caption: `Ingenuity, ${ingenuity.date!.slice(0, 4)}`,
-    credit: credit(ingenuity.id, ingenuity.credit),
-  },
-  ...(orbitData?.ORBIT_SITES && pageFiles.includes('./orbit.astro')
-    ? [
-        {
-          path: 'orbit/',
-          name: 'Orbit',
-          pic: await pic(apollo14.slug, TILE_WIDTHS, TILE_SIZES),
-          focus: '50% 50%',
-          alt: apollo14.alt,
-          caption: apollo14.short,
-          credit: credit(apollo14.id, apollo14.credit),
-        },
-      ]
-    : []),
-  {
-    path: 'silent/',
-    name: 'Silent',
-    pic: await pic('silent-surveyor3', TILE_WIDTHS, TILE_SIZES),
-    focus: '50% 50%',
-    alt: surveyor.alt ?? 'Surveyor 3 on the slope of its small crater, photographed by the Apollo 12 crew.',
-    caption: `Surveyor 3, ${surveyor.date.slice(0, 4)}`,
-    credit: credit(surveyor.nasa_id, surveyor.credit),
-  },
-];
+const chapters = await Promise.all(
+  JOURNEY.filter((c) => c.key !== 'orbit' || (orbitData?.ORBIT_SITES && pageFiles.includes('./orbit.astro'))).map(async (c, i) => ({
+    ...c,
+    n: i + 1,
+    pic: await pic(c.slug, TILE_WIDTHS, TILE_SIZES),
+    alt: HOME[c.slug]?.alt ?? c.alt,
+    value: hulloTime(c.key, Date.now()),
+  })),
+);
 ---
 
 <Base preload={['data/deep-space.json']}>
@@ -110,10 +69,9 @@ const chapters = [
     <ProbeSignal client:load headline="h1" countdown home />
   </section>
 
-  <DsnNow client:visible photos={sitePhotos} poster={dsnPoster} />
-
-  <section class="wrap section tiles-wrap" aria-label="Chapters">
-    <ul class="tiles">
+  <section class="wrap section tiles-wrap" aria-labelledby="trip-h">
+    <h2 id="trip-h" class="tiles-h">How long a hullo takes</h2>
+    <ol class="tiles">
       {
         chapters.map((c) => (
           <li class="tile">
@@ -134,14 +92,18 @@ const chapters = [
               </picture>
               </span>
               <span class="tile-row">
+                <span class="tile-n mono">{c.n}</span>
                 <span class="tile-name">{c.name}</span>
+                <span class="tile-v mono">{c.value}</span>
               </span>
             </a>
           </li>
         ))
       }
-    </ul>
+    </ol>
   </section>
+
+  <DsnNow client:visible photos={sitePhotos} poster={dsnPoster} />
 </Base>
 
 <style>
@@ -190,12 +152,27 @@ const chapters = [
     height: 100%;
     object-fit: cover;
   }
+  .tiles-h {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: clamp(16px, 2vw, 24px);
+  }
   .tile-row {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    align-items: baseline;
+    gap: 10px;
     padding-bottom: 4px;
+  }
+  .tile-n {
+    color: var(--muted);
+    font-size: var(--fs-sm);
+  }
+  .tile-v {
+    margin-left: auto;
+    color: var(--lilac);
+    font-size: var(--fs-sm);
+    white-space: nowrap;
   }
   .tile-name {
     font-weight: 700;
@@ -215,8 +192,19 @@ const chapters = [
   }
   @media (max-width: 639px) {
     .tiles {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 28px 14px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+    }
+    .tile-link {
+      grid-template-columns: 88px minmax(0, 1fr);
+      align-items: center;
+      gap: 14px;
+    }
+    .tile-img {
+      aspect-ratio: 1 / 1;
+    }
+    .tile-row {
+      padding-bottom: 0;
     }
   }
 </style>

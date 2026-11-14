@@ -1,4 +1,5 @@
 ---
+import NextStop from '../components/NextStop.astro';
 import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
 import ProbeDistance from '../components/ProbeDistance';
@@ -70,6 +71,7 @@ if (launch) {
       stampId="voyager1"
       stampDetail="Played the plasma wave recording from Oct 2012 to May 2013"
       source="Voyager 1, 2012 and 2013. PIA17045, NASA/JPL-Caltech/University of Iowa"
+      takeaway="The tone rose as the gas got denser, which showed Voyager 1 was in interstellar space."
     />
   </section>
 
@@ -85,6 +87,7 @@ if (launch) {
   <section class="wrap">
     <ProbeSky client:visible chart={false} />
   </section>
+  <NextStop current="deep-space" />
 </Base>
 
 <style>
