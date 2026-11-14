@@ -1,0 +1,142 @@
+---
+import Base from '../layouts/Base.astro';
+import OrbitSites, { type SiteProps, type ViewProps } from '../components/OrbitSites';
+import { ORBIT_SITES, type OrbitSite, type OrbitView } from '../data/orbit-sites';
+import { dated, lro, meta, pic } from '../lib/photos';
+import { href } from '../lib/paths';
+import sounds from '../data/sounds.json';
+
+const SIZES = '(max-width: 760px) 92vw, 44vw';
+const WIDTHS = [360, 560, 760, 1000];
+
+function coords(site: OrbitSite): string {
+  const places = site.body === 'Moon' ? 3 : 1;
+  const lon = site.body === 'Moon' ? site.lon : ((site.lon % 360) + 360) % 360;
+  const ns = `${Math.abs(site.lat).toFixed(places)}° ${site.lat < 0 ? 'S' : 'N'}`;
+  const ew = site.body === 'Moon' ? `${Math.abs(lon).toFixed(places)}° ${lon < 0 ? 'W' : 'E'}` : `${lon.toFixed(places)}° E`;
+  return `${ns}, ${ew}`;
+}
+
+function apart(a: string, b: string): string {
+  const years = Math.floor((Date.parse(b) - Date.parse(a)) / (365.25 * 86400000));
+  return years === 1 ? '1 year apart' : `${years} years apart`;
+}
+
+function label(id: string): string {
+  return /^as\d/i.test(id) ? id.toUpperCase() : id;
+}
+
+async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; date: string; detail: string }> {
+  if (v.slug.endsWith('-lro')) {
+    const c = lro(site.id);
+    const across = Math.round(c.width * c.scale_m);
+    return {
+      date: c.acquired.slice(0, 10),
+      detail: `LROC ${c.product}, ${c.scale_m} m per pixel`,
+      props: {
+        pic: await pic(v.slug, WIDTHS, SIZES),
+        alt: v.alt,
+        when: dated(c.acquired),
+        by: v.by,
+        caption: `${c.product}, ${c.scale_m} m per pixel, ${across} m across. The ring marks the lunar module. NASA/GSFC/Arizona State University.`,
+        ring: [(c.lm_px[0] / c.width) * 100, (c.lm_px[1] / c.height) * 100],
+      },
+    };
+  }
+  const m = meta(v.slug);
+  const id = m.observation ? `${label(m.id)} (${m.observation})` : label(m.id);
+  return {
+    date: m.date,
+    detail: `HiRISE view from ${dated(m.date)}`,
+    props: { pic: await pic(v.slug, WIDTHS, SIZES), alt: v.alt, when: dated(m.date), by: v.by, caption: `${id}, ${m.credit}.` },
+  };
+}
+
+const quake = sounds.find((s) => s.id === 'insight-quake')!;
+
+async function build(body: 'Moon' | 'Mars'): Promise<SiteProps[]> {
+  return Promise.all(
+    ORBIT_SITES.filter((s) => s.body === body).map(async (s) => {
+      const then = await view(s, s.then);
+      const now = await view(s, s.now);
+      if (s.pair) {
+        const m1 = meta(s.then.slug);
+        const m2 = meta(s.now.slug);
+        then.props.caption = `${m1.id} figures 1 and 2 (${m1.observation} and ${m2.observation}), ${m1.credit}.`;
+      }
+      return {
+        id: s.id,
+        name: s.name,
+        where: `${coords(s)} (${s.coords})`,
+        apart: apart(then.date, now.date),
+        then: then.props,
+        now: now.props,
+        pair: !!s.pair,
+        stampDetail: now.detail,
+        sound:
+          s.sound === 'insight-quake'
+            ? {
+                src: quake.file,
+                peaks: quake.peaks,
+                duration: quake.duration_s,
+                label: 'InSight’s biggest marsquake as sound',
+                stampId: 'insight',
+                stampDetail: 'Heard the magnitude 5 quake of 4 May 2022',
+                caption: `InSight’s seismometer recorded an estimated magnitude 5 quake on ${dated(quake.recorded)}, sol 1,222. NASA turned the signal into sound. Full clip, ${Math.round(quake.duration_s)} s. PIA25281, released ${dated(quake.released)}, ${quake.credit}.`,
+              }
+            : undefined,
+      } satisfies SiteProps;
+    }),
+  );
+}
+
+const moon = await build('Moon');
+const mars = await build('Mars');
+---
+
+<Base title="Orbit" current="orbit" description="Apollo landing sites seen by LRO and Mars landers seen by HiRISE, each next to how it looked when it landed.">
+  <header class="wrap page-head">
+    <h1>Orbit</h1>
+    <p>Orbiters around the Moon and Mars have photographed the hardware left on the ground. Each site shows a photo from landing next to a later view from above.</p>
+  </header>
+
+  <section class="wrap orbit-sec" aria-labelledby="moon-h">
+    <h2 id="moon-h" class="orbit-h2">Moon, seen by the Lunar Reconnaissance Orbiter</h2>
+    <OrbitSites client:visible label="Apollo landing sites" sites={moon} first="apollo11" />
+  </section>
+
+  <section class="wrap orbit-sec rule-top" aria-labelledby="mars-h">
+    <h2 id="mars-h" class="orbit-h2">Mars, seen by HiRISE on Mars Reconnaissance Orbiter</h2>
+    <OrbitSites client:visible label="Mars landing sites" sites={mars} first="phoenix" />
+  </section>
+
+  <section class="wrap orbit-note">
+    <p class="note">
+      LRO views are cut from public domain LROC orthoimages in NASA’s Planetary Data System and placed with NSSDCA coordinates. HiRISE
+      views are from the HiRISE team and NASA’s Photojournal. <a href={href('sources/')}>Sources</a>
+    </p>
+  </section>
+</Base>
+
+<style>
+  .orbit-sec {
+    display: grid;
+    gap: 24px;
+    padding-block: clamp(24px, 4vw, 48px);
+  }
+  .rule-top {
+    border-top: 1px solid var(--rule);
+    margin-top: clamp(24px, 4vw, 48px);
+    padding-top: clamp(32px, 5vw, 64px);
+  }
+  .orbit-h2 {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  .orbit-note {
+    padding-block: 24px clamp(48px, 7vw, 96px);
+  }
+</style>
