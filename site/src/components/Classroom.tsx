@@ -145,7 +145,7 @@ function Activity({ title, line, facts, rows, onPrint, children }: { title: stri
       <div className="cr-body">
         {children}
         <dl className="cr-facts">
-          {(facts ?? rows.map((k): [string, string, boolean] => [k, 'Loading', false])).map(([k, v, mono]) => (
+          {(facts ?? rows.map((k): [string, string, boolean] => [k, 'Loading…', false])).map(([k, v, mono]) => (
             <div key={k}>
               <dt>{k}</dt>
               <dd className={mono ? 'mono' : undefined}>{v}</dd>
