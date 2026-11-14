@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import PassportBook from '../components/PassportBook';
+import { BRAND } from '../brand';
+
+const site = Astro.site ? new URL(import.meta.env.BASE_URL, Astro.site).toString().replace(/^https?:\/\//, '').replace(/\/$/, '') : BRAND;
+---
+
+<Base title="Passport" current="passport" description={`Stamps for each spacecraft and instrument you reach on ${BRAND}, with the real figure from that moment.`}>
+  <header class="wrap page-head">
+    <h1>Passport</h1>
+    <p>Each object you reach on this site leaves a stamp with the real figure from that moment. Stamps stay in this browser.</p>
+  </header>
+
+  <div class="wrap">
+    <PassportBook client:load site={site} />
+  </div>
+</Base>
