@@ -1,7 +1,10 @@
-"""Distance from the Sun and from Earth for each probe, from launch to now.
+"""Distance from the Sun and from Earth for each probe, from launch to 2028.
 
 One JPL Horizons vector table per probe and center, every calendar month,
 from the first epoch Horizons holds for the probe's trajectory to STOP.
+Months after today come from the trajectory Horizons predicts. The site
+draws each line only up to the current date and reads the table between
+samples for the birthday distance.
 Distances are geometric (no light time correction) in astronomical units.
 The Sun table uses center 500@10 (the Sun's body center) and the Earth
 table uses center 500@399 (Earth's center).
@@ -22,7 +25,7 @@ import horizons
 
 AU_KM = 149597870.7
 C_KM_S = 299792.458
-STOP = "2026-11-01"
+STOP = "2028-01-01"
 OUT = Path(__file__).resolve().parents[1] / "site" / "src" / "data" / "probe-history.json"
 
 PROBES = [
