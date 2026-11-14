@@ -1,4 +1,5 @@
 export interface Silent {
+  id: string;
   name: string;
   place: string;
   what: string;
@@ -11,6 +12,7 @@ export interface Silent {
 
 export const SILENT: Silent[] = [
   {
+    id: 'insight',
     name: 'InSight',
     place: 'Mars',
     what: 'Lander with a seismometer',
@@ -21,6 +23,7 @@ export const SILENT: Silent[] = [
     sources: ['nasa-insight-end'],
   },
   {
+    id: 'opportunity',
     name: 'Opportunity',
     place: 'Mars',
     what: 'Rover',
@@ -31,6 +34,7 @@ export const SILENT: Silent[] = [
     sources: ['nasa-opportunity-end'],
   },
   {
+    id: 'cassini',
     name: 'Cassini',
     place: 'Saturn',
     what: 'Orbiter',
@@ -41,6 +45,7 @@ export const SILENT: Silent[] = [
     sources: ['nasa-cassini-end'],
   },
   {
+    id: 'spirit',
     name: 'Spirit',
     place: 'Mars',
     what: 'Rover',
@@ -51,6 +56,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-spirit'],
   },
   {
+    id: 'lcross',
     name: 'LCROSS',
     place: 'Moon',
     what: 'Impactor and its used rocket stage',
@@ -61,6 +67,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-lcross', 'nasa-lcross'],
   },
   {
+    id: 'phoenix',
     name: 'Phoenix',
     place: 'Mars',
     what: 'Arctic lander',
@@ -71,6 +78,7 @@ export const SILENT: Silent[] = [
     sources: ['nasa-phoenix', 'nssdca-phoenix'],
   },
   {
+    id: 'galileo',
     name: 'Galileo',
     place: 'Jupiter',
     what: 'Orbiter',
@@ -81,6 +89,7 @@ export const SILENT: Silent[] = [
     sources: ['nasa-galileo'],
   },
   {
+    id: 'pioneer10',
     name: 'Pioneer 10',
     place: 'Deep space',
     what: 'Probe',
@@ -91,6 +100,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-pioneer-10'],
   },
   {
+    id: 'near',
     name: 'NEAR Shoemaker',
     place: 'Asteroid Eros',
     what: 'Orbiter',
@@ -101,6 +111,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-near'],
   },
   {
+    id: 'lunarprospector',
     name: 'Lunar Prospector',
     place: 'Moon',
     what: 'Orbiter',
@@ -111,6 +122,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-lunar-prospector'],
   },
   {
+    id: 'pathfinder',
     name: 'Mars Pathfinder and Sojourner',
     place: 'Mars',
     what: 'Lander and small rover',
@@ -121,6 +133,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-pathfinder'],
   },
   {
+    id: 'pioneer11',
     name: 'Pioneer 11',
     place: 'Deep space',
     what: 'Probe',
@@ -131,6 +144,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-pioneer-11'],
   },
   {
+    id: 'viking1',
     name: 'Viking 1 Lander',
     place: 'Mars',
     what: 'Lander',
@@ -141,6 +155,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-viking-1'],
   },
   {
+    id: 'viking2',
     name: 'Viking 2 Lander',
     place: 'Mars',
     what: 'Lander',
@@ -151,6 +166,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-viking-2'],
   },
   {
+    id: 'alsep',
     name: 'Apollo science stations',
     place: 'Moon',
     what: 'Instrument stations left by Apollo 12, 14, 15, 16 and 17',
@@ -161,6 +177,7 @@ export const SILENT: Silent[] = [
     sources: ['nssdca-apollo-17', 'nssdca-apollo-where'],
   },
   {
+    id: 'surveyor3',
     name: 'Surveyor 3',
     place: 'Moon',
     what: 'Lander',
