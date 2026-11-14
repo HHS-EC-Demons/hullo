@@ -212,7 +212,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
                   />
                   <span>
                     {s.name}
-                    <small className={`mono${(elNow(s.id) ?? 90) < minEl ? ' ls-low' : ''}`}>{elevationWord(elNow(s.id)) || ' '}</small>
+                    <small className="mono">{elevationWord(elNow(s.id)) || ' '}</small>
                   </span>
                 </label>
               ))}
