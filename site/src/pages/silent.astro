@@ -78,7 +78,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
   <header class="wrap page-head silent-head">
     <div class="silent-title">
       <h1>The silent ones</h1>
-      <p>Hardware that no longer answers, next to the few that still do.</p>
+      <p>What went quiet, and what still answers.</p>
     </div>
     <figure class="silent-hero">
       <picture>
@@ -87,7 +87,8 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
         <img src={heroPic.src} width={heroPic.width} height={heroPic.height} alt={hero.alt} loading="eager" fetchpriority="high" decoding="async" />
       </picture>
       <figcaption class="credit">
-        {hero.caption}, {hero.when}. <a href={hero.page} rel="external noopener">{hero.nasa_id}</a>, {hero.credit}
+        Charles Conrad Jr. checks Surveyor 3’s TV camera, <span class="mono">1969</span>
+        <span data-credit><a href={hero.page} rel="external noopener">{hero.nasa_id}</a>, {hero.credit}</span>
       </figcaption>
     </figure>
   </header>
@@ -98,7 +99,7 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
   </section>
 
   <section class="wrap" aria-labelledby="wall">
-    <h2 id="wall" class="section-title">The hardware in photos</h2>
+    <h2 id="wall" class="section-title">Photos of the silent ones</h2>
     <ol class="wall">
       {
         rows.map((r) => (
@@ -107,19 +108,17 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
               <picture>
                 <source type="image/avif" srcset={r.pic.avif} sizes={WALL} />
                 <source type="image/webp" srcset={r.pic.webp} sizes={WALL} />
-                <img src={r.pic.src} width={r.pic.width} height={r.pic.height} alt={r.photo.alt} loading="lazy" decoding="async" />
+                <img src={r.pic.src} width={r.pic.width} height={r.pic.height} alt={`${r.photo.alt} ${r.photo.caption}, ${r.photo.when}.`} loading="lazy" decoding="async" />
               </picture>
               <figcaption>
                 <span class="wall-name">{r.name}</span>
-                <span class="wall-when">
-                  <span class="wall-status">{r.status}</span>
-                  <time class="mono" datetime={r.date}>
-                    {r.when}
-                  </time>
+                <time class="wall-when mono" datetime={r.date}>
+                  {r.date.slice(0, 4)}
+                </time>
+                <span class="credit" data-credit>
+                  <a href={r.photo.page} rel="external noopener">{r.photo.nasaId}</a>, {r.photo.credit}
                 </span>
-                <span class="credit">
-                  {r.photo.caption}, {r.photo.when}. <a href={r.photo.page} rel="external noopener">{r.photo.nasaId}</a>, {r.photo.credit}
-                </span>
+              </figcaption>
               </figcaption>
             </figure>
           </li>
@@ -195,17 +194,8 @@ const rows = SILENT.filter((s) => wall[s.id]).map((s) => ({
     letter-spacing: -0.02em;
   }
   .wall-when {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 12px;
-    align-items: baseline;
     margin-bottom: 4px;
-  }
-  .wall-status {
-    color: var(--silent);
-    font-weight: 700;
-  }
-  .wall-when time {
+    color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
   @media (max-width: 1179px) {

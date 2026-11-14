@@ -288,7 +288,7 @@
     --qt-gap: 0px;
   }
   .qt-readout {
-    min-height: 19.5rem;
+    min-height: 18.5rem;
     padding-block: 14px;
   }
   .qt-card {
@@ -348,7 +348,7 @@
     padding-bottom: 2px;
   }
   .qt-row {
-    scroll-margin-top: calc(var(--qt-top) + 19.5rem + 70px);
+    scroll-margin-top: calc(var(--qt-top) + 18.5rem + 70px);
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       'name state'
