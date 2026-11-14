@@ -1,0 +1,140 @@
+.ls {
+  display: grid;
+  gap: clamp(40px, 6vw, 72px);
+}
+
+.ls-top {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: 40px 64px;
+  align-items: start;
+}
+
+.ls-controls {
+  display: grid;
+  gap: 28px;
+  justify-items: start;
+}
+
+.ls-controls .choice small {
+  display: inline;
+}
+
+.ls-fire {
+  min-width: 13rem;
+}
+
+.ls-scene {
+  container-type: inline-size;
+  margin: 0;
+}
+
+.ls-stage {
+  position: relative;
+  height: 64px;
+}
+
+.ls-earth,
+.ls-moon {
+  position: absolute;
+  top: 50%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.ls-earth {
+  left: 0;
+  width: calc(var(--ex) * 2%);
+  background: var(--ink);
+}
+
+.ls-moon {
+  left: calc((var(--mx) - var(--mr)) * 1%);
+  width: calc(var(--mr) * 2%);
+  background: var(--ink-2);
+}
+
+.ls-line {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--ex) * 1%);
+  width: calc((var(--mx) - var(--ex) - var(--mr)) * 1%);
+  height: 1px;
+  background: var(--ink-3);
+}
+
+.ls-pulse {
+  --leg: 0;
+  position: absolute;
+  top: calc(50% - 4px);
+  left: calc(var(--ex) * 1%);
+  width: 22px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--signal);
+  opacity: 0;
+  transform: translateX(calc(var(--leg) * ((var(--mx) - var(--ex) - var(--mr)) * 1cqw - 22px)));
+  will-change: transform;
+}
+
+.ls-pulse.on {
+  opacity: 1;
+}
+
+.ls-labels {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+
+.ls-mid {
+  text-align: center;
+  color: var(--ink);
+}
+
+.ls-scale {
+  margin-top: 6px;
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
+}
+
+.ls-readout {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  min-height: 14rem;
+}
+
+.ls-big {
+  font-size: clamp(3.5rem, 16vw, 8.5rem);
+  line-height: 0.95;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+}
+
+.ls-big .u {
+  font-size: 0.34em;
+  margin-left: 0.14em;
+  color: var(--ink-2);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.ls-what {
+  font-size: var(--fs-md);
+  max-width: 38rem;
+  text-wrap: pretty;
+}
+
+@media (max-width: 860px) {
+  .ls-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ls-readout {
+    min-height: 0;
+  }
+}

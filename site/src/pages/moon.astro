@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import LaserShot from '../components/LaserShot';
+import { readData } from '../lib/build-data';
+import { asset, href } from '../lib/paths';
+
+const images = readData<{ slug: string; nasa_id: string; title: string; date: string; credit: string; width: number; height: number; page: string }[]>('images.json');
+const photo = images.find((i) => i.slug === 'apollo14-reflector')!;
+---
+
+<Base title="Moon" current="moon" description="Fire a laser from Apache Point or Grasse at an Apollo retroreflector and see the round trip time for this moment, from JPL Horizons.">
+  <header class="wrap page-head">
+    <h1>Moon</h1>
+    <p>Apollo 11, 14 and 15 left mirrors that need no power. Observatories on Earth still bounce lasers off them.</p>
+  </header>
+
+  <section class="wrap" aria-label="Laser ranging">
+    <LaserShot client:load />
+  </section>
+
+  <section class="wrap section">
+    <div class="moon-more">
+      <figure class="photo">
+        <img
+          src={asset(`img/${photo.slug}.jpg`)}
+          width={photo.width}
+          height={photo.height}
+          loading="lazy"
+          decoding="async"
+          alt="The Apollo 14 laser reflector on the grey lunar surface, a tilted panel of glass corner cubes with boot prints around it."
+        />
+        <figcaption class="credit">
+          Apollo 14 reflector, 5 Feb 1971. Photo {photo.nasa_id.toUpperCase()}, {photo.credit}.
+        </figcaption>
+      </figure>
+      <div class="moon-text">
+        <p class="big-claim"><span class="n">3.8</span> cm a year</p>
+        <p>
+          Laser ranging started at a precision of several decimeters and now reaches millimeters. More than 57 years of echoes
+          show the Moon moving away from Earth by about 3.8 cm a year.
+        </p>
+        <p class="note">
+          Each mirror is a panel of glass corner cubes that sends light straight back the way it came. Round trips here are twice
+          the station to mirror distance from JPL Horizons, divided by the speed of light. Lunokhod 1 and 2 are Soviet rovers whose
+          reflectors are also ranged. <a href={href('sources/')}>Sources</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .moon-more {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 40px 64px;
+    align-items: start;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+  }
+  .photo img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background: var(--paper-2);
+  }
+  .photo figcaption {
+    margin-top: 10px;
+  }
+  .moon-text {
+    display: grid;
+    gap: 18px;
+    max-width: 34rem;
+  }
+  .big-claim {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .big-claim .n {
+    display: block;
+    font-size: var(--fs-xl);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+  @media (max-width: 860px) {
+    .moon-more {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
