@@ -1,18 +1,81 @@
 ---
 import Base from '../layouts/Base.astro';
-import PassportBook from '../components/PassportBook';
+import PassportBook, { type Thumb } from '../components/PassportBook';
 import { BRAND } from '../brand';
+import { STAMP_OBJECTS } from '../data/stamps';
+import SILENT_PHOTOS from '../data/silent-images.json';
+import PAGE_PHOTOS from '../data/page-images.json';
+import PHOTOS from '../data/photos.json';
+import PROBE_PHOTOS from '../data/probe-photos.json';
+import { readData } from '../lib/build-data';
+import { pic } from '../lib/photos';
+import { utcDate } from '../lib/client';
 
 const site = Astro.site ? new URL(import.meta.env.BASE_URL, Astro.site).toString().replace(/^https?:\/\//, '').replace(/\/$/, '') : BRAND;
+
+interface Source {
+  slug: string;
+  nasaId: string;
+  credit: string;
+  page: string;
+  when: string;
+  alt: string;
+}
+
+interface LibraryPhoto {
+  id: string;
+  title: string;
+  date: string | null;
+  credit: string;
+  page: string;
+}
+
+function day(iso: string | null): string {
+  if (!iso) return '';
+  return iso.length > 4 ? utcDate(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`)) : iso;
+}
+
+const library = PHOTOS as Record<string, LibraryPhoto>;
+const fromLibrary = (slug: string, alt: string): Source | null => {
+  const m = library[slug];
+  return m ? { slug, nasaId: m.id, credit: m.credit, page: m.page, when: day(m.date), alt } : null;
+};
+
+const sources: Record<string, Source | null> = {};
+for (const p of PROBE_PHOTOS) sources[p.probe] = { slug: p.slug, nasaId: p.nasa_id, credit: p.credit, page: p.page, when: day(p.date), alt: p.alt };
+for (const m of SILENT_PHOTOS) {
+  sources[m.object] = { slug: `silent-${m.object}`, nasaId: m.nasa_id, credit: m.credit, page: m.page, when: m.when, alt: 'alt' in m && m.alt ? m.alt : m.caption };
+}
+const a11 = readData<{ slug: string; nasa_id: string; credit: string; page: string; date: string }[]>('images.json').find((p) => p.slug === 'apollo11-reflector');
+sources.a11 = a11 ? { slug: 'home-apollo11-reflector', nasaId: a11.nasa_id, credit: a11.credit, page: a11.page, when: day(a11.date), alt: 'Apollo 11’s experiments package on grey lunar ground.' } : null;
+sources.a14 = fromLibrary('moon-a14-reflector', 'The Apollo 14 laser reflector, a flat grid on a stand, on lunar ground.');
+sources.a15 = fromLibrary('moon-a15-reflector', 'The Apollo 15 lunar module standing on the Moon at Hadley.');
+for (const id of ['l1', 'l2'] as const) {
+  const m = PAGE_PHOTOS[`passport-${id}`];
+  sources[id] = { slug: `passport-${id}`, nasaId: m.nasa_id, credit: m.credit, page: m.page, when: m.when, alt: m.alt };
+}
+sources.ingenuity = fromLibrary('mars-selfie', 'Perseverance’s selfie with the small Ingenuity helicopter standing on the Martian ground behind.');
+for (const n of ['11', '12', '14', '15', '16', '17']) {
+  sources[`apollo${n}`] = fromLibrary(`orbit-apollo${n}-surface`, `The Apollo ${n} landing site photographed by the crew on the Moon.`);
+}
+
+const thumbs: Record<string, Thumb> = {};
+for (const o of STAMP_OBJECTS) {
+  const s = sources[o.id];
+  if (!s) continue;
+  const p = await pic(s.slug, [240, 360, 480], '(max-width: 520px) 45vw, 190px').catch(() => null);
+  if (!p) continue;
+  thumbs[o.id] = { ...p, alt: s.alt, nasaId: s.nasaId, credit: s.credit, page: s.page, when: s.when };
+}
 ---
 
 <Base title="Passport" current="passport" description={`Stamps for each spacecraft and instrument you reach on ${BRAND}, with the real figure from that moment.`}>
   <header class="wrap page-head">
     <h1>Passport</h1>
-    <p>Each object you reach on this site leaves a stamp with the real figure from that moment, kept in this browser.</p>
+    <p>Each object you reach on this site leaves a stamp here with its real figure.</p>
   </header>
 
   <div class="wrap">
-    <PassportBook client:idle site={site} />
+    <PassportBook client:idle site={site} thumbs={thumbs} />
   </div>
 </Base>

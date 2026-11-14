@@ -51,117 +51,99 @@
   font-size: var(--fs-xs);
 }
 
-.pp-empty {
-  color: var(--muted);
-  font-size: var(--fs-md);
-  margin-top: -24px;
-}
-
-.pp-group-title {
+.pp-group-head {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-bottom: 20px;
+  padding-bottom: 4px;
+}
+.pp-group-title {
   font-size: var(--fs-lg);
   font-weight: 800;
   letter-spacing: -0.02em;
-}
-.pp-group-title a {
-  color: var(--text);
-  text-decoration: none;
-}
-.pp-group-title a:hover {
-  text-decoration: underline;
-  text-decoration-color: var(--line);
 }
 .pp-group-count {
   color: var(--muted);
   font-size: var(--fs-sm);
-  font-weight: 500;
-  letter-spacing: 0;
   font-variant-numeric: tabular-nums;
+  margin-right: auto;
 }
 
 .pp-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: 28px 24px;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 32px 24px;
 }
 .pp-grid > li {
   display: grid;
-}
-.pp-grid > li:has(.pp-stamp) {
-  min-height: 10.5rem;
-}
-
-.pp-stamp {
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: 6px;
-  padding: 16px 18px;
-  border: 2px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: inset 0 0 0 4px var(--bg), inset 0 0 0 5px color-mix(in oklab, var(--lilac) 55%, var(--bg));
-  color: var(--line);
-  text-align: center;
-  transform: rotate(var(--tilt, 0deg));
-}
-.pp-stamp-where {
-  font-size: var(--fs-xs);
-  letter-spacing: 0.06em;
-}
-.pp-stamp-name {
-  font-size: var(--fs-lg);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-.pp-stamp-detail {
-  font-size: var(--fs-sm);
-  line-height: 1.35;
-  font-variant-numeric: tabular-nums;
-}
-.pp-stamp-date {
-  margin-top: 2px;
-  padding-top: 6px;
-  border-top: 1px solid color-mix(in oklab, var(--lilac) 45%, var(--bg));
-  font-size: var(--fs-xs);
-  letter-spacing: 0.06em;
-  font-variant-numeric: tabular-nums;
 }
 
 .pp-slot {
   display: grid;
   align-content: start;
-  gap: 4px;
-  padding-top: 14px;
-  border-top: 1px solid var(--edge);
-  color: var(--muted);
-  text-decoration: none;
-  transition: border-color 150ms var(--ease);
+  gap: 6px;
 }
-.pp-slot:hover {
-  border-top-color: var(--line);
+.pp-thumb {
+  display: contents;
 }
-.pp-slot:hover .pp-slot-name {
-  text-decoration: underline;
-  text-decoration-color: var(--line);
-  text-underline-offset: 3px;
+.pp-thumb picture {
+  order: 1;
+  display: block;
+  margin-bottom: 4px;
 }
-.pp-slot:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 4px;
-  border-radius: 2px;
+.pp-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius);
+  background: var(--raised);
+  filter: grayscale(1) brightness(0.62);
 }
-.pp-slot-name {
-  color: var(--text);
+.pp-slot.stamped .pp-thumb img {
+  filter: none;
+}
+.pp-name {
+  order: 2;
+  font-size: var(--fs-base);
   font-weight: 700;
+  line-height: 1.25;
 }
-.pp-slot-hint {
-  font-size: var(--fs-sm);
-  text-wrap: pretty;
+.pp-cap {
+  order: 3;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+}
+.pp-slot > .pp-stamp,
+.pp-slot > .sr-only {
+  order: 4;
+}
+
+.pp-stamp {
+  display: grid;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 4px color-mix(in oklab, var(--lilac) 55%, var(--bg));
+  color: var(--line);
+  transform: rotate(var(--tilt, 0deg));
+}
+.pp-stamp-detail {
+  font-size: var(--fs-xs);
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+.pp-stamp-date {
+  padding-top: 4px;
+  border-top: 1px solid color-mix(in oklab, var(--lilac) 45%, var(--bg));
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 860px) {
@@ -178,11 +160,8 @@
     width: 100%;
   }
   .pp-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
-  }
-  .pp-grid > li:has(.pp-stamp) {
-    min-height: 8.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 16px;
   }
   .pp-stamp {
     transform: rotate(calc(var(--tilt, 0deg) * 0.4));
