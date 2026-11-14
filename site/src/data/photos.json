@@ -277,24 +277,24 @@
  "orbit-viking1-hirise": {
   "id": "PIA01881",
   "observation": "PSP_001521_2025",
-  "title": "Viking Lander 1 (Thomas A. Mutch Memorial Station) Imaged from Orbit, lander figure",
+  "title": "Viking Lander 1 (Thomas A. Mutch Memorial Station) Imaged from Orbit",
   "date": "2006-11-22",
   "credit": "NASA/JPL-Caltech/University of Arizona",
   "page": "https://photojournal.jpl.nasa.gov/catalog/PIA01881",
-  "width": 828,
-  "height": 812,
-  "cropped": false
+  "width": 1000,
+  "height": 800,
+  "cropped": true
  },
  "orbit-viking2-hirise": {
   "id": "PIA01882",
   "observation": "PSP_001501_2280",
-  "title": "Viking Lander 2 (Gerald A. Soffen Memorial Station) Imaged from Orbit, lander figure",
+  "title": "Viking Lander 2 (Gerald A. Soffen Memorial Station) Imaged from Orbit",
   "date": "2006-11-21",
   "credit": "NASA/JPL-Caltech/University of Arizona",
   "page": "https://photojournal.jpl.nasa.gov/catalog/PIA01882",
-  "width": 824,
-  "height": 847,
-  "cropped": false
+  "width": 1000,
+  "height": 800,
+  "cropped": true
  },
  "orbit-spirit-hirise": {
   "id": "ESP_021925_1650",

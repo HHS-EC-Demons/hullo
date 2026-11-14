@@ -94,13 +94,15 @@ PHOTOS = [
      "crop": (0.04, 0.04, 0.96, 0.7)},
     {"slug": "orbit-opportunity-surface", "id": "PIA05182", "credit": "NASA/JPL", "date": "2004-01-31"},
     {"slug": "orbit-viking1-hirise", "id": "PIA01881", "credit": "NASA/JPL-Caltech/University of Arizona",
-     "date": "2006-11-22", "url": f"{PJ}/pia01/pia01881/figures/PIA01881_lander.jpg",
+     "date": "2006-11-22", "url": f"{PJ}/pia01/pia01881/PIA01881.jpg",
      "page": "https://photojournal.jpl.nasa.gov/catalog/PIA01881", "observation": "PSP_001521_2025",
-     "title": "Viking Lander 1 (Thomas A. Mutch Memorial Station) Imaged from Orbit, lander figure"},
+     "title": "Viking Lander 1 (Thomas A. Mutch Memorial Station) Imaged from Orbit",
+     "box": (978, 2779, 1978, 3579)},
     {"slug": "orbit-viking2-hirise", "id": "PIA01882", "credit": "NASA/JPL-Caltech/University of Arizona",
-     "date": "2006-11-21", "url": f"{PJ}/pia01/pia01882/figures/PIA01882_lander.jpg",
+     "date": "2006-11-21", "url": f"{PJ}/pia01/pia01882/PIA01882.jpg",
      "page": "https://photojournal.jpl.nasa.gov/catalog/PIA01882", "observation": "PSP_001501_2280",
-     "title": "Viking Lander 2 (Gerald A. Soffen Memorial Station) Imaged from Orbit, lander figure"},
+     "title": "Viking Lander 2 (Gerald A. Soffen Memorial Station) Imaged from Orbit",
+     "box": (1281, 3011, 2281, 3811)},
     {"slug": "orbit-spirit-hirise", "id": "ESP_021925_1650", "credit": "NASA/JPL-Caltech/UArizona",
      "date": "2011-03-31", "url": f"{HIRISE}/2011/details/ESP_021925_1650.jpg",
      "page": "https://www.uahirise.org/ESP_021925_1650", "observation": "ESP_021925_1650",
@@ -216,7 +218,7 @@ def build_photos(meta: dict, only: set[str]) -> None:
             data, raw = images.library(item["id"], True)
             title = data.get("title", "").strip()
             page = f"https://images.nasa.gov/details/{item['id']}"
-        img = cut(open_rgb(raw), item.get("crop"), None)
+        img = cut(open_rgb(raw), item.get("crop"), item.get("box"))
         out = fit(img, LARGER[slug]) if slug in LARGER else fit_width(img, WIDTH)
         save(out, slug)
         meta[slug] = {
@@ -229,7 +231,7 @@ def build_photos(meta: dict, only: set[str]) -> None:
             "page": page,
             "width": out.width,
             "height": out.height,
-            "cropped": "crop" in item,
+            "cropped": "crop" in item or "box" in item,
         }
 
 
