@@ -41,9 +41,9 @@ export interface FlightPhoto {
   caption: string;
 }
 
-const num = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
-const one = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
-const speed = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+const num = { format: (v: number) => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') };
+const one = { format: (v: number) => v.toFixed(1) };
+const speed = { format: (v: number) => String(Number(v.toFixed(2))) };
 
 function css(name: string, fallback: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
