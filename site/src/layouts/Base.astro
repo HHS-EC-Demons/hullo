@@ -98,7 +98,7 @@ const extra = [
             {
               items.map((item) => (
                 <li>
-                  <a class="press press-sm press-nav bar-item" href={item.href} aria-current={current === item.key ? 'page' : undefined}>
+                  <a class="bar-item" href={item.href} aria-current={current === item.key ? 'page' : undefined}>
                     <span class="bar-label">{item.label}</span>
                     {current === item.key && <span class="bar-mark" aria-hidden="true" />}
                   </a>
@@ -108,7 +108,7 @@ const extra = [
           </ul>
           {
             passport && (
-              <a class="press press-sm press-nav bar-item bar-passport" href={passport.href} aria-current={current === passport.key ? 'page' : undefined}>
+              <a class="bar-item bar-passport" href={passport.href} aria-current={current === passport.key ? 'page' : undefined}>
                 <span class="bar-label">{passport.label}</span>
                 <span class="bar-fig mono" data-live="stamps" data-total={STAMP_TOTAL}>
                   {`0 of ${STAMP_TOTAL}`}
@@ -134,7 +134,7 @@ const extra = [
           {
             extra.map((e) => (
               <li>
-                <a class="press press-nav foot-link" href={e.href}>{e.label}</a>
+                <a class="foot-link" href={e.href}>{e.label}</a>
               </li>
             ))
           }
@@ -199,29 +199,49 @@ const extra = [
   .bar {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
     flex: 1;
-    padding-bottom: 3px;
   }
   .bar-list {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--raised);
+    box-shadow: inset 0 0 0 1px var(--rule);
   }
   .bar-item {
+    position: relative;
+    isolation: isolate;
     display: flex;
     align-items: baseline;
     gap: 7px;
+    min-height: 32px;
+    align-items: center;
+    padding: 0 14px;
+    border-radius: 999px;
+    text-decoration: none;
   }
-  .bar-item[aria-current='page'] {
-    --p-edge: var(--press-edge);
-    --p-lip: var(--press-lip);
+  .bar-item:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
   }
   .bar-label {
     font-size: 0.875rem;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.2;
-    color: var(--text);
+    color: var(--muted);
+    transition: color 90ms var(--ease);
+  }
+  @media (hover: hover) {
+    .bar-item:hover .bar-label {
+      color: var(--text);
+    }
+  }
+  .bar-item[aria-current='page'] .bar-label {
+    color: var(--bg);
+    font-weight: 700;
   }
   .bar-fig {
     font-size: 0.78125rem;
@@ -230,27 +250,26 @@ const extra = [
     color: var(--muted);
     white-space: nowrap;
   }
+  .bar-item[aria-current='page'] .bar-fig {
+    color: var(--bg);
+  }
   .bar-item [data-live='stamps'] {
     min-width: 7ch;
   }
-  .bar-item[aria-current='page'] .bar-label {
-    font-weight: 800;
-  }
   .bar-mark {
     position: absolute;
-    inset: -2px;
-    border: 2px solid var(--lilac);
-    border-radius: var(--press-radius);
-    box-shadow: 0 var(--press-lip-h, 3px) 0 var(--lilac);
+    inset: 0;
+    z-index: -1;
+    border-radius: 999px;
+    background: var(--lilac);
     pointer-events: none;
     view-transition-name: bar-mark;
-    transition: box-shadow 90ms var(--ease);
-  }
-  .bar-item:active .bar-mark {
-    box-shadow: 0 0 0 var(--lilac);
   }
   .bar-passport {
     margin-left: auto;
+    background: var(--raised);
+    box-shadow: inset 0 0 0 1px var(--rule);
+    min-height: 38px;
   }
   .bar-menu {
     display: none;
@@ -278,8 +297,13 @@ const extra = [
     padding-bottom: 4px;
   }
   .foot-link {
-    min-height: 44px;
-    padding-inline: 16px;
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .foot-link:hover {
+    color: var(--text);
   }
   @media (max-width: 900px) {
     .head-row {
@@ -291,7 +315,7 @@ const extra = [
     }
     .bar-item {
       gap: 5px;
-      padding-inline: 8px;
+      padding-inline: 10px;
     }
   }
   @media (max-width: 767px) {

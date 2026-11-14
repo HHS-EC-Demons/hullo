@@ -126,10 +126,11 @@
   font-weight: 800;
   letter-spacing: -0.02em;
 }
-.pp-group-title .press {
-  font-size: inherit;
-  font-weight: inherit;
-  letter-spacing: inherit;
+.pp-group-title .pb-go {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .pp-group-count {
   color: var(--muted);
