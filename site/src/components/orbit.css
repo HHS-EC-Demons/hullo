@@ -101,10 +101,10 @@
   color: var(--text);
 }
 
-.os-look {
-  max-width: 28rem;
-  font-size: var(--fs-md);
-  text-wrap: pretty;
+.os-label {
+  margin-bottom: -4px;
+  font-size: var(--fs-sm);
+  color: var(--muted);
 }
 
 .os-panel {

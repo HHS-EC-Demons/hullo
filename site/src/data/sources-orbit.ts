@@ -16,7 +16,7 @@ const list = photos as Record<string, Photo>;
 function used(prefix: string): string {
   return Object.entries(list)
     .filter(([slug]) => slug.startsWith(prefix))
-    .map(([, p]) => `${p.id.toUpperCase().startsWith('AS') ? p.id.toUpperCase() : p.id} (${p.credit})`)
+    .map(([, p]) => `${p.id.toUpperCase().startsWith('AS') ? p.id.toUpperCase() : p.id} by ${p.credit}`)
     .filter((v, i, all) => all.indexOf(v) === i)
     .join(', ');
 }
@@ -29,7 +29,7 @@ export const ORBIT_SOURCES: Source[] = [
     url: 'https://science.nasa.gov/wp-content/uploads/2024/06/ingenuity-helicopter-flight-log.pdf',
     dated: 'PDF posted Jun 2024, read 1 Nov 2026',
     license: NASA_MEDIA,
-    used: 'The sol, date, horizontal distance, highest altitude, top ground speed and time in the air of each of the 72 flights, the hover flights (0 m and 0 m/s), the running total, and the totals of about 17.0 km and 128.8 minutes. Read at build time with pypdf.',
+    used: 'The sol, date, horizontal distance, highest altitude, top ground speed and time in the air of each of the 72 flights, the hover flights listed with 0 m and 0 m/s, the running total, and the totals of about 17.0 km and 128.8 minutes. Read at build time with pypdf.',
     note: 'The Mars page shows a flight the log lists with 0 m and 0 m/s as a hover. Distances, heights and times in the readout and the bars of the All 72 flights chart come from this log, and the paths from the JPL map.',
   },
   {
@@ -39,7 +39,7 @@ export const ORBIT_SOURCES: Source[] = [
     url: 'https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-mars-helicopter/',
     dated: 'Page updated 22 Sep 2026, read 1 Nov 2026',
     license: NASA_MEDIA,
-    used: 'NASA’s own summary, 128.8 flying minutes covering 10.5 miles (17.0 kilometers), which the Mars page shows instead of a sum of the map paths.',
+    used: 'NASA’s own summary, 128.8 flying minutes covering 17.0 kilometers, which the Mars page shows instead of a sum of the map paths.',
   },
   {
     id: 'ingenuity-flight-72',
@@ -86,7 +86,7 @@ export const ORBIT_SOURCES: Source[] = [
     url: 'https://mars.nasa.gov/maps/location/?mission=M20',
     dated: 'Copied 1 Nov 2026',
     license: 'JPL image use policy, any purpose without prior permission. NASA/JPL-Caltech/University of Arizona/MSSS.',
-    used: '701 extra tiles of the M20_HiRISE_RGB_CTX_mosaic_25cm_v7 layer within 100 m (zoom 17) and 50 m (zoom 18) of every flight path, re-encoded as WebP, 4.6 MB.',
+    used: '701 extra tiles of the M20_HiRISE_RGB_CTX_mosaic_25cm_v7 layer within 100 m of every flight path at zoom 17 and 50 m at zoom 18, re-encoded as WebP, 4.6 MB.',
     note: 'The Mars map shows this HiRISE and CTX color mosaic with north up.',
   },
   {
@@ -101,17 +101,17 @@ export const ORBIT_SOURCES: Source[] = [
   },
   {
     id: 'pia25281',
-    title: 'Seismogram and Sonification of InSight’s Big Martian Quake (PIA25281)',
+    title: 'PIA25281, Seismogram and Sonification of InSight’s Big Martian Quake',
     publisher: 'NASA JPL Photojournal',
     url: 'https://photojournal.jpl.nasa.gov/catalog/PIA25281',
-    dated: 'Added 17 May 2022, quake on 4 May 2022 (sol 1,222)',
+    dated: 'Added 17 May 2022, quake on 4 May 2022, sol 1,222',
     license: `${NASA_MEDIA} Credit NASA/JPL-Caltech/CNES.`,
     used: 'The 31 s sound track of the video, the sonified signal of the estimated magnitude 5 quake, mixed to mono at 48 kbps, and its waveform.',
     note: 'NASA turned the seismometer signal into sound. The quake was on sol 1,222.',
   },
   {
     id: 'pia17045',
-    title: 'Voyager Captures Sounds of Interstellar Space (PIA17045)',
+    title: 'PIA17045, Voyager Captures Sounds of Interstellar Space',
     publisher: 'NASA JPL Photojournal',
     url: 'https://photojournal.jpl.nasa.gov/catalog/PIA17045',
     dated: 'Added 12 Sep 2013, recorded Oct to Nov 2012 and Apr to May 2013',
@@ -121,7 +121,7 @@ export const ORBIT_SOURCES: Source[] = [
   },
   {
     id: 'lroc-pds',
-    title: 'LROC NAC digital terrain model orthoimages (RDR, NAC_DTM)',
+    title: 'LROC NAC digital terrain model orthoimages, RDR NAC_DTM',
     publisher: 'LROC Science Operations Center, Arizona State University, at the PDS Imaging Node',
     url: 'https://pds.mcp.nasa.gov/data/store/img/lunar_reconnaissance_orbiter/pds4/lroc/lro-l-lroc-5-rdr/LROLRC_2001/DATA/SDP/NAC_DTM/',
     dated: 'Read 1 Nov 2026',
@@ -136,12 +136,12 @@ export const ORBIT_SOURCES: Source[] = [
     url: siteMaps.moon.page,
     dated: 'Released 6 Sep 2019, map file read 2 Nov 2026',
     license: 'The SVS help page says all SVS content is in the public domain unless otherwise noted. Credit NASA’s Scientific Visualization Studio.',
-    used: `The Moon map at the top of the Orbit page, cut from ${siteMaps.moon.file_url.split('/').pop()} (8192 by 4096 px, centered on 0° longitude) between ${Math.round(siteMaps.moon.west)}° and ${Math.round(siteMaps.moon.east)}° longitude and ${Math.round(siteMaps.moon.south)}° and ${Math.round(siteMaps.moon.north)}° latitude.`,
+    used: `The Moon map at the top of the Orbit page, cut from ${siteMaps.moon.file_url.split('/').pop()}, 8192 by 4096 px and centered on 0° longitude, between ${Math.round(siteMaps.moon.west)}° and ${Math.round(siteMaps.moon.east)}° longitude and ${Math.round(siteMaps.moon.south)}° and ${Math.round(siteMaps.moon.north)}° latitude.`,
     note: 'The map is built from more than 100,000 LRO Wide Angle Camera images. Each pin sits at its site’s NSSDCA latitude and longitude on this grid.',
   },
   {
     id: 'usgs-mdim21-color',
-    title: 'Mars Viking Colorized Global Mosaic 232m (MDIM 2.1)',
+    title: 'Mars Viking Colorized Global Mosaic 232m, MDIM 2.1',
     publisher: 'USGS Astrogeology Science Center, from NASA Ames',
     url: siteMaps.mars.page,
     dated: 'Published 2 Feb 2009, read 2 Nov 2026',
@@ -174,8 +174,8 @@ export const ORBIT_SOURCES: Source[] = [
     url: 'https://www.uahirise.org/',
     dated: 'Downloaded 1 Nov 2026',
     license: HIRISE,
-    used: 'Crops of the PIA01881 (PSP_001521_2025) and PIA01882 (PSP_001501_2280) overviews, ESP_021925_1650 (Spirit), ESP_050177_1780 (Opportunity’s lander), ESP_058005_1845 and PIA26515 (InSight), and PIA22223 figures 1 and 2 (Phoenix, PSP_009290_2485 and ESP_053451_2485), each shown with its own credit. The PDS labels of these observations give the map scales.',
-    note: 'Mars landing coordinates on the Orbit page are from NSSDCA, except Spirit and Phoenix, which are from the PDS Geosciences Node. Each lilac ring on a HiRISE view is placed from what NASA or HiRISE published for that image. Viking 1 and 2 use the end of the Lander leader line in NASA’s annotated figure 1, which has the same pixels as the plain overview the view is cut from. Spirit is the brightest spot, as the HiRISE caption says. Opportunity’s lander is the hardware at the center of Eagle crater, as the HiRISE caption says. Phoenix is the feature the PIA22223 caption calls the lander (top). InSight is the bright spot with two round solar arrays in the full resolution hardware cutout and labeled release, and the same shape in PIA26515. Scale bars use MAP_SCALE from each observation’s PDS label (0.25 m, corrected east to west for latitude and for any scaling on this site), checked for Viking 1 against the RED browse image and for Phoenix against the about 300 m width in the caption. PIA26515 names no observation, so its bar uses the 100 m bar NASA printed on it. Viking 2, Spirit and Opportunity have no scale bar, because the scale of those cuts could not be checked. The zoomed inset shows the same pixels at 3 times the size.',
+    used: 'Orbit page. Viking 1, PIA01881 from PSP_001521_2025, and Viking 2, PIA01882 from PSP_001501_2280, both NASA/JPL-Caltech/University of Arizona. Spirit, ESP_021925_1650, and Opportunity, ESP_050177_1780, both NASA/JPL-Caltech/UArizona. InSight, ESP_058005_1845 by NASA/JPL-Caltech/UArizona and PIA26515 by NASA/JPL/University of Arizona. Phoenix, PIA22223 figures 1 and 2 from PSP_009290_2485 and ESP_053451_2485, NASA/JPL-Caltech/Univ. of Arizona. The PDS labels of these observations give the map scales.',
+    note: 'Mars landing coordinates on the Orbit page are from NSSDCA, except Spirit and Phoenix, which are from the PDS Geosciences Node. Each lilac ring on a HiRISE view is placed from what NASA or HiRISE published for that image. Viking 1 and 2 use the end of the Lander leader line in NASA’s annotated figure 1, which has the same pixels as the plain overview the view is cut from. Spirit is the brightest spot, as the HiRISE caption says. Opportunity’s lander is the hardware at the center of Eagle crater, as the HiRISE caption says. Phoenix is the top feature, which the PIA22223 caption calls the lander. InSight is the bright spot with two round solar arrays in the full resolution hardware cutout and labeled release, and the same shape in PIA26515. Scale bars use the 0.25 m MAP_SCALE from each observation’s PDS label, corrected east to west for latitude and for any scaling on this site, checked for Viking 1 against the RED browse image and for Phoenix against the about 300 m width in the caption. PIA26515 names no observation, so its bar uses the 100 m bar NASA printed on it. Viking 2, Spirit and Opportunity have no scale bar, because the scale of those cuts could not be checked. The zoomed inset shows the same pixels at 3 times the size.',
   },
   {
     id: 'orbit-photos',
@@ -185,7 +185,7 @@ export const ORBIT_SOURCES: Source[] = [
     dated: 'Downloaded 1 and 2 Nov 2026',
     license: `${NASA_MEDIA} No logos or insignia are used. Shown unaltered apart from crop and scale.`,
     note: 'The Goddard laser photo is cropped to leave out a person at the station. The Valinor Hills view is a full resolution crop of PIA26237 around Ingenuity, and the lilac ring around Ingenuity is drawn by this site. PIA25881 is enhanced color as NASA released it.',
-    used: `Mars: ${used('mars-')}. Moon: ${used('moon-')}. Orbit: ${used('orbit-')
+    used: `Moon page: ${used('moon-')}. Mars page: ${used('mars-')}. Orbit page: ${used('orbit-')
       .split(', ')
       .filter((s) => !/^(ESP|PSP)_|^PIA(01881|01882|26515|22223)/.test(s))
       .join(', ')}.`,

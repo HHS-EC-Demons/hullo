@@ -22,7 +22,6 @@ export interface Point {
 export interface SeriesChartProps {
   points: Point[];
   marker: Point | null;
-  markerLabel: string;
   refY?: { y: number; label: string };
   label: string;
   xTitle: string;
@@ -41,7 +40,7 @@ function useBox() {
   return { parentRef, width, height, ready: width > 0 && height > 0 };
 }
 
-function SeriesPlot({ points, marker, markerLabel, refY, label, xTitle, yTitle, tickX, tickY, readX, readY, xTickValues, width, height }: SeriesChartProps & { width: number; height: number }) {
+function SeriesPlot({ points, marker, refY, label, xTitle, yTitle, tickX, tickY, readX, readY, xTickValues, width, height }: SeriesChartProps & { width: number; height: number }) {
   const liveId = useId();
   const [at, setAt] = useState<number | null>(null);
   const innerW = Math.max(width - MARGIN.left - MARGIN.right, 40);
@@ -157,7 +156,6 @@ function SeriesPlot({ points, marker, markerLabel, refY, label, xTitle, yTitle, 
             <span className="hl-tip-key" aria-hidden="true" />
             <span className="hl-tip-v">{readY(shown.y)}</span>
           </div>
-          {marker && at === markerIndex && <div className="cc-tip-note">{markerLabel}</div>}
         </TooltipWithBounds>
       )}
       <p id={liveId} className="sr-only" aria-live="polite">
@@ -246,7 +244,7 @@ function FlightPlot({ flights, picked, onPick, readDist, readTime, width, height
             hideAxisLine
             hideTicks
             tickLabelProps={() => ({ ...TICK, textAnchor: 'end', dx: -6, dy: 4 })}
-            label="distance (m)"
+            label="distance, m"
             labelOffset={48}
             labelProps={{ ...TICK, textAnchor: 'middle' }}
           />
@@ -259,7 +257,7 @@ function FlightPlot({ flights, picked, onPick, readDist, readTime, width, height
             tickStroke="var(--edge)"
             tickLength={5}
             tickLabelProps={() => ({ ...TICK, textAnchor: 'middle', dy: 2 })}
-            label="time in the air (s)"
+            label="time in air, s"
             labelOffset={14}
             labelProps={{ ...TICK, textAnchor: 'middle' }}
           />
