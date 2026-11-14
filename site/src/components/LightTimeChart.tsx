@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { dailyHours, hmsText, type DeepSpaceData } from '../lib/lighttime';
-import { utcDate } from '../lib/client';
+import { utcDate, utcMonth } from '../lib/client';
 
 interface Props {
   data: DeepSpaceData;
@@ -26,7 +26,6 @@ function hoursLabel(h: number): string {
   return `${Number.isInteger(h) ? h : h.toFixed(h * 10 === Math.round(h * 10) ? 1 : 2)} h`;
 }
 
-const monthFmt = new Intl.DateTimeFormat(undefined, { month: 'short', timeZone: 'UTC' });
 
 export default function LightTimeChart({ data, probe, name, now }: Props) {
   const box = useRef<HTMLDivElement>(null);
@@ -127,7 +126,7 @@ export default function LightTimeChart({ data, probe, name, now }: Props) {
             ))}
             {months.map((m) => (
               <text key={m} className="ltc-tick" x={x(m)} y={H - 10} textAnchor="middle">
-                {new Date(m).getUTCMonth() === 0 ? new Date(m).getUTCFullYear() : monthFmt.format(m)}
+                {new Date(m).getUTCMonth() === 0 ? new Date(m).getUTCFullYear() : utcMonth(m)}
               </text>
             ))}
             {showDay && (
