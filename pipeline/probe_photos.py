@@ -45,7 +45,7 @@ PHOTOS = [
         "credit": "NASA/JPL-Caltech",
         "date": "1977-03-23",
         "caption": "Engineers work on Voyager 2 on 23 Mar 1977.",
-        "alt": "Voyager 2 on a test stand under its large white dish antenna, with engineers on a platform beside it.",
+        "alt": "Voyager 2 on a test stand under its large white dish antenna, with engineers on a platform beside the probe.",
         "crop": (0.0, 0.05, 1.0, 1.0),
     },
     {
@@ -63,7 +63,7 @@ PHOTOS = [
         "credit": "NASA",
         "date": "1972-02-26",
         "caption": "Pioneer 10 at Cape Kennedy before its launch in 1972.",
-        "alt": "Pioneer 10, a silver spacecraft under a wide round dish, on a stand in a clean room with two people beside it.",
+        "alt": "Pioneer 10, a silver spacecraft under a wide round dish, on a stand in a clean room with two people beside the spacecraft.",
         "crop": (0.172, 0.0, 0.828, 1.0),
     },
     {
@@ -71,7 +71,7 @@ PHOTOS = [
         "id": "KSC-73P-0116",
         "credit": "NASA",
         "date": "1973-03-16",
-        "caption": "Pioneer 11, then called Pioneer G, waits for its nose cover at Cape Kennedy on 16 Mar 1973.",
+        "caption": "Pioneer 11, then called Pioneer G, between the open halves of its nose cover at Cape Kennedy on 16 Mar 1973.",
         "alt": "Pioneer 11 under its round dish antenna, standing between the two open halves of its rocket nose cover.",
         "crop": (0.0, 0.28, 1.0, 1.0),
     },

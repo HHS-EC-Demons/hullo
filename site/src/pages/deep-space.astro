@@ -43,7 +43,7 @@ for (const p of probePhotos) {
 <Base title="Deep space" current="deep-space" preload={['data/deep-space.json']} description="Light time and message travel time to Voyager 1 and 2, New Horizons and Pioneer 10 and 11, from JPL Horizons.">
   <header class="wrap page-head">
     <h1>Deep space</h1>
-    <p>Pick one of 5 probes on their way out of the solar system and send it a message.</p>
+    <p>Send a message to one of 5 probes on their way out of the solar system.</p>
   </header>
 
   <section class="wrap" aria-label="Light time">
@@ -51,18 +51,18 @@ for (const p of probePhotos) {
   </section>
 
   <section class="wrap section listen" aria-labelledby="listen-h">
-    <h2 id="listen-h">Interstellar plasma, heard by Voyager 1</h2>
+    <h2 id="listen-h">Interstellar plasma, recorded by Voyager 1</h2>
     <SoundClip
       client:visible
       src={plasma.file}
       peaks={plasma.peaks}
       duration={plasma.duration_s}
-      label="Voyager 1 hearing interstellar plasma"
+      label="Voyager 1 plasma wave recording"
       stampId="voyager1"
-      stampDetail="Heard interstellar plasma, recorded Oct 2012 to May 2013"
+      stampDetail="Played the plasma wave recording from Oct 2012 to May 2013"
     >
       Voyager 1’s plasma wave instrument picked up vibrations of dense interstellar plasma in Oct and Nov 2012 and in Apr and May
-      2013. The sound plays back the frequency and strength of those waves. Full clip, 61 s. PIA17045, released 12 Sep 2013,
+      2013. The sound plays the frequency and strength of those waves. Full clip, 61 s. PIA17045, released 12 Sep 2013,
       NASA/JPL-Caltech/University of Iowa.
     </SoundClip>
   </section>
@@ -80,7 +80,7 @@ for (const p of probePhotos) {
           alt="A tiny pale blue dot of light inside a faint band of sunlight against dark space."
         />
         <figcaption class="credit">
-          Earth, the speck in the sunbeam, seen by Voyager 1 from about 6 billion km on 14 Feb 1990. {photo.nasa_id},
+          Earth, the speck in the sunbeam, photographed by Voyager 1 from about 6 billion km on 14 Feb 1990. {photo.nasa_id},
           {photo.credit}.
         </figcaption>
       </figure>
@@ -93,7 +93,7 @@ for (const p of probePhotos) {
           </span>
         </p>
         <p class="note">
-          Light time here is the straight line distance from Earth’s center at this instant, divided by the speed of light. That is
+          Light time here is the straight-line distance from Earth’s center at this instant, divided by the speed of light. That is
           the convention behind NASA’s one light-day date. Horizons observer tables print a few seconds less, because they give
           the probe’s position when the light now arriving left it. A message takes a few seconds more, because the probe keeps
           moving while the message travels. Pioneer positions are extrapolated from old tracking. <a href={href('sources/')}
