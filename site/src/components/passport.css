@@ -1,0 +1,315 @@
+.pp {
+  display: grid;
+  gap: clamp(40px, 6vw, 72px);
+}
+
+.pp-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 24px 48px;
+  align-items: end;
+  padding-block: 28px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.pp-count {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 12px;
+}
+.pp-count-n {
+  color: var(--laser);
+  font-size: var(--fs-display);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+.pp-count-of {
+  color: var(--muted);
+  font-size: var(--fs-md);
+}
+
+.pp-print {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 16px;
+  align-items: start;
+}
+.pp-print button {
+  margin-top: 30px;
+}
+.pp-field {
+  display: grid;
+  gap: 6px;
+}
+.pp-field label {
+  font-weight: 600;
+}
+.pp-hint {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+}
+
+.pp-empty {
+  color: var(--muted);
+  font-size: var(--fs-md);
+  margin-top: -24px;
+}
+
+.pp-group-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.pp-group-title a {
+  color: var(--text);
+  text-decoration: none;
+}
+.pp-group-title a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+}
+.pp-group-count {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.pp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 20px;
+}
+.pp-grid > li {
+  display: grid;
+  min-height: 10.5rem;
+}
+
+.pp-stamp {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
+  padding: 16px 18px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 4px var(--bg), inset 0 0 0 5px color-mix(in oklab, var(--lilac) 55%, var(--bg));
+  color: var(--line);
+  text-align: center;
+  transform: rotate(var(--tilt, 0deg));
+}
+.pp-stamp-where {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+}
+.pp-stamp-name {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.pp-stamp-detail {
+  font-size: var(--fs-sm);
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  text-wrap: balance;
+}
+.pp-stamp-date {
+  margin-top: 2px;
+  padding-top: 6px;
+  border-top: 1px solid color-mix(in oklab, var(--lilac) 45%, var(--bg));
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.pp-slot {
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: 18px 20px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: var(--muted);
+  text-decoration: none;
+  transition: border-color 150ms var(--ease), background-color 150ms var(--ease);
+}
+.pp-slot:hover {
+  border-color: var(--edge);
+  background: var(--raised);
+}
+.pp-slot:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.pp-slot-name {
+  color: var(--text);
+  font-weight: 700;
+}
+.pp-slot-hint {
+  font-size: var(--fs-sm);
+  text-wrap: pretty;
+}
+
+@media (max-width: 860px) {
+  .pp-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .pp-print {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pp-print button {
+    margin-top: 0;
+    width: 100%;
+  }
+  .pp-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .pp-grid > li {
+    min-height: 8.5rem;
+  }
+  .pp-stamp {
+    transform: rotate(calc(var(--tilt, 0deg) * 0.4));
+  }
+}
+
+.cert {
+  --ink: var(--violet);
+  --ink-soft: color-mix(in oklab, var(--violet) 62%, #fff);
+  --stamp: color-mix(in oklab, var(--lilac) 40%, var(--violet));
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: 3mm;
+  width: 100%;
+  color: var(--ink);
+  background: #fff;
+  font-family: var(--sans);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.cert-head,
+.cert-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8mm;
+}
+.cert-mark {
+  font-size: 22pt;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+.cert-date,
+.cert-foot {
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 9pt;
+}
+.cert-title {
+  margin-top: 2mm;
+  font-size: 28pt;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.cert-line {
+  max-width: 190mm;
+  font-size: 12pt;
+  color: var(--ink-soft);
+}
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2.5mm 3mm;
+  align-content: start;
+  margin-top: 3mm;
+}
+.cert-stamp {
+  display: grid;
+  gap: 1mm;
+  align-content: center;
+  min-height: 19mm;
+  padding: 2mm 2.5mm;
+  border: 0.6mm solid var(--stamp);
+  border-radius: 1.5mm;
+  break-inside: avoid;
+}
+.cert-stamp-name {
+  font-size: 8.5pt;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.cert-stamp-detail,
+.cert-stamp-date {
+  font-family: var(--mono);
+  font-size: 7pt;
+  line-height: 1.3;
+}
+.cert-stamp-detail {
+  color: var(--stamp);
+}
+.cert-stamp-date {
+  color: var(--ink-soft);
+}
+
+.pp-cert-wrap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.pp-cert-wrap .cert {
+  width: 273mm;
+  white-space: normal;
+}
+
+@page {
+  size: landscape;
+  margin: 12mm;
+}
+
+@media print {
+  html:has(.pp),
+  html:has(.pp) body {
+    background: #fff !important;
+  }
+  body:has(.pp) > :not(main),
+  body:has(.pp) main > :not(:has(.pp)),
+  .pp > :not(.pp-cert-wrap) {
+    display: none !important;
+  }
+  body:has(.pp) main > :has(.pp) {
+    padding: 0;
+    max-width: none;
+  }
+  .pp {
+    display: block;
+  }
+  .pp-cert-wrap {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+  }
+  .pp-cert-wrap .cert {
+    width: 100%;
+  }
+}
