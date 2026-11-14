@@ -24,6 +24,7 @@
 .ps-big {
   display: block;
   contain: layout paint;
+  will-change: transform;
   color: var(--laser);
   font-size: clamp(2.25rem, 11.2vw, 9.5rem);
   line-height: 0.98;
@@ -73,6 +74,8 @@
 }
 
 .ps-km-n {
+  display: inline-block;
+  will-change: transform;
   font-size: var(--fs-lg);
   font-weight: 600;
   letter-spacing: -0.02em;

@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { rangeAt, type DeepSpaceData } from '../lib/lighttime';
 import { km } from '../lib/client';
-import { setText, useFrames } from '../lib/frames';
+import { dropClass, setText, useFrames } from '../lib/frames';
 
 interface Props {
   data: DeepSpaceData | null;
@@ -47,8 +47,8 @@ export default function LiveLight({ data, probe, name, headline, error }: Props)
             kmL.current,
             `from Earth’s center, ${Math.abs(r.rr_km_s).toFixed(2)} km ${r.rr_km_s >= 0 ? 'farther' : 'closer'} each second`,
           );
-          big.current?.classList.remove('pending');
-          root.current?.classList.remove('pending');
+          dropClass(big.current, 'pending');
+          dropClass(root.current, 'pending');
         }
       : null,
     [data, probe],
