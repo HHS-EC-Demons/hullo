@@ -1,13 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 import { href } from '../lib/paths';
+import { buttonVariants } from '../components/ui/button';
 ---
 
 <Base title="No signal" description="This address does not lead to a page.">
   <header class="wrap page-head lost">
     <h1>No signal at this address</h1>
     <p>The page may have moved. Every chapter starts from the home page.</p>
-    <p class="back"><a class="btn" href={href('')}>Go to the home page</a></p>
+    <p class="back"><a class={buttonVariants()} href={href('')}>Go to the home page</a></p>
   </header>
 </Base>
 
@@ -17,9 +18,5 @@ import { href } from '../lib/paths';
   }
   .back {
     margin-top: 32px;
-  }
-  .back .btn {
-    text-decoration: none;
-    color: var(--on-laser);
   }
 </style>

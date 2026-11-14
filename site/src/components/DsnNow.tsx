@@ -94,7 +94,7 @@ export default function DsnNow() {
       </p>
 
       <div className="dsn-story">
-        {!feed && !failed && <p className="dsn-big pending">Loading the feed</p>}
+        {!feed && !failed && <p className="dsn-big pending">Loading the feed…</p>}
         {!feed && failed && <p className="dsn-big">The DSN Now feed did not load. The next try is in {POLL_MS / 1000} s.</p>}
         {feed && story.length > 0 &&
           story.map((c) => {

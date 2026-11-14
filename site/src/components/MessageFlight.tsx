@@ -181,7 +181,7 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
 
       <div className="fl-act">
         <Button variant="quiet" size="sm" onClick={() => onShare(msg)} disabled={sharing}>
-          {sharing ? 'Making the picture' : shareLabel}
+          {sharing ? 'Making the picture…' : shareLabel}
         </Button>
       </div>
     </m.li>
@@ -235,7 +235,7 @@ export default function MessageFlight({ data, messages }: Props) {
           setNote('The picture is saved to your downloads.');
         }
       } catch {
-        if (live) setNote('The picture could not be made in this browser.');
+        if (live) setNote('The picture could not be made in this browser. Try again, or try another browser.');
       } finally {
         if (live) {
           setBusy(null);
