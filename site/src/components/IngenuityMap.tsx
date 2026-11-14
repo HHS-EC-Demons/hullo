@@ -1,12 +1,18 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { lazy, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import type { GeoJSONSource, LngLatBoundsLike, Map as MapLibreMap, StyleSpecification } from 'maplibre-gl';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import ChartFrame from '@/components/ui/chart-frame';
+import SoundClip, { type SoundClipProps } from './SoundClip';
+import JezeroClock from './JezeroClock';
 import { stamp } from '../lib/passport';
 import { asset } from '../lib/paths';
-import { useJson, useReducedMotion, utcDate } from '../lib/client';
+import { useJson, useReducedMotion } from '../lib/client';
+import { calDate } from '../lib/dates';
 import type { Pic } from '../lib/photos';
 import './ingenuity.css';
+
+const FlightsChart = lazy(() => import('./FlightsChart'));
 
 export interface Flight {
   n: number;
@@ -43,7 +49,6 @@ export interface FlightPhoto {
 
 const num = { format: (v: number) => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') };
 const one = { format: (v: number) => v.toFixed(1) };
-const speed = { format: (v: number) => String(Number(v.toFixed(2))) };
 
 function css(name: string, fallback: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
@@ -61,10 +66,6 @@ function collection(features: ReturnType<typeof line | typeof point>[]) {
   return { type: 'FeatureCollection' as const, features };
 }
 
-function total(m: number): string {
-  return m < 1000 ? `${num.format(m)} m` : `${one.format(m / 1000)} km`;
-}
-
 let protocolReady = false;
 
 function sized(el: HTMLElement): Promise<void> {
@@ -74,14 +75,40 @@ function sized(el: HTMLElement): Promise<void> {
   });
 }
 
-export default function IngenuityMap({ photos, opening, flights }: { photos: FlightPhoto[]; opening: Flight; flights: number }) {
+export interface RotorClip extends SoundClipProps {
+  title: string;
+  what: string;
+  date: string;
+  credit: string;
+}
+
+export default function IngenuityMap({
+  photos,
+  opening,
+  flights,
+  head,
+  photo,
+  rotor,
+  chartTitle,
+}: {
+  photos: FlightPhoto[];
+  opening: Flight;
+  flights: number;
+  head?: ReactNode;
+  photo?: ReactNode;
+  rotor: RotorClip;
+  chartTitle: string;
+}) {
   const { data, error } = useJson<Ingenuity>('data/ingenuity.json');
   const reduced = useReducedMotion();
   const [n, setN] = useState(1);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   const [near, setNear] = useState(false);
+  const [chartNear, setChartNear] = useState(false);
   const picksId = useId();
+  const chartId = useId();
+  const chartBox = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   const first = useRef(true);
@@ -101,6 +128,14 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
     io.observe(el);
     return () => io.disconnect();
   }, [near]);
+
+  useEffect(() => {
+    const el = chartBox.current;
+    if (!el || chartNear) return;
+    const io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && (setChartNear(true), io.disconnect()), { rootMargin: '200px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [chartNear]);
 
   useEffect(() => {
     if (!data || !near || !box.current || map.current) return;
@@ -256,73 +291,93 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
   const flight = data ? data.flights[n - 1] : n === opening.n ? opening : undefined;
   const count = data?.flights.length ?? flights;
   const shot = photos.find((p) => p.n === n);
-  const blank = ' ';
+  const blank = '\u2007';
 
   return (
     <div className="ig">
-      <div className="ig-read" aria-live="polite">
-        <p className="ig-flight">
-          <span className="ig-label">Flight</span>
-          <span className="ig-n mono">{flight ? flight.n : blank}</span>
-          <span className="ig-of">of {count}</span>
-        </p>
-        <p className="ig-when">
-          {flight ? (
-            <>
-              <span className="mono">{flight.date}</span>, sol <span className="mono">{flight.sol}</span>
-            </>
-          ) : (
-            blank
-          )}
-        </p>
-        <dl className="ig-stats">
-          <div>
-            <dt>Distance</dt>
-            <dd className="mono">{flight ? (flight.hover ? <span className="ig-hover">Hover</span> : `${num.format(flight.dist_m)} m`) : blank}</dd>
+      <div className="wrap ig-hero">
+        <div className="ig-left">
+          <div className="ig-head">{head}</div>
+          <JezeroClock />
+          <div className="ig-read" aria-live="polite">
+            <p className="ig-flight">
+              <span className="ig-label">Flight</span>
+              <span className="ig-n mono">{flight ? flight.n : blank}</span>
+              <span className="ig-of">of {count}</span>
+            </p>
+            <p className="ig-when">
+              {flight ? (
+                <>
+                  <span className="mono">{calDate(flight.date)}</span>, sol <span className="mono">{flight.sol}</span>
+                </>
+              ) : (
+                blank
+              )}
+            </p>
+            <dl className="ig-stats">
+              <div>
+                <dt>Distance</dt>
+                <dd className="mono">{flight ? (flight.hover ? <span className="ig-hover">Hover</span> : `${num.format(flight.dist_m)} m`) : blank}</dd>
+              </div>
+              <div>
+                <dt>Height</dt>
+                <dd className="mono">{flight ? `${num.format(flight.max_alt_m)} m` : blank}</dd>
+              </div>
+              <div>
+                <dt>Time</dt>
+                <dd className="mono">{flight ? `${one.format(flight.duration_s)} s` : blank}</dd>
+              </div>
+            </dl>
           </div>
-          <div>
-            <dt>Height</dt>
-            <dd className="mono">{flight ? `${num.format(flight.max_alt_m)} m` : blank}</dd>
+          <div className="ig-control">
+            <Slider
+              thumbLabel="Flight"
+              thumbValueText={(v) => (data?.flights[v - 1] ? `Flight ${v}, ${calDate(data.flights[v - 1].date)}` : `Flight ${v}`)}
+              min={1}
+              max={count}
+              step={1}
+              value={[n]}
+              disabled={!data}
+              onValueChange={([v]) => pick(v)}
+            />
+            <div className="ig-steps">
+              <Button type="button" variant="secondary" aria-label="Previous flight" onClick={() => pick(n - 1)} disabled={!data || n <= 1}>
+                Previous
+              </Button>
+              <Button type="button" variant="secondary" aria-label="Next flight" onClick={() => pick(n + 1)} disabled={!data || n >= count}>
+                Next
+              </Button>
+            </div>
           </div>
-          <div>
-            <dt>Time</dt>
-            <dd className="mono">{flight ? `${one.format(flight.duration_s)} s` : blank}</dd>
+        </div>
+        <div className="ig-right">
+          {photo}
+          <div className="ig-sound">
+            <h2 className="ig-h2">{rotor.title}</h2>
+            <SoundClip {...rotor}>
+              {rotor.what}, <span className="mono">{rotor.date}</span>. <span data-credit="">{rotor.credit}.</span>
+            </SoundClip>
           </div>
-          <div>
-            <dt>Speed</dt>
-            <dd className="mono">{flight ? `${speed.format(flight.max_speed_m_s)} m/s` : blank}</dd>
-          </div>
-          <div>
-            <dt>Total</dt>
-            <dd className="mono">{flight ? total(flight.total_m) : blank}</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div className="ig-control">
-        <Slider
-          thumbLabel="Flight"
-          thumbValueText={(v) => (data?.flights[v - 1] ? `Flight ${v}, ${utcDate(Date.parse(`${data.flights[v - 1].date}T12:00:00Z`))}` : `Flight ${v}`)}
-          min={1}
-          max={count}
-          step={1}
-          value={[n]}
-          disabled={!data}
-          onValueChange={([v]) => pick(v)}
-        />
-        <div className="ig-steps">
-          <Button type="button" variant="secondary" aria-label="Previous flight" onClick={() => pick(n - 1)} disabled={!data || n <= 1}>
-            Previous
-          </Button>
-          <Button type="button" variant="secondary" aria-label="Next flight" onClick={() => pick(n + 1)} disabled={!data || n >= count}>
-            Next
-          </Button>
         </div>
       </div>
 
-      <div className="ig-stage">
+      <section className="wrap ig-chartsec" aria-labelledby={chartId}>
+        <h2 id={chartId} className="ig-h2">
+          {chartTitle}
+        </h2>
+        <div ref={chartBox}>
+          <ChartFrame className="h-[300px] md:h-[340px]">
+            {chartNear && data && <FlightsChart flights={data.flights} picked={n} onPick={pick} />}
+          </ChartFrame>
+        </div>
+      </section>
+
+      <div className="wrap ig-stage">
         <div className="ig-mapwrap">
           <div className="ig-map" ref={box} role="region" aria-label="Map of Jezero crater" />
+          <p className="credit" data-credit="">
+            M20_HiRISE_RGB_CTX_mosaic_25cm_v7, NASA/JPL-Caltech/University of Arizona/MSSS.
+          </p>
         </div>
         <aside className="ig-photo" aria-label="Photos from Ingenuity’s own cameras">
           <div className="ig-frame" style={{ aspectRatio: shot ? `${shot.pic.width} / ${shot.pic.height}` : '4 / 3' }}>
@@ -339,25 +394,22 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
           <p className="credit ig-caption">
             {shot ? (
               <>
-                <span className="mono">{shot.date}</span>. <span data-credit>{shot.credit}.</span>
+                <span className="mono">{calDate(shot.date)}</span>. <span data-credit>{shot.credit}.</span>
               </>
             ) : (
               blank
             )}
           </p>
-          <p id={picksId} className="ig-picks-label">
-            Ingenuity’s photos
-          </p>
-          <div className="ig-picks" role="group" aria-labelledby={picksId}>
+          <div className="ig-picks" role="group" aria-label="Flights with a photo from Ingenuity" id={picksId}>
             {photos.map((p) => (
-              <Button key={p.n} type="button" size="sm" variant="secondary" aria-pressed={p.n === n} aria-label={`Flight ${p.n}`} onClick={() => pick(p.n)} className="mono">
+              <Button key={p.n} type="button" size="sm" variant="secondary" aria-pressed={p.n === n} aria-label={`Flight ${p.n} photo`} onClick={() => pick(p.n)} className="mono">
                 {p.n}
               </Button>
             ))}
           </div>
         </aside>
       </div>
-      {(error || mapFailed) && <p className="note">The map did not load. Reload the page to try again.</p>}
+      {(error || mapFailed) && <p className="wrap note">The map did not load. Reload the page to try again.</p>}
     </div>
   );
 }
