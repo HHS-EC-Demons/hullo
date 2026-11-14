@@ -1,0 +1,30 @@
+{
+ "moon": {
+  "file": "orbit-map-moon.jpg",
+  "west": -34.013671875,
+  "east": 43.9892578125,
+  "north": 31.9921875,
+  "south": -15.99609375,
+  "width": 1775,
+  "height": 1092,
+  "id": "SVS 4720",
+  "year": 2019,
+  "credit": "NASA's Scientific Visualization Studio",
+  "page": "https://svs.gsfc.nasa.gov/4720/",
+  "file_url": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_poles_8k.tif"
+ },
+ "mars": {
+  "file": "orbit-map-mars.jpg",
+  "west": 60.0,
+  "east": 420.0,
+  "north": 90.0,
+  "south": -90.0,
+  "width": 2400,
+  "height": 1200,
+  "id": "MDIM 2.1",
+  "year": 2009,
+  "credit": "USGS Astrogeology Science Center, NASA Ames",
+  "page": "https://astrogeology.usgs.gov/search/map/mars_viking_colorized_global_mosaic_232m",
+  "file_url": "https://astrogeology.usgs.gov/ckan/dataset/7131d503-cdc9-45a5-8f83-5126c0fd397e/resource/5ea881c6-01b3-41fa-a7af-42d2131b54f1/download/mars_viking_mdim21_clrmosaic_1km.jpg"
+ }
+}
