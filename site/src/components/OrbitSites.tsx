@@ -105,12 +105,12 @@ function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
           </HandleRoot>
         </Root>
       </Provider>
-      <figcaption className="credit">{site.then.caption} Left is {site.then.when}, right is {site.now.when}. Drag the handle or use the arrow keys.</figcaption>
+      <figcaption className="credit">{site.then.caption} Drag the handle or use the arrow keys.</figcaption>
     </figure>
   );
 }
 
-export default function OrbitSites({ label, sites, first }: { label: string; sites: SiteProps[]; first: string }) {
+export default function OrbitSites({ label, sites, first, eager = false }: { label: string; sites: SiteProps[]; first: string; eager?: boolean }) {
   const [active, setActive] = useState(first);
   const slid = useRef(new Set<string>());
 
@@ -128,30 +128,36 @@ export default function OrbitSites({ label, sites, first }: { label: string; sit
 
   return (
     <Tabs value={active} onValueChange={open} className="os">
-      <TabsList aria-label={label} className="os-list">
-        {sites.map((s) => (
-          <TabsTrigger key={s.id} value={s.id}>
-            {s.name}
-          </TabsTrigger>
-        ))}
-      </TabsList>
+      <div className="wrap">
+        <TabsList aria-label={label} className="os-list">
+          {sites.map((s) => (
+            <TabsTrigger key={s.id} value={s.id}>
+              {s.name}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </div>
       {sites.map((s) => (
         <TabsContent key={s.id} value={s.id} className="os-panel">
           {s.pair ? (
-            <Pair site={s} onSlide={() => slide(s)} />
+            <div className="wrap">
+              <Pair site={s} onSlide={() => slide(s)} />
+            </div>
           ) : (
             <div className="os-pair">
-              <View view={s.then} eager={s.id === first} />
-              <View view={s.now} eager={s.id === first} />
+              <View view={s.then} eager={eager && s.id === first} />
+              <View view={s.now} />
             </div>
           )}
-          <p className="os-meta">
+          <p className="wrap os-meta">
             <span className="mono">{s.where}</span>
             <span className="mono">{s.apart}</span>
           </p>
           {s.sound && (
-            <div className="os-sound">
-              <SoundClip {...s.sound}>{s.sound.caption}</SoundClip>
+            <div className="wrap">
+              <div className="os-sound">
+                <SoundClip {...s.sound}>{s.sound.caption}</SoundClip>
+              </div>
             </div>
           )}
         </TabsContent>
