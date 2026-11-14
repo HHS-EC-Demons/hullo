@@ -158,12 +158,6 @@
   min-height: 2.9em;
 }
 
-.ig-picks-label {
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: var(--fs-xs);
-}
-
 .ig-picks {
   display: flex;
   flex-wrap: wrap;
@@ -255,5 +249,106 @@
   }
   .ig-steps > * {
     flex: 1;
+  }
+}
+
+.ig-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  gap: 32px clamp(32px, 4.5vw, 64px);
+  align-items: start;
+  padding-top: clamp(28px, 4.5vw, 64px);
+}
+
+.ig-left,
+.ig-right {
+  display: grid;
+  gap: 26px;
+  align-content: start;
+  min-width: 0;
+}
+
+.ig-hero .ig-read {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.ig-hero .ig-flight {
+  grid-row: auto;
+}
+
+.ig-hero .ig-n {
+  font-size: clamp(3.5rem, 9vw, 6.5rem);
+}
+
+.ig-hero .ig-stats {
+  grid-template-columns: repeat(3, max-content);
+  column-gap: clamp(16px, 4.5vw, 28px);
+}
+
+@media (max-width: 400px) {
+  .ig-hero .ig-stats dd {
+    min-width: 5ch;
+  }
+}
+
+.ig-h2 {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.ig-sound {
+  display: grid;
+  gap: 14px;
+}
+
+.ig-chartsec {
+  display: grid;
+  gap: 18px;
+  margin-top: clamp(40px, 6vw, 80px);
+}
+
+.ig .ig-stage {
+  margin-top: clamp(32px, 5vw, 64px);
+}
+
+.jc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+  padding-block: 12px;
+  border-block: 1px solid var(--rule);
+  font-size: var(--fs-md);
+}
+
+.jc-label {
+  font-weight: 700;
+}
+
+.jc-v {
+  color: var(--muted);
+}
+
+.jc-sol,
+.jc-time {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.jc-sol {
+  display: inline-block;
+  min-width: 5ch;
+}
+
+.jc-time {
+  min-width: 8ch;
+}
+
+@media (max-width: 860px) {
+  .ig-hero {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
