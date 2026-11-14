@@ -25,8 +25,8 @@ export default function NopePing() {
         Ping Voyager 1
       </Button>
       <p className="nope-ping-out" aria-live="polite">
-        {arrives !== null && <>Arrives {localStamp(arrives)}</>}
-        {failed && 'Distance data did not load'}
+        {arrives !== null && <>Arrives {localStamp(arrives, { label: false })}</>}
+        {failed && 'No data'}
       </p>
     </div>
   );
