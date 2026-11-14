@@ -135,6 +135,13 @@
     text-rendering: optimizeLegibility;
     scrollbar-color: var(--thumb) var(--bg);
     scrollbar-width: thin;
+    scroll-padding-top: 88px;
+  }
+
+  @media (max-width: 959px) {
+    html {
+      scroll-padding-top: 76px;
+    }
   }
 
   ::-webkit-scrollbar {
