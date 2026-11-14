@@ -4,8 +4,6 @@ import '@fontsource-variable/spline-sans-mono/wght.css';
 import '../styles/global.css';
 import { BRAND, BRAND_LINE, WORDMARK } from '../brand';
 import { href, asset } from '../lib/paths';
-import { readData } from '../lib/build-data';
-import { SILENT } from '../data/silent';
 import { STAMP_TOTAL } from '../data/stamps';
 import NavMenu, { type NavItem } from '../components/NavMenu';
 import sansFont from '@fontsource-variable/gabarito/files/gabarito-latin-wght-normal.woff2?url';
@@ -19,8 +17,6 @@ interface Props {
 }
 
 const { title, description = BRAND_LINE, current = '', preload = [] } = Astro.props;
-const orbitData = Object.values(import.meta.glob<{ ORBIT_SITES?: unknown[] }>('../data/orbit-sites.ts', { eager: true }))[0];
-const ORBIT_FIGURE = orbitData?.ORBIT_SITES ? `${orbitData.ORBIT_SITES.length} sites` : '';
 const pageTitle = title ? `${title} · ${BRAND}` : BRAND;
 const site = Astro.site ? new URL(import.meta.env.BASE_URL, Astro.site).toString() : '';
 const ogImage = site ? new URL('og.png?v=4', site).toString() : asset('og.png?v=4');
@@ -28,18 +24,14 @@ const ogImage = site ? new URL('og.png?v=4', site).toString() : asset('og.png?v=
 const pageFiles = Object.keys(import.meta.glob('../pages/**/*.astro'));
 const has = (name: string) => pageFiles.some((f) => f === `../pages/${name}.astro` || f === `../pages/${name}/index.astro`);
 
-const mars = readData<{ totals: { flights: number } }>('ingenuity.json');
-
 const items: NavItem[] = [
-  { key: 'deep-space', href: href('deep-space/'), label: 'Deep space', live: 'v1', meaning: 'Voyager 1’s light time right now' },
-  { key: 'moon', href: href('moon/'), label: 'Moon', live: 'moon', meaning: 'Laser echo from Apache Point to the Apollo 15 mirror right now' },
-  { key: 'mars', href: href('mars/'), label: 'Mars', figure: `${mars.totals.flights} flights`, meaning: 'Flights Ingenuity made over Jezero crater' },
-  ...(has('orbit') ? [{ key: 'orbit', href: href('orbit/'), label: 'Orbit', figure: ORBIT_FIGURE, meaning: 'Landing sites seen again from orbit' }] : []),
-  { key: 'silent', href: href('silent/'), label: 'Silent', figure: `${SILENT.length} objects`, meaning: 'Hardware that no longer answers' },
+  { key: 'deep-space', href: href('deep-space/'), label: 'Deep space' },
+  { key: 'moon', href: href('moon/'), label: 'Moon' },
+  { key: 'mars', href: href('mars/'), label: 'Mars' },
+  ...(has('orbit') ? [{ key: 'orbit', href: href('orbit/'), label: 'Orbit' }] : []),
+  { key: 'silent', href: href('silent/'), label: 'Silent' },
 ];
-const passport: NavItem | null = has('passport')
-  ? { key: 'passport', href: href('passport/'), label: 'Passport', live: 'stamps', meaning: 'Stamps collected on this device' }
-  : null;
+const passport: NavItem | null = has('passport') ? { key: 'passport', href: href('passport/'), label: 'Passport' } : null;
 const extra = [
   ...(has('classroom') ? [{ href: href('classroom/'), label: 'Classroom' }] : []),
   { href: href('sources/'), label: 'Sources' },
@@ -106,12 +98,8 @@ const extra = [
             {
               items.map((item) => (
                 <li>
-                  <a class="press press-sm bar-item" href={item.href} aria-current={current === item.key ? 'page' : undefined}>
+                  <a class="press press-sm press-nav bar-item" href={item.href} aria-current={current === item.key ? 'page' : undefined}>
                     <span class="bar-label">{item.label}</span>
-                    <span class="bar-fig mono" data-live={item.live} aria-hidden={item.live ? 'true' : undefined}>
-                      {item.figure || '\u2007'}
-                    </span>
-                    {item.live && <span class="sr-only">, {item.meaning}</span>}
                     {current === item.key && <span class="bar-mark" aria-hidden="true" />}
                   </a>
                 </li>
@@ -120,7 +108,7 @@ const extra = [
           </ul>
           {
             passport && (
-              <a class="press press-sm bar-item bar-passport" href={passport.href} aria-current={current === passport.key ? 'page' : undefined}>
+              <a class="press press-sm press-nav bar-item bar-passport" href={passport.href} aria-current={current === passport.key ? 'page' : undefined}>
                 <span class="bar-label">{passport.label}</span>
                 <span class="bar-fig mono" data-live="stamps" data-total={STAMP_TOTAL}>
                   {`0 of ${STAMP_TOTAL}`}
@@ -146,7 +134,7 @@ const extra = [
           {
             extra.map((e) => (
               <li>
-                <a class="press foot-link" href={e.href}>{e.label}</a>
+                <a class="press press-nav foot-link" href={e.href}>{e.label}</a>
               </li>
             ))
           }
@@ -154,37 +142,15 @@ const extra = [
       </div>
     </footer>
     <script>
-      import { shortHms, subscribeFigures } from '../lib/nav-live';
       import { onStamp, stampCount } from '../lib/passport';
 
-      const v1 = document.querySelectorAll<HTMLElement>('.bar [data-live="v1"]');
-      const moon = document.querySelectorAll<HTMLElement>('.bar [data-live="moon"]');
       const stamps = document.querySelectorAll<HTMLElement>('.bar [data-live="stamps"]');
-
       const showStamps = (n: number) =>
         stamps.forEach((el) => {
           el.textContent = `${n} of ${el.dataset.total}`;
         });
       showStamps(stampCount());
       onStamp(showStamps);
-
-      const start = () =>
-        subscribeFigures((f) => {
-          const a = f.v1LightS === null ? '\u2007' : shortHms(f.v1LightS);
-          const b = f.moonEchoS === null ? '\u2007' : `${f.moonEchoS.toFixed(2)} s echo`;
-          v1.forEach((el) => el.textContent !== a && (el.textContent = a));
-          moon.forEach((el) => el.textContent !== b && (el.textContent = b));
-        });
-      let started = false;
-      const go = () => {
-        if (started) return;
-        started = true;
-        if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1500 });
-        else setTimeout(start, 300);
-      };
-      const wide = window.matchMedia('(min-width: 1024px)');
-      if (wide.matches) go();
-      else wide.addEventListener('change', (e) => e.matches && go());
     </script>
   </body>
 </html>
@@ -252,25 +218,18 @@ const extra = [
     color: var(--muted);
     white-space: nowrap;
   }
-  .bar-item [data-live='v1'],
-  .bar-item [data-live='moon'] {
-    min-width: 11ch;
-  }
   .bar-item [data-live='stamps'] {
     min-width: 7ch;
   }
   .bar-item[aria-current='page'] .bar-label {
     font-weight: 800;
   }
-  .bar-item[aria-current='page'] .bar-fig {
-    color: var(--text);
-  }
   .bar-mark {
     position: absolute;
     inset: -2px;
     border: 2px solid var(--lilac);
     border-radius: var(--press-radius);
-    box-shadow: 0 var(--press-lip-h, 4px) 0 var(--lilac);
+    box-shadow: 0 var(--press-lip-h, 3px) 0 var(--lilac);
     pointer-events: none;
     view-transition-name: bar-mark;
     transition: box-shadow 90ms var(--ease);
@@ -310,7 +269,7 @@ const extra = [
     min-height: 44px;
     padding-inline: 16px;
   }
-  @media (max-width: 1180px) {
+  @media (max-width: 900px) {
     .head-row {
       gap: 12px 14px;
     }
@@ -323,7 +282,7 @@ const extra = [
       padding-inline: 8px;
     }
   }
-  @media (max-width: 1023px) {
+  @media (max-width: 767px) {
     .bar {
       display: none;
     }
