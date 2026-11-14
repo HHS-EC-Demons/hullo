@@ -67,6 +67,13 @@ function total(m: number): string {
 
 let protocolReady = false;
 
+function sized(el: HTMLElement): Promise<void> {
+  return new Promise((done) => {
+    const check = () => (el.clientWidth > 0 && el.clientHeight > 0 ? done() : requestAnimationFrame(check));
+    check();
+  });
+}
+
 export default function IngenuityMap({ photos, opening, flights }: { photos: FlightPhoto[]; opening: Flight; flights: number }) {
   const { data, error } = useJson<Ingenuity>('data/ingenuity.json');
   const reduced = useReducedMotion();
@@ -99,6 +106,7 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
     if (!data || !near || !box.current || map.current) return;
     let live = true;
     let instance: MapLibreMap | null = null;
+    let watch: ResizeObserver | null = null;
     (async () => {
       const [lib, worker, deep, sheet] = await Promise.all([
         import('maplibre-gl'),
@@ -120,6 +128,9 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
         await loaded;
         if (!live || !box.current) return;
       }
+      await sized(box.current);
+      if (!live || !box.current) return;
+      const el = box.current;
       const maplibregl = lib;
       maplibregl.setWorkerUrl(new URL(worker.default, location.href).href);
       const have = new Set(Object.entries(deep).flatMap(([z, tiles]) => tiles.map((t) => `${z}/${t}`)));
@@ -162,12 +173,12 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
         ],
       };
       const made = new maplibregl.Map({
-        container: box.current,
+        container: el,
         style,
         bounds,
         fitBoundsOptions: { padding: 24 },
-        maxBounds: [[w - 0.03, s - 0.02], [e + 0.03, nth + 0.02]],
-        minZoom: 11,
+        maxBounds: bounds,
+        minZoom: data.zooms[0],
         maxZoom: 18.5,
         attributionControl: false,
         cooperativeGestures: true,
@@ -184,12 +195,18 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
         },
       });
       instance = made;
+      watch = new ResizeObserver(() => {
+        const c = made.getCanvas();
+        if (c.clientWidth !== el.clientWidth || c.clientHeight !== el.clientHeight) made.resize();
+      });
+      watch.observe(el);
       made.touchZoomRotate.disableRotation();
       made.keyboard.disableRotation();
       made.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
       made.getCanvas().setAttribute('aria-label', 'Map of Jezero crater with Ingenuity’s flight paths. Arrow keys pan the map, plus and minus zoom.');
       made.on('load', () => {
         if (!live) return;
+        made.resize();
         map.current = made;
         setMapReady(true);
       });
@@ -197,6 +214,7 @@ export default function IngenuityMap({ photos, opening, flights }: { photos: Fli
     })().catch(() => live && setMapFailed(true));
     return () => {
       live = false;
+      watch?.disconnect();
       instance?.remove();
       map.current = null;
       setMapReady(false);
