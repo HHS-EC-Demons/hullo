@@ -21,8 +21,7 @@
 .pp-title {
   grid-area: title;
 }
-.pp-head .pp-count,
-.pp-head .pp-hint {
+.pp-head .pp-count {
   margin-top: 0;
   max-width: none;
 }
@@ -34,28 +33,24 @@
 }
 .pp-since-wrap {
   grid-area: since;
-  min-height: 4.4rem;
-}
-.pp-head .pp-since p {
-  margin-top: 0;
-  max-width: none;
+  min-height: 3.6rem;
 }
 .pp-since {
   display: grid;
   gap: 2px;
 }
-.pp-head .pp-since-lead {
+.pp-since-lead {
   color: var(--muted);
   font-size: var(--fs-sm);
-}
-.pp-head .pp-since-fig {
-  color: var(--text);
-  font-size: var(--fs-md);
 }
 .pp-since-n {
   font-size: var(--fs-lg);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+}
+.pp-slot.stamped .pp-thumb img {
+  outline: 2px solid var(--line);
+  outline-offset: 2px;
 }
 .pp-chart {
   grid-area: chart;
@@ -108,6 +103,7 @@
 }
 .pp-print button {
   margin-top: 31px;
+  align-self: start;
 }
 .pp-field {
   display: grid;
@@ -115,10 +111,6 @@
 }
 .pp-field label {
   font-weight: 600;
-}
-.pp-hint {
-  color: var(--muted);
-  font-size: var(--fs-xs);
 }
 
 .pp-group-head {
@@ -161,10 +153,6 @@
   gap: 6px;
 }
 .pp-thumb {
-  display: contents;
-}
-.pp-thumb picture {
-  order: 1;
   display: block;
   margin-bottom: 4px;
 }
@@ -182,43 +170,9 @@
   filter: none;
 }
 .pp-name {
-  order: 2;
   font-size: var(--fs-base);
   font-weight: 700;
   line-height: 1.25;
-}
-.pp-cap {
-  order: 3;
-  color: var(--muted);
-  font-size: var(--fs-xs);
-  line-height: 1.4;
-}
-.pp-slot > .pp-stamp,
-.pp-slot > .sr-only {
-  order: 4;
-}
-
-.pp-stamp {
-  display: grid;
-  gap: 4px;
-  margin-top: 6px;
-  padding: 10px 12px;
-  border: 2px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 4px color-mix(in oklab, var(--lilac) 55%, var(--bg));
-  color: var(--line);
-  transform: rotate(var(--tilt, 0deg));
-}
-.pp-stamp-detail {
-  font-size: var(--fs-xs);
-  line-height: 1.35;
-  font-variant-numeric: tabular-nums;
-}
-.pp-stamp-date {
-  padding-top: 4px;
-  border-top: 1px solid color-mix(in oklab, var(--lilac) 45%, var(--bg));
-  font-size: var(--fs-xs);
-  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 959px) {
@@ -244,9 +198,6 @@
   .pp-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 28px 16px;
-  }
-  .pp-stamp {
-    transform: rotate(calc(var(--tilt, 0deg) * 0.4));
   }
 }
 
