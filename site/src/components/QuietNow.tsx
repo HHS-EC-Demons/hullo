@@ -1,6 +1,8 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useId, useMemo, useState } from 'react';
 import type { Lifeline } from '../data/timeline';
-import { quietEvents } from '../lib/quiet-count';
+import { answeringOn, quietEvents } from '../lib/quiet-count';
+import { dayMs, TIMELINE_START } from '../data/timeline';
+import { Input } from '@/components/ui/input';
 import { localCalDate, localIsoDay } from '../lib/local-date';
 import './quiet-now.css';
 
@@ -19,7 +21,12 @@ export default function QuietNow({ lines, builtMs }: Props) {
     setLive(true);
   }, []);
 
+  const [birthday, setBirthday] = useState('');
+  const birthId = useId();
   const events = useMemo(() => quietEvents(lines), [lines]);
+  const today = localIsoDay(now);
+  const valid = /^\d{4}-\d{2}-\d{2}$/.test(birthday) && birthday >= TIMELINE_START && birthday <= today;
+  const then = valid ? answeringOn(lines, birthday) : null;
   const answering = lines.filter((l) => l.answers).length;
   const quiet = lines.length - answering;
 
@@ -38,7 +45,24 @@ export default function QuietNow({ lines, builtMs }: Props) {
       <p className="qn-date">
         As of <time dateTime={localIsoDay(now)}>{localCalDate(now)}</time>
       </p>
-      <div className="qn-chart">{live && <Suspense fallback={null}><QuietChart events={events} nowMs={now} /></Suspense>}</div>
+      <div className="qn-chart">
+        {live && (
+          <Suspense fallback={null}>
+            <QuietChart events={events} nowMs={now} markMs={valid ? dayMs(birthday) : null} markCount={then} />
+          </Suspense>
+        )}
+      </div>
+      <div className="qn-birth">
+        <label htmlFor={birthId}>Your birthday</label>
+        <Input id={birthId} type="date" min={TIMELINE_START} max={today} value={birthday} onChange={(e) => setBirthday(e.target.value)} className="qn-birth-input" />
+        <p className="qn-birth-out" aria-live="polite">
+          {then !== null && (
+            <>
+              <span className="qn-birth-n">{then}</span> were answering that day
+            </>
+          )}
+        </p>
+      </div>
     </div>
   );
 }

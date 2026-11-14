@@ -12,6 +12,7 @@ import { localCalDate } from '../lib/local-date';
 import './passport.css';
 
 const PassportChart = lazy(() => import('./PassportChart'));
+const VoyagerSince = lazy(() => import('./VoyagerSince'));
 
 const dayText = localCalDate;
 
@@ -56,7 +57,9 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
     setLive(true);
   }, []);
 
+  const [openedAt] = useState(() => Date.now());
   const byId = new Map(stamps.map((s) => [s.id, s]));
+  const firstAt = stamps.length ? Math.min(...stamps.map((s) => s.at)) : null;
   const earned = STAMP_OBJECTS.filter((o) => byId.has(o.id));
 
   const print = useReactToPrint({
@@ -80,6 +83,13 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
           <span className="pp-count-n">{earned.length}</span>
           <span className="pp-count-of"> of {STAMP_OBJECTS.length} stamped</span>
         </p>
+        <div className="pp-since-wrap">
+          {live && (
+            <Suspense fallback={null}>
+              <VoyagerSince fromMs={firstAt ?? openedAt} stamped={firstAt !== null} />
+            </Suspense>
+          )}
+        </div>
         <form
           className="pp-print"
           onSubmit={(e) => {
@@ -104,7 +114,7 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
               }}
             />
             <p id={hintId} className="pp-hint">
-              Optional. Stays on this device and only appears on the printout.
+              Optional. It stays on this device.
             </p>
           </div>
           <Button type="submit" disabled={earned.length === 0}>
