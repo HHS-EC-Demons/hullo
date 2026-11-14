@@ -2,6 +2,6 @@ import 'astro';
 
 declare module 'astro' {
   interface AstroClientDirectives {
-    'client:idlemedia'?: string;
+    'client:press'?: boolean;
   }
 }
