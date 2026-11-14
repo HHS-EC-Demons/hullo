@@ -13,5 +13,6 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 - `moon.py` asks Horizons for hourly ranges and elevations from Apache Point (site 705) and Caussols near Grasse (site 010) to the Apollo 11, 14 and 15 and Lunokhod 1 and 2 reflectors, 2026-01-01 to 2028-01-01, and writes one file per month.
 - `mars.py` copies Ingenuity's waypoints and flight paths from JPL's Mars 2020 MMGIS map and bakes basemap tiles at zoom 13 to 16 around the flights.
 - `images.py` downloads public domain photos from the NASA Image and Video Library by NASA ID.
+- `brand.py` writes `favicon.svg` from the wordmark font and the pages that `./rasterize.sh` turns into the PNG favicon, touch icon and og image with headless `playwright-cli`.
 
 Horizons calls go out one at a time with a 2 s pause, as its fair use policy asks.
