@@ -20,13 +20,14 @@ export interface ViewProps {
 export interface SiteProps {
   id: string;
   name: string;
+  tab: string;
   where: string;
   apart: string;
   then: ViewProps;
   now: ViewProps;
   pair: boolean;
   stampDetail: string;
-  sound?: SoundClipProps & { caption: string };
+  sound?: SoundClipProps & { what: string; date: string; credit: string };
 }
 
 function Picture({ view, eager }: { view: ViewProps; eager?: boolean }) {
@@ -64,7 +65,9 @@ function View({ view, eager }: { view: ViewProps; eager?: boolean }) {
           />
         )}
       </div>
-      <figcaption className="credit">{view.caption}</figcaption>
+      <figcaption className="credit" data-credit="">
+        {view.caption}
+      </figcaption>
     </figure>
   );
 }
@@ -105,7 +108,9 @@ function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
           </HandleRoot>
         </Root>
       </Provider>
-      <figcaption className="credit">{site.then.caption} Drag the handle or use the arrow keys.</figcaption>
+      <figcaption className="credit" data-credit="">
+        {site.then.caption}
+      </figcaption>
     </figure>
   );
 }
@@ -131,8 +136,8 @@ export default function OrbitSites({ label, sites, first, eager = false }: { lab
       <div className="wrap">
         <TabsList aria-label={label} className="os-list">
           {sites.map((s) => (
-            <TabsTrigger key={s.id} value={s.id}>
-              {s.name}
+            <TabsTrigger key={s.id} value={s.id} aria-label={s.tab === s.name ? undefined : s.name}>
+              {s.tab}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -156,7 +161,10 @@ export default function OrbitSites({ label, sites, first, eager = false }: { lab
           {s.sound && (
             <div className="wrap">
               <div className="os-sound">
-                <SoundClip {...s.sound}>{s.sound.caption}</SoundClip>
+                <SoundClip {...s.sound}>
+                  {s.sound.what}, <span className="mono">{s.sound.date}</span>.{' '}
+                  <span data-credit="">{s.sound.credit}.</span>
+                </SoundClip>
               </div>
             </div>
           )}

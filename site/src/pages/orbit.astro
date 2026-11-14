@@ -3,14 +3,14 @@ import Base from '../layouts/Base.astro';
 import OrbitSites, { type SiteProps, type ViewProps } from '../components/OrbitSites';
 import { ORBIT_SITES, type OrbitSite, type OrbitView } from '../data/orbit-sites';
 import { utcDate } from '../lib/client';
-import { image, lro, meta, pic } from '../lib/photos';
+import { LRO, image, lro, meta, pic } from '../lib/photos';
 import sounds from '../data/sounds.json';
 
 const dated = (iso: string): string => utcDate(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`));
 
 const SIZES = '(max-width: 760px) 100vw, 50vw';
 const PAIR_SIZES = '(max-width: 900px) 92vw, 820px';
-const WIDTHS = [640, 960, 1400, 1800];
+const WIDTHS = [640, 800, 1080, 1400, 1800];
 
 function widths(slug: string): number[] {
   const native = Math.min(image(slug).width, 2400);
@@ -34,25 +34,29 @@ function label(id: string): string {
   return /^as\d/i.test(id) ? id.toUpperCase() : id;
 }
 
+function short(by: string): string {
+  if (by.endsWith(' crew')) return 'Crew';
+  if (by.startsWith('Viking')) return 'Lander';
+  return by;
+}
+
 async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; date: string; detail: string }> {
   if (v.slug.endsWith('-lro')) {
     const c = lro(site.id);
-    const across = Math.round(c.width * c.scale_m);
     return {
       date: c.acquired.slice(0, 10),
       detail: `LROC ${c.product}, ${c.scale_m} m per pixel`,
       props: {
         pic: await pic(v.slug, widths(v.slug), SIZES),
         alt: v.alt,
-        when: dated(c.acquired),
+        when: c.acquired.slice(0, 10),
         by: v.by,
-        caption: `${c.product}, ${c.scale_m} m per pixel, ${across} m across. The ring marks the lunar module. NASA/GSFC/Arizona State University.`,
+        caption: `${c.product}, ${LRO.credit}.`,
         ring: [(c.lm_px[0] / c.width) * 100, (c.lm_px[1] / c.height) * 100],
       },
     };
   }
   const m = meta(v.slug);
-  const id = m.observation && m.observation !== m.id ? `${label(m.id)} (${m.observation})` : label(m.id);
   const date = m.date ?? site.landed;
   return {
     date,
@@ -60,9 +64,9 @@ async function view(site: OrbitSite, v: OrbitView): Promise<{ props: ViewProps; 
     props: {
       pic: await pic(v.slug, widths(v.slug), site.pair ? PAIR_SIZES : SIZES),
       alt: v.alt,
-      when: m.date ? dated(m.date) : `Landed ${dated(site.landed)}`,
-      by: m.date ? v.by : `${v.by}, first color photo`,
-      caption: `${id}, ${m.credit}.`,
+      when: date,
+      by: short(v.by),
+      caption: `${label(m.id)}, ${m.credit}.`,
     },
   };
 }
@@ -74,15 +78,11 @@ async function build(body: 'Moon' | 'Mars'): Promise<SiteProps[]> {
     ORBIT_SITES.filter((s) => s.body === body).map(async (s) => {
       const then = await view(s, s.then);
       const now = await view(s, s.now);
-      if (s.pair) {
-        const m1 = meta(s.then.slug);
-        const m2 = meta(s.now.slug);
-        then.props.caption = `${m1.id} figures 1 and 2 (${m1.observation} and ${m2.observation}), ${m1.credit}.`;
-      }
       return {
         id: s.id,
         name: s.name,
-        where: `${coords(s)} (${s.coords})`,
+        tab: body === 'Moon' ? s.name.replace(/^Apollo /, '') : s.name,
+        where: coords(s),
         apart: apart(then.date, now.date),
         then: then.props,
         now: now.props,
@@ -97,7 +97,9 @@ async function build(body: 'Moon' | 'Mars'): Promise<SiteProps[]> {
                 label: 'InSight’s biggest marsquake as sound',
                 stampId: 'insight',
                 stampDetail: 'Heard the magnitude 5 quake of 4 May 2022',
-                caption: `An estimated magnitude 5 marsquake, recorded by InSight’s seismometer on ${dated(quake.recorded)} (sol 1,222) and turned into sound by NASA. Full clip, ${Math.round(quake.duration_s)} s. PIA25281, released ${dated(quake.released)}, ${quake.credit}.`,
+                what: 'Magnitude 5 marsquake as sound',
+                date: quake.recorded,
+                credit: `PIA25281, ${quake.credit}`,
               }
             : undefined,
       } satisfies SiteProps;
@@ -112,16 +114,16 @@ const mars = await build('Mars');
 <Base title="Orbit" current="orbit" description="Apollo landing sites seen by LRO and Mars landers seen by HiRISE, each next to a photo from landing.">
   <header class="wrap page-head">
     <h1>Orbit</h1>
-    <p>Landing sites on the Moon and Mars, from the ground and later from orbit.</p>
+    <p>Landing sites, seen later from orbit.</p>
   </header>
 
   <section class="orbit-sec" aria-labelledby="moon-h">
-    <h2 id="moon-h" class="wrap orbit-h2">Moon, seen by the Lunar Reconnaissance Orbiter</h2>
+    <h2 id="moon-h" class="wrap orbit-h2">Moon</h2>
     <OrbitSites client:visible label="Apollo landing sites" sites={moon} first="apollo11" eager />
   </section>
 
   <section class="orbit-sec rule-top" aria-labelledby="mars-h">
-    <h2 id="mars-h" class="wrap orbit-h2">Mars, seen by HiRISE on Mars Reconnaissance Orbiter</h2>
+    <h2 id="mars-h" class="wrap orbit-h2">Mars</h2>
     <OrbitSites client:visible label="Mars landing sites" sites={mars} first="phoenix" />
   </section>
 </Base>
