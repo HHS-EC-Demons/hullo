@@ -12,9 +12,8 @@ interface Pkg {
 }
 
 const readPkg = (path: string): Pkg => JSON.parse(readFileSync(resolve(process.cwd(), path), 'utf8')) as Pkg;
-const SKIP = new Set(['lucide-react']);
 const software = Object.keys(readPkg('package.json').dependencies ?? {})
-  .filter((name) => !name.startsWith('@fontsource') && !SKIP.has(name))
+  .filter((name) => !name.startsWith('@fontsource'))
   .map((name) => {
     const pkg = readPkg(`node_modules/${name}/package.json`);
     return { name, version: pkg.version ?? '', license: pkg.license ?? 'see package' };
