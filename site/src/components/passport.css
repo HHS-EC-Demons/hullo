@@ -62,9 +62,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--rule);
+  margin-bottom: 18px;
   font-size: var(--fs-lg);
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -88,10 +86,12 @@
 .pp-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: 20px;
+  gap: 28px 24px;
 }
 .pp-grid > li {
   display: grid;
+}
+.pp-grid > li:has(.pp-stamp) {
   min-height: 10.5rem;
 }
 
@@ -134,22 +134,26 @@
 
 .pp-slot {
   display: grid;
-  align-content: center;
-  gap: 6px;
-  padding: 18px 20px;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  align-content: start;
+  gap: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--edge);
   color: var(--muted);
   text-decoration: none;
-  transition: border-color 150ms var(--ease), background-color 150ms var(--ease);
+  transition: border-color 150ms var(--ease);
 }
 .pp-slot:hover {
-  border-color: var(--edge);
-  background: var(--raised);
+  border-top-color: var(--line);
+}
+.pp-slot:hover .pp-slot-name {
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
 }
 .pp-slot:focus-visible {
   outline: 2px solid var(--focus);
-  outline-offset: 2px;
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 .pp-slot-name {
   color: var(--text);
@@ -157,6 +161,7 @@
 }
 .pp-slot-hint {
   font-size: var(--fs-sm);
+  text-wrap: pretty;
 }
 
 @media (max-width: 860px) {
@@ -174,9 +179,9 @@
   }
   .pp-grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: 14px;
+    gap: 20px;
   }
-  .pp-grid > li {
+  .pp-grid > li:has(.pp-stamp) {
     min-height: 8.5rem;
   }
   .pp-stamp {
