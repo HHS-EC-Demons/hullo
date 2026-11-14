@@ -42,7 +42,7 @@ export const six = fmt(6);
 export const dayFmt = { format: calDate };
 
 export function atText(ms: number): string {
-  return localStamp(ms);
+  return localStamp(ms, { label: false });
 }
 
 function Sheet({ title, printedAt, intro, numbers, questions, answers, source }: { title: string; printedAt: number; intro: string; numbers: string[]; questions: string[]; answers: ReactNode[]; source: string }) {
