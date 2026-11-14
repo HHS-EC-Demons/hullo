@@ -1,0 +1,58 @@
+.sc {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.sc-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.sc-play {
+  min-width: 6.5rem;
+}
+
+.sc-wave {
+  height: 64px;
+  min-width: 0;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.sc-wave:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
+.sc-time {
+  margin: 0;
+  min-width: 9ch;
+  text-align: right;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.sc-of {
+  color: var(--muted);
+}
+
+.sc audio {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .sc-row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .sc-wave {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .sc-time {
+    text-align: left;
+  }
+}
