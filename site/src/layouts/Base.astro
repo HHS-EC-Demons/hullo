@@ -18,7 +18,8 @@ interface Props {
 }
 
 const { title, description = BRAND_LINE, current = '' } = Astro.props;
-const ORBIT_FIGURE = '';
+const orbitData = Object.values(import.meta.glob<{ ORBIT_SITES?: unknown[] }>('../data/orbit-sites.ts', { eager: true }))[0];
+const ORBIT_FIGURE = orbitData?.ORBIT_SITES ? `${orbitData.ORBIT_SITES.length} sites` : '';
 const pageTitle = title ? `${title} · ${BRAND}` : BRAND;
 const site = Astro.site ? new URL(import.meta.env.BASE_URL, Astro.site).toString() : '';
 const ogImage = site ? new URL('og.png?v=3', site).toString() : asset('og.png?v=3');
@@ -32,7 +33,7 @@ const items: NavItem[] = [
   { key: 'deep-space', href: href('deep-space/'), label: 'Deep space', live: 'v1', meaning: 'Voyager 1’s light time right now' },
   { key: 'moon', href: href('moon/'), label: 'Moon', live: 'moon', meaning: 'Laser echo from Apache Point to the Apollo 15 mirror right now' },
   { key: 'mars', href: href('mars/'), label: 'Mars', figure: `${mars.totals.flights} flights`, meaning: 'Flights Ingenuity made over Jezero crater' },
-  ...(has('orbit') ? [{ key: 'orbit', href: href('orbit/'), label: 'Orbit', figure: ORBIT_FIGURE, meaning: 'Hardware seen again from orbit' }] : []),
+  ...(has('orbit') ? [{ key: 'orbit', href: href('orbit/'), label: 'Orbit', figure: ORBIT_FIGURE, meaning: 'Landing sites seen again from orbit' }] : []),
   { key: 'silent', href: href('silent/'), label: 'Silent', figure: `${SILENT.length} objects`, meaning: 'Hardware that no longer answers' },
 ];
 const passport: NavItem | null = has('passport')
