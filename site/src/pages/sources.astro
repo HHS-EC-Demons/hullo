@@ -49,24 +49,6 @@ const count = groups.reduce((n, g) => n + g.items.length, 0);
         <dd>Made for the NASA Space Apps Challenge 2026. This project is not endorsed by NASA.</dd>
       </div>
       <div>
-        <dt>Accuracy</dt>
-        <dd>
-          Probe light time is the geometric distance from Earth’s center divided by the speed of light, the same convention NASA uses
-          for its one light-day date. A Moon round trip is twice the distance from the station to the reflector divided by the speed of
-          light, shown to the millisecond, with reflector positions in the DE421 mean Earth frame. A shot needs the Moon at least 20°
-          above the station’s horizon, a limit this site chose. Pioneer 10 and 11 positions are extrapolated from old tracking. The sky
-          chart shows positions seen from Earth’s center at 00:00 UTC. Stars sit at their J2000 catalog positions, and none has moved
-          more than 3 arcminutes since, far less than a dot on the chart.
-        </dd>
-      </div>
-      <div>
-        <dt>Silent timeline</dt>
-        <dd>
-          A line starts on the launch date in UTC, or the day the hardware was set up on the Moon, and fades on the last day anyone heard
-          from the hardware. Spans count whole calendar months up to today.
-        </dd>
-      </div>
-      <div>
         <dt>Passport</dt>
         <dd>Stamps and the name on the certificate stay in this browser’s local storage. Nothing is sent anywhere.</dd>
       </div>
@@ -89,6 +71,7 @@ const count = groups.reduce((n, g) => n + g.items.length, 0);
                 {s.publisher}. {s.dated}.
               </p>
               <p class="used">{s.used}</p>
+              {s.note && <p class="note">{s.note}</p>}
               <p class="license">{s.license}</p>
             </li>
           ))}
@@ -177,8 +160,12 @@ const count = groups.reduce((n, g) => n + g.items.length, 0);
     color: var(--muted);
     font-size: var(--fs-sm);
   }
-  .used {
+  .used,
+  .note {
     max-width: 38rem;
+  }
+  .note {
+    color: var(--muted);
   }
   @media (max-width: 860px) {
     .facts div {
