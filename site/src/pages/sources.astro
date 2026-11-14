@@ -54,6 +54,9 @@ const software: Tool[] = [
     };
   }),
 ].sort((a, b) => a.name.localeCompare(b.name));
+const byLicense = [...new Set(software.map((t) => t.license))]
+  .map((license) => ({ license, tools: software.filter((t) => t.license === license) }))
+  .sort((a, b) => b.tools.length - a.tools.length || a.license.localeCompare(b.license));
 
 const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
 ---
@@ -67,7 +70,7 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
     <dl class="facts" aria-label="About this site">
       <div>
         <dt>Written for</dt>
-        <dd>Readers 10 to 14 years old, and anyone curious.</dd>
+        <dd>Readers 10 to 14, and anyone curious.</dd>
       </div>
       <div>
         <dt>Use of AI</dt>
@@ -115,12 +118,17 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
         <p class="license">Naipe Foundry, Eben Sorkin and Mirko Velimirović. SIL Open Font License.</p>
       </li>
       {
-        software.map((t) => (
+        byLicense.map((g) => (
           <li>
-            <p class="title">
-              <a href={t.url} rel="external noopener">{t.name}</a> <span class="mono version">{t.version}</span>
+            <p class="title mono">{g.license}</p>
+            <p class="pkgs">
+              {g.tools.map((t, i) => (
+                <>
+                  <a href={t.url} rel="external noopener">{t.name}</a> <span class="mono version">{t.version}</span>
+                  {i < g.tools.length - 1 ? ', ' : ''}
+                </>
+              ))}
             </p>
-            <p class="license mono">{t.license}</p>
           </li>
         ))
       }
@@ -182,7 +190,12 @@ const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
     scroll-margin-top: 88px;
   }
   .tools {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pkgs {
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    line-height: 1.7;
   }
   .title {
     font-weight: 700;
