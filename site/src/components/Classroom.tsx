@@ -102,7 +102,7 @@ export default function Classroom() {
       />
       <Activity
         title="How far away is Voyager 1?"
-        line="Turn the time light takes to cross from Voyager 1 to Earth into kilometres and astronomical units."
+        line="Turn the time light takes to cross from Voyager 1 to Earth into kilometers and astronomical units."
         facts={voyagerS !== null ? [['Light time', hmsText(voyagerS), true], ['At', atText(at), true]] : null}
         rows={['Light time', 'At']}
         onPrint={() => printNow(voyagerSheet.print)}
