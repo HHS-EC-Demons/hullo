@@ -511,6 +511,36 @@
     font-weight: 400;
   }
 
+  .ph {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .ph::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--raised);
+    animation: var(--animate-pulse);
+  }
+
+  .ph.ph-done::before {
+    animation: none;
+  }
+
+  .ph > picture,
+  .ph > img,
+  .ph > picture > img {
+    position: relative;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ph::before {
+      animation: none;
+    }
+  }
+
   .hl-chart-frame {
     position: relative;
     width: 100%;
