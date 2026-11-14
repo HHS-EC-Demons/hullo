@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
+import { animate, type AnimationPlaybackControls } from 'motion/react';
 import { loadJson, km, useJson, useNow, useReducedMotion, utcTime, utcDay } from '../lib/client';
+import { stamp } from '../lib/passport';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth, type Shot } from '../lib/ranging';
 import './laser.css';
 
@@ -48,7 +50,8 @@ export default function LaserShot() {
   const [fired, setFired] = useState<Fired | null>(null);
   const [flying, setFlying] = useState(false);
   const pulse = useRef<HTMLSpanElement>(null);
-  const frame = useRef(0);
+  const line = useRef<HTMLSpanElement>(null);
+  const flight = useRef<AnimationPlaybackControls[]>([]);
 
   const current = now ? monthKey(now) : null;
   const keys = current && index ? [current, nextMonthKey(current)].filter((k) => index.months.includes(k)) : [];
@@ -62,7 +65,7 @@ export default function LaserShot() {
     return shot ? shot.elevation_deg : null;
   };
 
-  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+  useEffect(() => () => flight.current.forEach((a) => a.stop()), []);
 
   useEffect(() => {
     if (touched || !loaded || !index) return;
@@ -87,28 +90,29 @@ export default function LaserShot() {
     const shot = shotAt(months[monthKey(when)] ?? list[0], station, reflector, when);
     if (!shot) return;
     const result: Fired = { ...shot, station, reflector, waited: when - t > 1500 };
-    cancelAnimationFrame(frame.current);
-    if (reduced) {
-      setFired(result);
+    const name = index.reflectors.find((r) => r.id === reflector)?.name ?? reflector;
+    const land = () => {
       setFlying(false);
+      setFired(result);
+      stamp(reflector, `${shot.round_trip_s.toFixed(4)} s round trip to ${name}, ${km.format(shot.range_km)} km`);
+    };
+    flight.current.forEach((a) => a.stop());
+    flight.current = [];
+    const el = pulse.current;
+    const track = line.current;
+    if (reduced || !el || !track) {
+      land();
       return;
     }
     setFired(null);
     setFlying(true);
-    const total = shot.round_trip_s * 1000;
-    const start = performance.now();
-    const step = (ts: number) => {
-      const f = Math.min(1, (ts - start) / total);
-      const leg = f < 0.5 ? f * 2 : 2 - f * 2;
-      if (pulse.current) pulse.current.style.setProperty('--leg', leg.toFixed(5));
-      if (f < 1) {
-        frame.current = requestAnimationFrame(step);
-      } else {
-        setFlying(false);
-        setFired(result);
-      }
-    };
-    frame.current = requestAnimationFrame(step);
+    const travel = Math.max(0, track.getBoundingClientRect().width - el.getBoundingClientRect().width);
+    const duration = shot.round_trip_s;
+    const edge = Math.min(0.04, 0.12 / duration);
+    const move = animate(el, { x: [0, travel, 0] }, { duration, ease: 'linear', times: [0, 0.5, 1] });
+    const glow = animate(el, { opacity: [0, 1, 1, 0] }, { duration, ease: 'linear', times: [0, edge, 1 - edge, 1] });
+    flight.current = [move, glow];
+    move.then(land);
   }
 
   const refl = index?.reflectors.find((r) => r.id === reflector);
@@ -124,9 +128,9 @@ export default function LaserShot() {
       <figure className="ls-scene" style={{ ['--ex' as string]: ex.toFixed(4), ['--mx' as string]: mx.toFixed(4), ['--mr' as string]: ((MOON_R / span) * 100).toFixed(4) }}>
         <div className="ls-stage" aria-hidden="true">
           <span className="ls-earth" />
-          <span className="ls-line" />
+          <span ref={line} className="ls-line" />
           <span className="ls-moon" />
-          <span ref={pulse} className={`ls-pulse${flying ? ' on' : ''}`} />
+          <span ref={pulse} className="ls-pulse" />
         </div>
         <figcaption className="ls-labels">
           <span>Earth</span>
