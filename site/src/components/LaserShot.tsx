@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import ChartFrame from '@/components/ui/chart-frame';
 import { loadJson, km, useJson, useNow, useReducedMotion } from '../lib/client';
-import { clock, localStamp, YOUR_TIME } from '../lib/dates';
+import { clock, localStamp } from '../lib/dates';
 import { stamp } from '../lib/passport';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth, type Shot } from '../lib/ranging';
 import './laser.css';
@@ -66,11 +66,8 @@ function loadMotion() {
   return motion;
 }
 
-function elevationWord(el: number | null, min: number): string {
-  if (el === null) return '';
-  if (el < 0) return `${Math.round(el)}°, set`;
-  if (el < min) return `${Math.round(el)}°, low`;
-  return `${Math.round(el)}°`;
+function elevationWord(el: number | null): string {
+  return el === null ? '' : `${Math.round(el)}°`;
 }
 
 function Drift({ now }: { now: number | null }) {
@@ -201,9 +198,9 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
   const mirrorName = index?.reflectors.find((r) => r.id === reflector)?.name ?? '';
 
   let what: ReactNode = ' ';
-  if (flying) what = 'Firing';
-  else if (shot) what = <>Echo at <span className="mono">{shot.waited ? localStamp(shot.ms, { seconds: true }) : `${clock(shot.ms, true)} ${YOUR_TIME}`}</span></>;
-  else if (preview) what = preview.waited ? <>Next echo, <span className="mono">{localStamp(preview.ms)}</span></> : 'Echo now';
+  if (shot) what = <>Echo <span className="mono">{shot.waited ? localStamp(shot.ms, { seconds: true, label: false }) : clock(shot.ms, true)}</span></>;
+  else if (preview?.waited) what = <>Echo <span className="mono">{localStamp(preview.ms, { label: false })}</span></>;
+  else if (preview || flying) what = 'Echo';
 
   return (
     <div className="ls">
@@ -211,8 +208,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
         <div className="ls-left">
           <div className="ls-head">{head}</div>
           <div className="ls-controls">
-            <fieldset className="choices">
-              <legend>Mirror</legend>
+            <fieldset className="choices" aria-label="Mirror">
               {(index?.reflectors ?? []).map((r) => (
                 <label className="choice" key={r.id}>
                   <input type="radio" name={`${uid}-refl`} checked={reflector === r.id} onChange={() => setReflector(r.id)} />
@@ -220,8 +216,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
                 </label>
               ))}
             </fieldset>
-            <fieldset className="choices">
-              <legend>Station</legend>
+            <fieldset className="choices" aria-label="Station">
               {(index?.stations ?? []).map((s) => (
                 <label className="choice" key={s.id}>
                   <input
@@ -235,8 +230,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
                   />
                   <span>
                     {s.name}
-                    <span className="sr-only">, </span>
-                    <small className="mono">{elevationWord(elNow(s.id), minEl) || ' '}</small>
+                    <small className={`mono${(elNow(s.id) ?? 90) < minEl ? ' ls-low' : ''}`}>{elevationWord(elNow(s.id)) || ' '}</small>
                   </span>
                 </label>
               ))}
@@ -272,10 +266,7 @@ export default function LaserShot({ index: given, head, photo, chartTitle }: { i
         </div>
         {photo}
       </div>
-      <section className="wrap ls-chartsec" aria-labelledby={`${uid}-ch`}>
-        <h2 id={`${uid}-ch`} className="ls-h2">
-          {chartTitle}
-        </h2>
+      <section className="wrap ls-chartsec" aria-label={chartTitle}>
         <div ref={chartBox}>
           <ChartFrame className="h-[300px] md:h-[360px]">
             {near && loaded && current && now && (

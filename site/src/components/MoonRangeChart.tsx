@@ -93,7 +93,7 @@ function Plot({ width, height, month, station, reflector, minEl, now, label }: P
     move(next);
   };
 
-  const live = pick ? `${localStamp(pick.t)}. ${groupInt(Math.round(pick.km))} km, round trip ${seconds(pick.km)}, Moon ${Math.round(pick.el)}° up.` : '';
+  const live = pick ? `${localStamp(pick.t, { label: false })}. ${groupInt(Math.round(pick.km))} km, round trip ${seconds(pick.km)}, Moon ${Math.round(pick.el)}° up.` : '';
   const tipLeft = pick ? MARGIN.left + x(pick.t) : 0;
   const tipTop = pick ? MARGIN.top + y(pick.km) : 0;
 
@@ -133,7 +133,7 @@ function Plot({ width, height, month, station, reflector, minEl, now, label }: P
             tickStroke="var(--edge)"
             tickLength={5}
             tickLabelProps={() => ({ ...TICK, textAnchor: 'middle', dy: 2 })}
-            label="Date, your time"
+            label="Date"
             labelOffset={14}
             labelProps={{ ...TICK, textAnchor: 'middle' }}
           />
@@ -177,7 +177,7 @@ function Plot({ width, height, month, station, reflector, minEl, now, label }: P
       </svg>
       {pick && (
         <TooltipWithBounds left={tipLeft} top={tipTop} offsetLeft={14} offsetTop={-12} unstyled className="hl-tip">
-          <div className="hl-tip-x">{localStamp(pick.t)}</div>
+          <div className="hl-tip-x">{localStamp(pick.t, { label: false })}</div>
           <div className="hl-tip-row on">
             <span className="hl-tip-key" aria-hidden="true" />
             <span className="hl-tip-v">{groupInt(Math.round(pick.km))} km</span>
@@ -211,9 +211,9 @@ export default function MoonRangeChart(props: Props) {
       </div>
       <p className="mc-legend" aria-hidden="true" data-chart-text="">
         <span className="mc-key mc-key-on" />
-        Moon {props.minEl}° or more up, the laser can fire
+        Laser can fire
         <span className="mc-key mc-key-off" />
-        Moon lower or set
+        Moon low
       </p>
     </div>
   );
