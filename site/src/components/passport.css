@@ -1,6 +1,6 @@
 .pp {
   display: grid;
-  gap: clamp(40px, 6vw, 72px);
+  gap: clamp(32px, 4vw, 56px);
 }
 
 .pp-head {
@@ -44,7 +44,7 @@
 }
 .pp-chart-frame {
   position: relative;
-  height: clamp(230px, 21vw, 290px);
+  height: clamp(240px, 23vw, 330px);
 }
 .pc-tip-name {
   color: var(--text);
