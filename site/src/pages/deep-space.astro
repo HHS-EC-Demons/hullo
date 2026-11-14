@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProbeSignal from '../components/ProbeSignal';
+import ProbeDistance from '../components/ProbeDistance';
 import SoundClip from '../components/SoundClip';
 import sounds from '../data/sounds.json';
 import { pic } from '../lib/photos';
@@ -42,6 +43,11 @@ for (const m of Object.values(homeImages as Record<string, HomeImage>)) {
     />
   </section>
 
+  <section class="wrap section dist" aria-labelledby="dist-h">
+    <h2 id="dist-h">Distance from the Sun</h2>
+    <ProbeDistance client:visible />
+  </section>
+
   <section class="wrap section listen" aria-labelledby="listen-h">
     <h2 id="listen-h">Interstellar plasma</h2>
     <SoundClip
@@ -60,6 +66,19 @@ for (const m of Object.values(homeImages as Record<string, HomeImage>)) {
 </Base>
 
 <style>
+  .dist {
+    display: grid;
+    gap: 24px;
+  }
+  .dist h2,
+  .listen h2 {
+    font-size: var(--fs-xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
   .listen {
     display: grid;
     gap: 24px;
