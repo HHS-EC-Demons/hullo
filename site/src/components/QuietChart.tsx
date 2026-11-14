@@ -1,6 +1,6 @@
 import { useId, useMemo, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { scaleLinear, scaleTime } from '@visx/scale';
-import { Line, LinePath } from '@visx/shape';
+import { AreaClosed, Line, LinePath } from '@visx/shape';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { GridRows } from '@visx/grid';
 import { Group } from '@visx/group';
@@ -17,7 +17,7 @@ interface Props {
   nowMs: number;
 }
 
-const MARGIN = { top: 12, right: 14, bottom: 40, left: 40 };
+const MARGIN = { top: 12, right: 14, bottom: 46, left: 40 };
 const TICK = { fill: 'var(--muted)', fontFamily: 'var(--mono)', fontSize: 12.5 } as const;
 
 function nearest(events: QuietEvent[], ms: number): number {
@@ -97,7 +97,7 @@ function Plot({ events, nowMs, width, height }: Props & { width: number; height:
             hideTicks
             tickFormat={(v) => String(v)}
             tickLabelProps={() => ({ ...TICK, textAnchor: 'end', dx: -6, dy: 4 })}
-            label="answering"
+            label="objects answering"
             labelOffset={18}
             labelProps={{ ...TICK, textAnchor: 'middle' }}
           />
@@ -110,7 +110,11 @@ function Plot({ events, nowMs, width, height }: Props & { width: number; height:
             tickStroke="var(--edge)"
             tickLength={5}
             tickLabelProps={() => ({ ...TICK, textAnchor: 'middle', dy: 2 })}
+            label="year"
+            labelOffset={12}
+            labelProps={{ ...TICK, textAnchor: 'middle' }}
           />
+          <AreaClosed data={steps} x={(s) => x(s.ms)} y={(s) => y(s.count)} yScale={y} curve={curveStepAfter} fill="var(--line)" fillOpacity={0.1} stroke="none" />
           <LinePath
             data={steps}
             x={(s) => x(s.ms)}
