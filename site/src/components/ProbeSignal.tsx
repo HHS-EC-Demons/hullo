@@ -69,7 +69,7 @@ const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: F
   return (
     <form className="ps-form" onSubmit={submit} noValidate>
       {children}
-      <label htmlFor={`${uid}-msg`}>Message to {name}</label>
+      <label htmlFor={`${uid}-msg`}>Message</label>
       <div className="ps-row">
         <Input
           id={`${uid}-msg`}
@@ -79,6 +79,7 @@ const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: F
           maxLength={MAX_LEN}
           autoComplete="off"
           spellCheck
+          aria-label={`Message to ${name}`}
           aria-describedby={`${uid}-hint`}
           onFocus={() => void loadFlight()}
           onChange={(e) => {
@@ -89,7 +90,7 @@ const MessageForm = memo(function MessageForm({ uid, name, onSend, children }: F
         <Button type="submit">Send</Button>
       </div>
       <p className="ps-hint" id={`${uid}-hint`} aria-live="polite">
-        {note || `Up to ${MAX_LEN} characters. Nothing is sent anywhere, and the message stays on this device.`}
+        {note || 'Nothing is sent.'}
       </p>
     </form>
   );
@@ -107,8 +108,29 @@ export interface ProbePhoto {
   credit: string;
 }
 
+const FRAME_SIZES = '(max-width: 900px) calc(100vw - 32px), min(58vw, 760px)';
+
+function Frame({ photo }: { photo: ProbePhoto }) {
+  return (
+    <figure className="ps-frame">
+      <div className="ps-stage">
+        <picture>
+          <source type="image/avif" srcSet={photo.avif} sizes={FRAME_SIZES} />
+          <source type="image/webp" srcSet={photo.webp} sizes={FRAME_SIZES} />
+          <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} fetchPriority="high" decoding="async" />
+        </picture>
+      </div>
+      <figcaption className="credit">
+        {photo.caption} <span data-credit="">{photo.id}, {photo.credit}.</span>
+      </figcaption>
+    </figure>
+  );
+}
+
 interface Props {
   photos?: Record<string, ProbePhoto>;
+  title?: string;
+  line?: string;
   initial?: string;
   picker?: 'top' | 'form';
   headline?: 'h1' | 'p';
@@ -129,6 +151,8 @@ export default function ProbeSignal({
   sky = false,
   countdown = false,
   photos,
+  title,
+  line,
 }: Props) {
   const { data, error } = useJson<DeepSpaceData>('data/deep-space.json');
   const minute = useNow(60000);
@@ -183,8 +207,7 @@ export default function ProbeSignal({
   );
 
   const choices = (legend: string, cls: string) => (
-    <fieldset className={`choices ${cls}`}>
-      <legend>{legend}</legend>
+    <fieldset className={`choices ${cls}`} aria-label={legend}>
       {PROBES.map((p) => (
         <label className="choice" key={p.key}>
           <input type="radio" name={`${uid}-probe`} value={p.key} checked={probe === p.key} onChange={() => pick(p.key)} />
@@ -196,7 +219,16 @@ export default function ProbeSignal({
 
   return (
     <div className="ps">
-      {picker === 'top' && choices('Probe', 'ps-picker')}
+      {picker === 'top' && (
+        <div className={`ps-hero${photo ? ' has-frame' : ''}`}>
+          <div className="ps-hero-text page-head">
+            {title && <h1>{title}</h1>}
+            {line && <p>{line}</p>}
+            {choices('Probe', 'ps-picker')}
+          </div>
+          {photo && <Frame photo={photo} />}
+        </div>
+      )}
 
       <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} />
 
@@ -211,7 +243,7 @@ export default function ProbeSignal({
 
       {countdown && <LightDay data={data} />}
 
-      <div className={`ps-act${aside || photo ? ' has-aside' : ''}`}>
+      <div className={`ps-act${aside ? ' has-aside' : ''}`}>
         <div className="ps-main">
           <MessageForm uid={uid} name={info.name} onSend={send}>
             {picker === 'form' && choices('Send to', 'ps-to')}
@@ -223,18 +255,6 @@ export default function ProbeSignal({
           )}
         </div>
         {aside && <p className="ps-aside">{aside}</p>}
-        {!aside && photo && (
-          <figure className="ps-photo">
-            <picture>
-              <source type="image/avif" srcSet={photo.avif} sizes="(max-width: 900px) 92vw, 24rem" />
-              <source type="image/webp" srcSet={photo.webp} sizes="(max-width: 900px) 92vw, 24rem" />
-              <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" />
-            </picture>
-            <figcaption className="credit">
-              {photo.caption} {photo.id}, {photo.credit}.
-            </figcaption>
-          </figure>
-        )}
       </div>
 
       {sky && <SkyChart highlight={probe} now={minute} />}

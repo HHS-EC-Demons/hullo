@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { dailyHours, hmsText, type DeepSpaceData } from '../lib/lighttime';
-import { utcDate, utcMonth } from '../lib/client';
+import { utcDate } from '../lib/client';
 
 interface Props {
   data: DeepSpaceData;
@@ -98,8 +98,7 @@ export default function LightTimeChart({ data, probe, name, now }: Props) {
   return (
     <figure className="ltc">
       <figcaption>
-        <span className="ltc-title">Light time from Earth to {name}, 2026 and 2027</span>
-        <span className="ltc-sub">Earth circles the Sun, so the gap grows and shrinks a little each year.</span>
+        <span className="ltc-title">Hours of light to {name}, 2026 to 2027</span>
       </figcaption>
       <div className="ltc-plot" ref={box}>
         {width > 0 && (
@@ -120,15 +119,17 @@ export default function LightTimeChart({ data, probe, name, now }: Props) {
               <g key={v}>
                 <line className="ltc-grid" x1={left} x2={w - PAD.right} y1={y(v)} y2={y(v)} />
                 <text className="ltc-tick" x={left - 10} y={y(v)} dy="0.32em" textAnchor="end">
-                  {hoursLabel(v)}
+                  {String(v)}
                 </text>
               </g>
             ))}
-            {months.map((m) => (
-              <text key={m} className="ltc-tick" x={x(m)} y={H - 10} textAnchor="middle">
-                {new Date(m).getUTCMonth() === 0 ? new Date(m).getUTCFullYear() : utcMonth(m)}
-              </text>
-            ))}
+            {months
+              .filter((m) => new Date(m).getUTCMonth() === 0)
+              .map((m) => (
+                <text key={m} className="ltc-tick" x={x(m)} y={H - 10} textAnchor="middle">
+                  {new Date(m).getUTCFullYear()}
+                </text>
+              ))}
             {showDay && (
               <g>
                 <line className="ltc-ref" x1={left} x2={w - PAD.right} y1={y(24)} y2={y(24)} />
@@ -166,7 +167,7 @@ export default function LightTimeChart({ data, probe, name, now }: Props) {
         )}
       </div>
       <details className="ltc-table">
-        <summary>Show as a table</summary>
+        <summary>Show table</summary>
         <table>
           <thead>
             <tr>
