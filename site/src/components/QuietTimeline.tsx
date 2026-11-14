@@ -80,6 +80,9 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
     setPulse((n) => n + 1);
     const f = figures(l);
     stamp(l.id, l.answers ? `Active for ${f.on}` : `${l.endKind} ${calDate(l.end as string)}`);
+    if (window.matchMedia('(max-width: 860px)').matches) {
+      root.current?.querySelector('.qt-readout')?.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+    }
   }
 
   const pickRef = useRef(pick);
@@ -203,6 +206,8 @@ function Readout({ line, photo, figures }: { line: Lifeline; photo?: TimelinePho
           <span className="qt-fig-k">{line.answers ? 'Active' : line.endKind}</span>
           <span className="mono">{line.answers ? figures.on : calDate(line.end as string)}</span>
         </p>
+      </div>
+      <div className="qt-story">
         <StoryList id={line.id} stack />
       </div>
     </div>
