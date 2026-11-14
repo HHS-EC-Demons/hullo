@@ -48,7 +48,7 @@ export default function SkyChart({ highlight, now }: Props) {
           io.disconnect();
         }
       },
-      { rootMargin: '600px 0px' },
+      { rootMargin: '200px 0px' },
     );
     io.observe(el);
     return () => {
