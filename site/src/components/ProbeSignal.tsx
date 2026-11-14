@@ -3,6 +3,7 @@ import { arrivalAt, pad2, rangeAt, splitHms, hmsText, type DeepSpaceData } from 
 import { km, localDate, localTime, longDate, useJson, useNow } from '../lib/client';
 import { PROBES, probeInfo } from '../data/probes';
 import LightTimeChart from './LightTimeChart';
+import SkyChart from './SkyChart';
 import './probe.css';
 
 interface Message {
@@ -41,9 +42,10 @@ interface Props {
   chart?: boolean;
   status?: boolean;
   aside?: string;
+  sky?: boolean;
 }
 
-export default function ProbeSignal({ initial = 'voyager1', picker = false, headline = 'p', chart = false, status = false, aside }: Props) {
+export default function ProbeSignal({ initial = 'voyager1', picker = false, headline = 'p', chart = false, status = false, aside, sky = false }: Props) {
   const { data, error } = useJson<DeepSpaceData>('data/deep-space.json');
   const now = useNow(1000);
   const [probe, setProbe] = useState(initial);
@@ -222,6 +224,8 @@ export default function ProbeSignal({ initial = 'voyager1', picker = false, head
       </div>
       {aside && <p className="ps-aside">{aside}</p>}
       </div>
+
+      {sky && <SkyChart highlight={probe} now={now} />}
 
       {chart && data && <LightTimeChart data={data} probe={probe} name={info.name} now={now} />}
     </div>
