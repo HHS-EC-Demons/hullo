@@ -178,7 +178,6 @@
   padding-left: 10px;
   font-size: var(--fs-sm);
   line-height: 1.25;
-  text-wrap: balance;
 }
 .qt-row[aria-pressed='true'] .qt-name {
   font-weight: 700;

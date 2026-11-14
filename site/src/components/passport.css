@@ -117,13 +117,11 @@
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  text-wrap: balance;
 }
 .pp-stamp-detail {
   font-size: var(--fs-sm);
   line-height: 1.35;
   font-variant-numeric: tabular-nums;
-  text-wrap: balance;
 }
 .pp-stamp-date {
   margin-top: 2px;
@@ -159,7 +157,6 @@
 }
 .pp-slot-hint {
   font-size: var(--fs-sm);
-  text-wrap: pretty;
 }
 
 @media (max-width: 860px) {
