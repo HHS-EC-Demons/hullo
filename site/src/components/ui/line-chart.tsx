@@ -58,6 +58,7 @@ export interface LineChartProps {
 
 const MARGIN = { top: 14, right: 18, bottom: 46 };
 const TICK_CHAR = 7.7;
+const TIP_STYLE = { position: 'absolute', pointerEvents: 'none' } as const;
 const LABEL_GAP = 17;
 const PICK_PX = 28;
 const byX = bisector<LinePoint, number>((p) => p.x).center;
@@ -336,7 +337,7 @@ function Plot({
         </Group>
       </svg>
       {cursor !== null && readouts.length > 0 && (
-        <TooltipWithBounds left={tipLeft} top={tipTop} offsetLeft={14} offsetTop={-12} unstyled className="hl-tip">
+        <TooltipWithBounds left={tipLeft} top={tipTop} offsetLeft={14} offsetTop={-12} style={TIP_STYLE} className="hl-tip">
           <div className="hl-tip-x">{readX(snapX ?? 0)}</div>
           {readouts.map((r) => (
             <div key={r.s.key} className={cn('hl-tip-row', r.s.key === lead?.key && 'on')}>
