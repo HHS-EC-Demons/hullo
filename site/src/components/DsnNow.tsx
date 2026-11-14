@@ -136,7 +136,7 @@ export default function DsnNow({ photos }: Props) {
 
       <ul className="dsn-sites">
         {SITES.map((site) => {
-          const here = crafts(list.filter((c) => c.site === site));
+          const here = crafts(list.filter((c) => c.site === site)).sort((a, b) => Number(Boolean(PROBES[b.craft])) - Number(Boolean(PROBES[a.craft])));
           const photo = photos[site];
           return (
             <li key={site} className="dsn-site">

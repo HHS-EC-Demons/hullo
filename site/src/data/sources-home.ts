@@ -16,8 +16,8 @@ export const HOME_SOURCES: Source[] = [
     url: 'https://eyes.nasa.gov/apps/dsn-now/',
     dated: 'Read live in the browser every 8 s from eyes.nasa.gov/dsn/data/dsn.xml, names and dish types from eyes.nasa.gov/dsn/config.xml',
     license: 'Public NASA/JPL feed that any site may read (the feed sends Access-Control-Allow-Origin *). No license is stated on the feed. Shown live with the credit NASA/JPL-Caltech.',
-    used: 'Which dish at Goldstone, Madrid and Canberra is receiving data from, sending commands to or in contact with which spacecraft this minute, the data rate coming down and the round trip light time when the feed gives one.',
-    note: 'The feed lists every dish with its activity. The home page shows only the dishes with an active signal to or from a spacecraft. A dish is receiving data when its downlink data signal is active and sending commands when only its uplink data signal is active. With both directions active, or only a carrier, the dish is in contact. When the feed gives no round trip light time for Voyager 1, Voyager 2 or New Horizons, the home page doubles the light time from this site’s Horizons table.',
+    used: 'Which spacecraft each complex at Goldstone, Madrid and Canberra is in contact with this minute, and the feed time.',
+    note: 'The feed lists every dish with its activity. The home page names the spacecraft with an active signal to or from a dish at each complex, at most two per complex plus a count of the rest. When a full name runs past two words the page shows the feed code instead, such as KPLO for the Korea Pathfinder Lunar Orbiter. Voyager 1, Voyager 2 and New Horizons are listed first and underlined.',
   },
   {
     id: 'light-time-method',

@@ -112,63 +112,8 @@
   font-weight: 800;
 }
 
-.sky-key {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 22px 32px;
-  margin-top: clamp(20px, 3vw, 32px);
-}
-
-.sky-key li {
-  display: grid;
-  gap: 2px;
-  align-content: start;
-}
-
-.sky-key-name {
-  font-weight: 700;
-}
-
-.sky-key li.on .sky-key-name {
-  font-weight: 800;
-}
-
-.sky-key-short {
-  display: inline-block;
-  min-width: 3.4ch;
-  margin-right: 8px;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.sky-key-where {
-  color: var(--muted);
-  font-size: var(--fs-sm);
-}
-
-.sky-key-pos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 12px;
-  color: var(--muted);
-  font-size: var(--fs-xs);
-}
-
-.sky-key-pos span {
-  white-space: nowrap;
-}
-
-@media (max-width: 1000px) {
-  .sky-key {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 640px) {
   .sky-plot {
     margin-inline: calc(var(--gutter) * -1 + 4px);
-  }
-  .sky-key {
-    gap: 18px 20px;
   }
 }
