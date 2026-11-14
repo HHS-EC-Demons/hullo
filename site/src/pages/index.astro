@@ -48,9 +48,6 @@ const chapters = [
               <span class="ch-num">{c.value}<span class="ch-unit">{c.unit}</span></span>
               <span class="ch-name">{c.name}</span>
               <span class="ch-line">{c.line}</span>
-              <span class="ch-go" aria-hidden="true">
-                →
-              </span>
             </a>
           </li>
         ))
@@ -69,17 +66,24 @@ const chapters = [
   }
   .chapter {
     display: grid;
-    grid-template-columns: minmax(0, 4.5fr) minmax(0, 2.5fr) minmax(0, 4fr) 40px;
+    grid-template-columns: minmax(0, 4.5fr) minmax(0, 2.5fr) minmax(0, 4fr);
     gap: 8px 24px;
     align-items: baseline;
     padding-block: clamp(24px, 3.2vw, 40px);
     border-top: 1px solid var(--rule);
     text-decoration: none;
   }
+  .chapter:hover,
+  .chapter:focus-visible {
+    box-shadow: inset 0 2px 0 var(--ink);
+  }
+  .chapter:focus-visible {
+    outline-offset: 6px;
+  }
   .ch-num {
     font-size: var(--fs-xl);
     font-weight: 800;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.03em;
     line-height: 1;
     white-space: nowrap;
   }
@@ -99,16 +103,12 @@ const chapters = [
     color: var(--ink-2);
     max-width: 28rem;
   }
-  .ch-go {
-    justify-self: end;
-    font-size: var(--fs-lg);
-    transition: transform 160ms var(--ease);
+  .chapter:hover .ch-line,
+  .chapter:focus-visible .ch-line {
+    color: var(--ink);
   }
-  .chapter:hover .ch-go,
-  .chapter:focus-visible .ch-go {
-    transform: translateX(6px);
-  }
-  .chapter:hover .ch-name {
+  .chapter:hover .ch-name,
+  .chapter:focus-visible .ch-name {
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-decoration-color: var(--signal);
@@ -116,21 +116,10 @@ const chapters = [
   }
   @media (max-width: 860px) {
     .chapter {
-      grid-template-columns: minmax(0, 1fr) 32px;
+      grid-template-columns: minmax(0, 1fr);
     }
     .ch-num {
-      grid-column: 1 / -1;
       margin-bottom: 6px;
-    }
-    .ch-name {
-      grid-column: 1;
-    }
-    .ch-line {
-      grid-column: 1;
-    }
-    .ch-go {
-      grid-column: 2;
-      grid-row: 2;
     }
   }
 </style>
