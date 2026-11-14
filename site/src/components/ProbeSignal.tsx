@@ -1,6 +1,7 @@
 import { lazy, memo, Suspense, useCallback, useEffect, useId, useMemo, useState, type FormEvent } from 'react';
 import { arrivalAt, hmsText, lightTimeAt, replyAt, type DeepSpaceData } from '../lib/lighttime';
-import { longDate, useJson, useNow } from '../lib/client';
+import { useJson, useNow } from '../lib/client';
+import { calDate } from '../lib/dates';
 import { stamp } from '../lib/passport';
 import { onPicked, setPicked } from '../lib/picked';
 import { PROBES, probeInfo } from '../data/probes';
@@ -9,15 +10,18 @@ import { Input } from '@/components/ui/input';
 import LiveLightView from './LiveLight';
 import LightDayView from './LightDay';
 import type { Message } from './MessageFlight';
-import LightTimeChartView from './LightTimeChart';
 import SkyChartView from './SkyChart';
+import LightLeft from './LightLeft';
+import BirthdayToy from './BirthdayToy';
+import ChartFrame from '@/components/ui/chart-frame';
 import './probe.css';
 
 const loadFlight = () => import('./MessageFlight');
 const MessageFlight = lazy(loadFlight);
+const LightTimeChart = lazy(() => import('./LightTimeChart'));
+const VoyagerLightChart = lazy(() => import('./VoyagerLightChart'));
 const LiveLight = memo(LiveLightView);
 const LightDay = memo(LightDayView);
-const LightTimeChart = memo(LightTimeChartView);
 const SkyChart = memo(SkyChartView);
 const STORE = 'hullo.messages.v1';
 const MAX_LEN = 80;
@@ -110,7 +114,7 @@ export interface ProbePhoto {
   focus?: string;
 }
 
-const FRAME_SIZES = '(max-width: 900px) calc(100vw - 32px), min(58vw, 760px)';
+const FRAME_SIZES = '(max-width: 900px) calc(100vw - 32px), min(50vw, 680px)';
 
 function Frame({ photo }: { photo: ProbePhoto }) {
   return (
@@ -139,6 +143,7 @@ function Frame({ photo }: { photo: ProbePhoto }) {
 
 interface Props {
   photos?: Record<string, ProbePhoto>;
+  home?: boolean;
   title?: string;
   line?: string;
   initial?: string;
@@ -146,7 +151,6 @@ interface Props {
   headline?: 'h1' | 'p';
   chart?: boolean;
   status?: boolean;
-  aside?: string;
   sky?: boolean;
   countdown?: boolean;
 }
@@ -157,10 +161,10 @@ export default function ProbeSignal({
   headline = 'p',
   chart = false,
   status = false,
-  aside,
   sky = false,
   countdown = false,
   photos,
+  home = false,
   title,
   line,
 }: Props) {
@@ -168,6 +172,7 @@ export default function ProbeSignal({
   const minute = useNow(60000);
   const [probe, setProbe] = useState(initial);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [born, setBorn] = useState<number | null>(null);
   const uid = useId();
   const info = probeInfo(probe);
 
@@ -233,49 +238,71 @@ export default function ProbeSignal({
     </fieldset>
   );
 
+  const form = (
+    <div className="ps-main">
+      <MessageForm uid={uid} name={info.name} onSend={send}>
+        {picker === 'form' && choices('Send to', 'ps-to')}
+      </MessageForm>
+      {data && mine.length > 0 && (
+        <Suspense fallback={null}>
+          <MessageFlight data={data} messages={mine} />
+        </Suspense>
+      )}
+    </div>
+  );
+
+  const statusLine = status && (
+    <p className="ps-status">
+      <span className={info.answers ? 'status-on' : 'status-off'}>{info.answers ? 'Still answers' : 'Silent'}</span>
+      <span>
+        {info.status} ({calDate(info.statusDate)})
+      </span>
+    </p>
+  );
+
   return (
     <div className="ps">
-      {picker === 'top' && (
+      {picker === 'top' ? (
         <div className={`ps-hero${photo ? ' has-frame' : ''}`}>
           <div className="ps-hero-text page-head">
             {title && <h1>{title}</h1>}
             {line && <p>{line}</p>}
             {choices('Probe', 'ps-picker')}
+            <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} />
+            {statusLine}
+            <LightLeft data={data} probe={probe} name={info.name} />
+            {form}
           </div>
           {photo && <Frame photo={photo} />}
         </div>
+      ) : (
+        <>
+          <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} speed={!home} distance={!home} />
+          {statusLine}
+          <div className={`ps-act${home ? ' has-side' : ''}`}>
+            <div className="ps-col">
+              {countdown && <LightDay data={data} />}
+              {form}
+            </div>
+            {home && (
+              <div className="ps-side">
+                <BirthdayToy onPick={setBorn} />
+                <ChartFrame className="ps-v1">
+                  <VoyagerLightChart born={born} />
+                </ChartFrame>
+              </div>
+            )}
+          </div>
+        </>
       )}
-
-      <LiveLight data={data} probe={probe} name={info.name} headline={headline} error={error} />
-
-      {status && (
-        <p className="ps-status">
-          <span className={info.answers ? 'status-on' : 'status-off'}>{info.answers ? 'Still answers' : 'Silent'}</span>
-          <span>
-            {info.status} ({longDate(Date.parse(`${info.statusDate}T12:00:00Z`))})
-          </span>
-        </p>
-      )}
-
-      {countdown && <LightDay data={data} />}
-
-      <div className={`ps-act${aside ? ' has-aside' : ''}`}>
-        <div className="ps-main">
-          <MessageForm uid={uid} name={info.name} onSend={send}>
-            {picker === 'form' && choices('Send to', 'ps-to')}
-          </MessageForm>
-          {data && mine.length > 0 && (
-            <Suspense fallback={null}>
-              <MessageFlight data={data} messages={mine} />
-            </Suspense>
-          )}
-        </div>
-        {aside && <p className="ps-aside">{aside}</p>}
-      </div>
 
       {sky && <SkyChart highlight={probe} now={minute} />}
 
-      {chart && data && <LightTimeChart data={data} probe={probe} name={info.name} now={minute} />}
+      {chart && data && (
+        <ChartFrame className="ps-ltc">
+          <LightTimeChart data={data} probe={probe} name={info.name} now={minute} />
+        </ChartFrame>
+      )}
     </div>
   );
 }
