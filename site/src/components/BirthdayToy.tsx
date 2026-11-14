@@ -1,7 +1,6 @@
 import { useEffect, useId, useState, type ChangeEvent } from 'react';
 import { Input } from '@/components/ui/input';
 import { groupInt } from '../lib/client';
-import { calDate } from '../lib/dates';
 import { sunGainKm, type History } from '../lib/history';
 
 const LAUNCH_DAY = '1977-09-05';
@@ -49,16 +48,16 @@ export default function BirthdayToy({ onPick }: { onPick?: (ms: number | null) =
 
   return (
     <div className="bt">
-      <label htmlFor={`${id}-day`}>Your birthday</label>
+      <label htmlFor={`${id}-day`}>Since your birthday</label>
       <Input id={`${id}-day`} name="birthday" autoComplete="bday" type="date" min={LAUNCH_DAY} max={max} value={day} onChange={change} className="bt-in mono" />
       <p className="bt-out" aria-live="polite">
         {out?.kind === 'km' && (
           <>
-            <span className="bt-km mono">{groupInt(out.km)} km</span> <span>farther from the Sun since then</span>
+            <span className="bt-km mono">+{groupInt(out.km)} km</span>
           </>
         )}
-        {out?.kind === 'early' && <span>Voyager 1 left Earth on {calDate(LAUNCH_DAY)}.</span>}
-        {out?.kind === 'late' && <span>Pick a day before today.</span>}
+        {out?.kind === 'early' && <span>Before launch</span>}
+        {out?.kind === 'late' && <span>After today</span>}
       </p>
     </div>
   );
