@@ -24,6 +24,7 @@
   --on-laser: var(--violet);
   --ok: color-mix(in oklab, var(--laser) 70%, var(--ink-muted));
   --silent: var(--ink-muted);
+  --chart-quiet: #6e6691;
 
   --sans: 'Gabarito Variable', 'Gabarito', ui-sans-serif, sans-serif;
   --mono: 'Spline Sans Mono Variable', 'Spline Sans Mono', ui-monospace, monospace;
@@ -505,6 +506,96 @@
     font-size: var(--fs-xs);
     color: var(--muted);
     font-weight: 400;
+  }
+
+  .hl-chart-frame {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .hl-chart-box {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hl-chart {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .hl-chart svg {
+    display: block;
+    overflow: visible;
+  }
+
+  .hl-chart:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 4px;
+  }
+
+  .hl-tip {
+    z-index: 5;
+    pointer-events: none;
+    display: grid;
+    gap: 3px;
+    min-width: 9rem;
+    max-width: min(16rem, 70vw);
+    padding: 9px 12px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--raised);
+    color: var(--text);
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+
+  .hl-tip-x {
+    font-family: var(--mono);
+    color: var(--muted);
+    font-size: 0.8125rem;
+    margin-bottom: 2px;
+  }
+
+  .hl-tip-row {
+    display: grid;
+    grid-template-columns: 12px auto 1fr;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--muted);
+  }
+
+  .hl-tip-key {
+    align-self: center;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--chart-quiet);
+  }
+
+  .hl-tip-row.on .hl-tip-key {
+    height: 3px;
+    background: var(--lilac);
+  }
+
+  .hl-tip-v {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .hl-tip-n {
+    white-space: nowrap;
+  }
+
+  .hl-tip-row.on .hl-tip-n {
+    color: var(--text);
   }
 
   .status-on {
