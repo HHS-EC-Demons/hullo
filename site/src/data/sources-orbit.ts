@@ -107,7 +107,7 @@ export const ORBIT_SOURCES: Source[] = [
     url: 'https://www.uahirise.org/media/usage.php',
     dated: 'Read 28 Oct 2026',
     license: HIRISE,
-    used: 'Terms for the HiRISE views of Viking 1 and 2, Spirit, Opportunity, InSight and Phoenix on the Orbit page. PIA26515 prints no credit, so it carries the credit HiRISE asks for, NASA/JPL/University of Arizona.',
+    used: 'Terms for the HiRISE views of Viking 1 and 2, Spirit, Opportunity, InSight and Phoenix on the Orbit page. PIA26515 prints no credit, so the site shows the credit HiRISE asks for, NASA/JPL/University of Arizona.',
   },
   {
     id: 'orbit-hirise',

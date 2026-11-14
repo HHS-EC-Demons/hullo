@@ -40,7 +40,7 @@ export const DATASETS: Source[] = [
     publisher: 'Olaf Frohn',
     url: 'https://github.com/ofrohn/d3-celestial',
     dated: 'Copied 30 Oct 2026',
-    license: 'BSD 3-Clause license, Copyright (c) 2015, Olaf Frohn. The full licence ships with the data as data/sky/d3-celestial-LICENSE.txt.',
+    license: 'BSD 3-Clause license, Copyright (c) 2015, Olaf Frohn. The full license ships with the data as data/sky/d3-celestial-LICENSE.txt.',
     used: 'The lines that join stars into the 88 constellation figures on the sky chart, and the constellation names.',
   },
   {
@@ -98,7 +98,7 @@ export const FACTS: Source[] = [
     url: 'https://photojournal.jpl.nasa.gov/catalog/PIA23645',
     dated: 'Image added 12 Feb 2020',
     license: NASA_MEDIA,
-    used: 'Voyager 1 took the frames on 14 Feb 1990 from about 6 billion km, and the credit NASA/JPL-Caltech.',
+    used: 'The date Voyager 1 took the frames, 14 Feb 1990, the distance of about 6 billion km and the credit NASA/JPL-Caltech.',
   },
   {
     id: 'nasa-voyager-status',
@@ -116,7 +116,7 @@ export const FACTS: Source[] = [
     url: 'https://science.nasa.gov/missions/new-horizons/nasas-new-horizons-spacecraft-wakes-from-hibernation-in-good-health/',
     dated: '7 Jul 2026',
     license: NASA_MEDIA,
-    used: 'New Horizons woke from a 321 day hibernation on 23 Jun 2026.',
+    used: 'New Horizons came out of a 321 day hibernation on 23 Jun 2026.',
   },
   {
     id: 'nssdca-pioneer-10',
@@ -161,7 +161,7 @@ export const FACTS: Source[] = [
     url: 'https://www.jpl.nasa.gov/news/nasas-ingenuity-mars-helicopter-team-says-goodbye-for-now/',
     dated: '16 Apr 2024',
     license: 'JPL news release. Facts cited, not copied.',
-    used: 'Ingenuity wakes daily, takes a photo, logs temperatures and stores the data on board.',
+    used: 'Ingenuity switches on daily, takes a photo, logs temperatures and stores the data on board.',
   },
   {
     id: 'nasa-insight-end',
