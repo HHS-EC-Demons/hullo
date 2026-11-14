@@ -30,6 +30,7 @@ describe('dates', () => {
     const now = new Date(2026, 10, 3, 19, 16).getTime();
     expect(localStamp(new Date(2026, 10, 3, 19, 15).getTime(), { now })).toBe('7:15 PM Tue 3 Nov (your time)');
     expect(localDay(new Date(2027, 2, 2, 6).getTime(), now)).toBe('Tue 2 Mar 2027');
+    expect(localStamp(new Date(2026, 10, 18, 4, 16).getTime(), { now, weekday: false })).toBe('4:16 AM 18 Nov (your time)');
   });
 
   it('says how long ago', () => {
