@@ -1,22 +1,62 @@
 import { useEffect, useRef, useState } from 'react';
-import { contacts, DSN_CONFIG, DSN_FEED, dishSize, parseConfig, parseFeed, rateText, type Config, type Contact, type Feed } from '../lib/dsn';
-import { lightTimeAt, hmsText, type DeepSpaceData } from '../lib/lighttime';
-import { loadJson, utcTime } from '../lib/client';
+import { contacts, DSN_CONFIG, DSN_FEED, parseConfig, parseFeed, type Config, type Contact, type Feed } from '../lib/dsn';
+import { utcTime } from '../lib/client';
 import './dsn.css';
 
 const POLL_MS = 8000;
 const PROBES: Record<string, string> = { VGR1: 'voyager1', VGR2: 'voyager2', NHPC: 'newhorizons' };
+const SITES = ['Goldstone', 'Madrid', 'Canberra'];
+const SHOWN = 2;
+const PHOTO_SIZES = '(max-width: 860px) calc(100vw - 32px), 31vw';
+
+export interface SitePhoto {
+  avif: string;
+  webp: string;
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  caption: string;
+  credit: string;
+}
+
+interface Props {
+  photos: Record<string, SitePhoto>;
+}
+
+function label(c: Contact): string {
+  return c.name.split(/\s+/).length > 2 ? c.craft : c.name;
+}
+
+function crafts(list: Contact[]): Contact[] {
+  const seen = new Set<string>();
+  return list.filter((c) => (seen.has(c.craft) ? false : (seen.add(c.craft), true)));
+}
+
+export interface SitePhoto {
+  avif: string;
+  webp: string;
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  caption: string;
+  credit: string;
+}
+
+interface Props {
+  photos: Record<string, SitePhoto>;
+}
 
 function sentence(c: Contact): string {
   const size = c.size ? `${c.size} ` : '';
   return `${c.site}’s ${size}dish ${c.dish} is ${c.verb} ${c.name}.`;
 }
 
-export default function DsnNow() {
+export default function DsnNow({ photos }: Props) {
   const root = useRef<HTMLElement>(null);
   const [cfg, setCfg] = useState<Config | null>(null);
   const [feed, setFeed] = useState<Feed | null>(null);
-  const [deep, setDeep] = useState<DeepSpaceData | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -24,9 +64,6 @@ export default function DsnNow() {
     fetch(DSN_CONFIG)
       .then((r) => (r.ok ? r.text() : Promise.reject(new Error(String(r.status)))))
       .then((t) => live && setCfg(parseConfig(t)))
-      .catch(() => undefined);
-    loadJson<DeepSpaceData>('data/deep-space.json')
-      .then((d) => live && setDeep(d))
       .catch(() => undefined);
     return () => {
       live = false;
@@ -72,95 +109,59 @@ export default function DsnNow() {
   }, []);
 
   const list = feed ? contacts(feed, cfg) : [];
-  const story = list.filter((c) => PROBES[c.craft]);
-
-  function roundTrip(c: Contact): string | null {
-    if (c.rtlt > 0) return `Round trip light time ${hmsText(c.rtlt)}, from the feed.`;
-    const key = PROBES[c.craft];
-    const lt = deep && feed ? lightTimeAt(deep, key, feed.time) : null;
-    return lt ? `Round trip light time about ${hmsText(2 * lt)}, from this site’s Horizons table.` : null;
-  }
-
-  const sites = feed ? feed.sites : [];
 
   return (
     <section ref={root} className="wrap section dsn" aria-labelledby="dsn-h">
       <h2 id="dsn-h" className="dsn-h">
-        NASA’s Deep Space Network this minute
+        Deep Space Network now
       </h2>
-      <p className="dsn-sub">
-        Antennas in California, Spain and Australia, from NASA’s DSN Now feed, updated every {POLL_MS / 1000} s while this
-        section is on screen.
-      </p>
+      {failed && !feed && <p className="dsn-sub">The live feed did not load.</p>}
 
-      <div className="dsn-story">
-        {!feed && !failed && <p className="dsn-big pending">Loading the feed…</p>}
-        {!feed && failed && <p className="dsn-big">The DSN Now feed did not load. The next try is in {POLL_MS / 1000} s.</p>}
-        {feed && story.length > 0 &&
-          story.map((c) => {
-            const rt = roundTrip(c);
-            return (
-              <div key={`${c.dish}-${c.craft}`} className="dsn-hit">
-                <p className="dsn-big">Right now {sentence(c)}</p>
-                <p className="dsn-detail">
-                  {c.rate > 0 && <span className="mono">{rateText(c.rate)} coming down. </span>}
-                  {rt}
-                </p>
-              </div>
-            );
-          })}
-        {feed && story.length === 0 && (
-          <p className="dsn-big">
-            None of the probes on this site is in contact right now. The list shows what each dish is doing.
-          </p>
-        )}
-      </div>
-
-      {feed && (
-        <div className="dsn-grid">
-          {sites.map((s) => {
-            const dishes = feed.dishes.filter((d) => d.site === s.name);
-            return (
-              <div key={s.name} className="dsn-site">
-                <h3>{cfg?.sites[s.name] ?? s.label}</h3>
-                <ul>
-                  {dishes.map((d) => {
-                    const mine = list.filter((c) => c.dish === (cfg?.dishes[d.name]?.label ?? d.name.replace(/^DSS(\d+)$/, 'DSS $1')));
-                    return (
-                      <li key={d.name}>
-                        <span className="dsn-dish mono">
-                          {cfg?.dishes[d.name]?.label ?? d.name}
-                          <span className="dsn-size">{dishSize(cfg?.dishes[d.name]?.type ?? '')}</span>
-                        </span>
-                        <span className="dsn-what">
-                          {mine.length
-                            ? mine.map((c) => (
-                                <span key={c.craft} className={PROBES[c.craft] ? 'dsn-ours' : undefined}>
-                                  {c.verb.charAt(0).toUpperCase() + c.verb.slice(1)} {c.name}
-                                </span>
-                              ))
-                            : d.activity || 'No activity listed'}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      <ul className="dsn-sites">
+        {SITES.map((site) => {
+          const here = crafts(list.filter((c) => c.site === site));
+          const photo = photos[site];
+          return (
+            <li key={site} className="dsn-site">
+              <h3>{site}</h3>
+              {photo && (
+                <figure className="dsn-photo">
+                  <picture>
+                    <source type="image/avif" srcSet={photo.avif} sizes={PHOTO_SIZES} />
+                    <source type="image/webp" srcSet={photo.webp} sizes={PHOTO_SIZES} />
+                    <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" />
+                  </picture>
+                  <figcaption className="credit">
+                    {photo.caption}. <span data-credit="">{photo.credit}</span>
+                  </figcaption>
+                </figure>
+              )}
+              <p className="dsn-now">
+                {!feed && '\u2007'}
+                {feed && here.length === 0 && <span className="dsn-none">None</span>}
+                {here.slice(0, SHOWN).map((c) => (
+                  <span key={c.craft} className={PROBES[c.craft] ? 'dsn-craft dsn-ours' : 'dsn-craft'} title={c.name}>
+                    {label(c)}
+                  </span>
+                ))}
+                {here.length > SHOWN && <span className="dsn-more mono">+{here.length - SHOWN}</span>}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
       <p className="dsn-time">
         {feed ? (
           <>
-            Feed time <span className="mono">{utcTime(feed.time)}</span>. Source{' '}
-            <a href="https://eyes.nasa.gov/apps/dsn-now/" rel="noopener">
-              DSN Now, NASA/JPL-Caltech
-            </a>
-            .
+            <span className="mono">{utcTime(feed.time)}</span>{' '}
+            <span data-credit="">
+              <a href="https://eyes.nasa.gov/apps/dsn-now/" rel="noopener">
+                DSN Now, NASA/JPL-Caltech
+              </a>
+            </span>
           </>
         ) : (
-          ' '
+          ' '
         )}
       </p>
     </section>

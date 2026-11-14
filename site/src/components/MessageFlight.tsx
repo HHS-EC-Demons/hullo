@@ -179,7 +179,7 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
         </span>
         <span className="fl-end">{info.name}</span>
       </div>
-      {first && <p className="fl-scale">Each equal step along the line is ten times more travel time than the step before.</p>}
+      {first && <p className="fl-scale">Each step along the line is ten times the travel time of the one before.</p>}
 
       <dl className="fl-times">
         <div>
@@ -214,8 +214,7 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
           <p className="fl-silent-big">No reply will come.</p>
           <p>
             {info.name}’s {info.lastContact} on <span className="mono">{longDate(Date.parse(`${info.statusDate}T12:00:00Z`))}</span>,{' '}
-            <span className="mono">{yearsSince(info.statusDate, now)} years</span> ago. Your message still reaches the place where{' '}
-            {info.name} should be, worked out from tracking that stopped long ago.
+            <span className="mono">{yearsSince(info.statusDate, now)} years</span> ago.
           </p>
         </div>
       )}
