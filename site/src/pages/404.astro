@@ -34,8 +34,8 @@ const photo = await pic('nope-dss14', [400, 640, 960, 1280, 1566], '(max-width: 
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     gap: 32px 64px;
-    align-items: center;
-    padding-block: clamp(36px, 6vw, 88px);
+    align-items: start;
+    padding-block: clamp(28px, 4vw, 56px) clamp(36px, 6vw, 88px);
   }
   .lost-text h1 {
     font-size: var(--fs-display);
