@@ -42,9 +42,9 @@ function loadMotion() {
 
 function elevationWord(el: number | null, min: number): string {
   if (el === null) return '';
-  if (el < 0) return 'Moon below the horizon';
-  if (el < min) return `Moon ${Math.round(el)}° up, too low`;
-  return `Moon ${Math.round(el)}° up`;
+  if (el < 0) return `${Math.round(el)}°, set`;
+  if (el < min) return `${Math.round(el)}°, low`;
+  return `${Math.round(el)}°`;
 }
 
 export default function LaserShot({ index: given }: { index?: MoonIndex }) {
@@ -128,8 +128,6 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
       .then(land, land);
   }
 
-  const refl = index?.reflectors.find((r) => r.id === reflector);
-  const st = index?.stations.find((s) => s.id === station);
   const shown = fired && fired.reflector === reflector && fired.station === station ? fired : null;
   const distance = shown?.range_km ?? 384400;
   const span = EARTH_R + distance + MOON_R;
@@ -147,10 +145,9 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
         </div>
         <figcaption className="ls-labels">
           <span>Earth</span>
-          <span className="ls-mid mono">{shown ? `${km.format(shown.range_km)} km` : 'About 384,400 km'}</span>
+          <span className="ls-mid mono">{shown ? `${km.format(shown.range_km)} km` : '~384,400 km'}</span>
           <span>Moon</span>
         </figcaption>
-        <p className="ls-scale">Earth, the Moon and the gap are drawn to scale.</p>
       </figure>
       <div className="ls-top">
       <div className="ls-controls">
@@ -164,20 +161,12 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
                 checked={reflector === r.id}
                 onChange={() => setReflector(r.id)}
               />
-              <span>
-                {r.name}
-                {!r.nasa && (
-                  <>
-                    <span className="sr-only">, </span>
-                    <small>Soviet, not NASA</small>
-                  </>
-                )}
-              </span>
+              <span>{r.name}</span>
             </label>
           ))}
         </fieldset>
         <fieldset className="choices ls-stations">
-          <legend>Laser station</legend>
+          <legend>Station</legend>
           {(index?.stations ?? []).map((s) => (
             <label className="choice" key={s.id}>
               <input type="radio" name={`${uid}-st`} checked={station === s.id} onChange={() => {
@@ -185,17 +174,17 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
                   setStation(s.id);
                 }} />
               <span>
-                {s.name}, {s.place}
+                {s.name}
                 <span className="sr-only">, </span>
-                <small>{elevationWord(elNow(s.id), minEl) || '\u2007'}</small>
+                <small className="mono">{elevationWord(elNow(s.id), minEl) || '\u2007'}</small>
               </span>
             </label>
           ))}
         </fieldset>
         <Button variant="primary" size="lg" className="ls-fire" type="button" onClick={fire} onPointerEnter={loadMotion} onFocus={loadMotion} disabled={!loaded || flying}>
-          {flying ? 'Pulse on its way…' : 'Fire the laser'}
+          {flying ? 'Firing' : 'Fire laser'}
         </Button>
-        {error && <p className="note">Ranging data did not load. Reload the page to try again.</p>}
+        {error && <p className="note">Ranging data did not load.</p>}
       </div>
       <div className="ls-readout" aria-live="polite">
         {shown && (
@@ -204,18 +193,12 @@ export default function LaserShot({ index: given }: { index?: MoonIndex }) {
             <span className="u">s</span>
           </p>
         )}
-        <p className="ls-what">
-          {shown && refl && st
-            ? `Round trip from ${st.name} to the ${refl.name} mirror, fired ${
-                shown.waited ? `on ${utcDay(shown.ms)} at ${utcTime(shown.ms)}` : `at ${utcTime(shown.ms)}`
-              }.`
-            : flying
-              ? 'The pulse is traveling at the speed of light.'
-              : 'Pick a mirror and a station, then fire.'}
-        </p>
-        {shown?.waited && st && (
-          <p className="note">Timed for when the Moon climbs past {minEl}° at {st.name}.</p>
+        {shown && (
+          <p className="ls-what">
+            Round trip, <span className="mono">{shown.waited ? `${utcDay(shown.ms)}, ${utcTime(shown.ms)}` : utcTime(shown.ms)}</span>
+          </p>
         )}
+        {shown?.waited && <p className="note">Timed for {minEl}° elevation.</p>}
       </div>
       </div>
 

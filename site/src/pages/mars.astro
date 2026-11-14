@@ -4,12 +4,10 @@ import IngenuityMap, { type Flight, type FlightPhoto } from '../components/Ingen
 import PlanetFigure from '../components/PlanetFigure.astro';
 import SoundClip from '../components/SoundClip';
 import { readData } from '../lib/build-data';
-import { utcDate } from '../lib/client';
 import { meta, pic } from '../lib/photos';
 import photoData from '../data/photos.json';
 import sounds from '../data/sounds.json';
 
-const dated = (iso: string): string => utcDate(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`));
 
 const ing = readData<{ totals: { flights: number; nasa_km: number; nasa_minutes: number }; mission_page: string; flights: Flight[] }>('ingenuity.json');
 const opening = { ...ing.flights[0], path: [] };
@@ -33,7 +31,8 @@ const photos: FlightPhoto[] = await Promise.all(
     return {
       n: s.n,
       alt: s.alt,
-      caption: `${m.id}, ${dated(m.date!)}, ${m.credit}.`,
+      date: m.date!,
+      credit: `${m.id}, ${m.credit}`,
       pic: await pic(s.slug, [400, 640, 960], '(max-width: 860px) 92vw, 30vw'),
     };
   }),
@@ -46,8 +45,7 @@ const valinor = photoData['mars-valinor'];
 const mark = valinor.mark as [number, number];
 
 function span(from: string, to: string): string {
-  const [a, b] = [dated(from), dated(to)];
-  return from.slice(0, 7) === to.slice(0, 7) ? `${a.split(' ')[0]} to ${b}` : `${a} to ${b}`;
+  return from.slice(0, 7) === to.slice(0, 7) ? `${from} to ${to.slice(5)}` : `${from} to ${to}`;
 }
 ---
 
@@ -55,7 +53,7 @@ function span(from: string, to: string): string {
   <header class="wrap page-head mars-hero">
     <div class="mars-hero-text">
       <h1>Mars</h1>
-      <p>Ingenuity was built for 5 test flights and flew {ing.totals.flights} times over Jezero crater.</p>
+      <p>Built for 5 flights, Ingenuity flew {ing.totals.flights}.</p>
     </div>
     <PlanetFigure
       slug="mars-two-years"
@@ -63,41 +61,40 @@ function span(from: string, to: string): string {
       eager
       sizes="(max-width: 860px) 92vw, 46vw"
       alt="Ingenuity standing on rocky ground, its two stacked rotors, dusty solar panel and four thin legs in sharp detail."
-    >
-      Ingenuity seen by Perseverance from 23 m away, enhanced color, {dated(hero.date!)}. {hero.id}, {hero.credit}.
-    </PlanetFigure>
+      what="Ingenuity, enhanced color"
+      date={hero.date!}
+      credit={`${hero.id}, ${hero.credit}`}
+    />
   </header>
 
   <section class="wrap" aria-label="Ingenuity flights">
     <div class="map-slot">
       <IngenuityMap client:visible photos={photos} opening={opening} flights={ing.totals.flights} />
     </div>
-    <p class="credit map-credit">
-      HiRISE and CTX color mosaic from JPL’s Mars 2020 map, NASA/JPL-Caltech/University of Arizona/MSSS. Flight figures from NASA’s
-      Ingenuity flight log. North is up.
-    </p>
+    <p class="credit map-credit" data-credit>M20_HiRISE_RGB_CTX_mosaic_25cm_v7, NASA/JPL-Caltech/University of Arizona/MSSS.</p>
   </section>
 
-  <section class="mars-seen section" aria-labelledby="seen-h">
-    <h2 id="seen-h" class="wrap mars-h2">Seen by Perseverance</h2>
+  <section class="mars-seen section" aria-label="Seen by Perseverance">
     <PlanetFigure
       slug="mars-van-zyl"
       class="mars-wide"
       sizes="100vw"
       alt="A wide panorama of Jezero crater’s floor, reddish sand scattered with pale rocks under a butterscotch sky, with low hills along the horizon."
-    >
-      Van Zyl Overlook, where Perseverance parked during Ingenuity’s first flights, {span(vanZyl.date, vanZyl.until)}. {vanZyl.id}, {vanZyl.credit}.
-    </PlanetFigure>
+      what="Van Zyl Overlook"
+      date={span(vanZyl.date, vanZyl.until)}
+      credit={`${vanZyl.id}, ${vanZyl.credit}`}
+    />
     <div class="wrap mars-pair">
       <PlanetFigure
         slug="mars-selfie"
         sizes="(max-width: 860px) 92vw, 54vw"
         alt="Perseverance’s selfie on Mars, with Ingenuity standing on the ground about 3.9 m in front of the rover."
-      >
-        Perseverance’s selfie with Ingenuity, {dated(selfie.date!)}. {selfie.id}, {selfie.credit}.
-      </PlanetFigure>
+        what="Perseverance and Ingenuity"
+        date={selfie.date!}
+        credit={`${selfie.id}, ${selfie.credit}`}
+      />
       <div class="mars-sound">
-        <h3 class="mars-h3">Ingenuity’s rotors, recorded from 80 m away</h3>
+        <h2 class="mars-h3">Flight 4 rotor hum</h2>
         <SoundClip
           client:visible
           src={rotors.file}
@@ -107,8 +104,7 @@ function span(from: string, to: string): string {
           stampId="ingenuity"
           stampDetail="Heard flight 4, recorded 30 Apr 2021 from 80 m away"
         >
-          Flight 4, recorded by Perseverance’s SuperCam microphone on 30 Apr 2021, with the 84 Hz blade hum boosted by NASA. Full clip,
-          {Math.round(rotors.duration_s)} s. Released {dated(rotors.released)}, {rotors.credit}.
+          SuperCam microphone, <span class="mono">{rotors.recorded}</span>. <span data-credit>{rotors.credit}.</span>
         </SoundClip>
       </div>
     </div>
@@ -116,8 +112,8 @@ function span(from: string, to: string): string {
 
   <section class="mars-end" aria-labelledby="end-h">
     <div class="wrap mars-claim">
-      <h2 id="end-h" class="big-claim"><span class="n mono">{ing.totals.nasa_km.toFixed(1)} km</span> in {ing.totals.nasa_minutes.toFixed(1)} minutes of flying</h2>
-      <p>Flight 72 damaged one or more rotor blades on 18 Jan 2024. Ingenuity still stands where it landed.</p>
+      <h2 id="end-h" class="big-claim"><span class="n mono">{ing.totals.nasa_km.toFixed(1)} km</span> in {ing.totals.nasa_minutes.toFixed(1)} minutes</h2>
+      <p>Rotor damage on flight 72 ended the mission.</p>
     </div>
     <PlanetFigure
       slug="mars-valinor"
@@ -125,9 +121,10 @@ function span(from: string, to: string): string {
       sizes="100vw"
       mark={mark}
       alt="Rippled orange sand dunes with a few rocks, and Ingenuity as a tiny dark speck inside a lilac ring left of center."
-    >
-      Ingenuity inside the ring, at its last airfield, from 415 m away, {dated(valinor.date)}. Crop of {valinor.id}, {valinor.credit}.
-    </PlanetFigure>
+      what="Ingenuity at its last airfield"
+      date={valinor.date}
+      credit={`${valinor.id}, ${valinor.credit}`}
+    />
   </section>
 </Base>
 
@@ -147,13 +144,6 @@ function span(from: string, to: string): string {
   .map-credit {
     margin-top: 14px;
     max-width: 48rem;
-  }
-  .mars-h2 {
-    font-size: var(--fs-lg);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    margin-bottom: 24px;
   }
   .mars-h3 {
     font-size: var(--fs-lg);

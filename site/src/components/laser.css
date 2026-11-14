@@ -105,12 +105,6 @@
   color: var(--text);
 }
 
-.ls-scale {
-  margin-top: 6px;
-  font-size: var(--fs-xs);
-  color: var(--muted);
-}
-
 .ls-readout {
   display: grid;
   gap: 12px;

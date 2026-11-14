@@ -3,11 +3,9 @@ import Base from '../layouts/Base.astro';
 import LaserShot from '../components/LaserShot';
 import PlanetFigure from '../components/PlanetFigure.astro';
 import { readData } from '../lib/build-data';
-import { utcDate } from '../lib/client';
 import { meta } from '../lib/photos';
 import type { MoonIndex } from '../lib/ranging';
 
-const dated = (iso: string): string => utcDate(Date.parse(`${iso.slice(0, 10)}T12:00:00Z`));
 const moonIndex = readData<MoonIndex>('moon/index.json');
 const station = meta('moon-laser-station');
 const earthrise = meta('moon-earthrise');
@@ -15,17 +13,17 @@ const earthrise = meta('moon-earthrise');
 const mirrors = [
   {
     slug: 'moon-a11-reflector',
-    what: 'The Apollo 11 reflector, behind the seismometer',
+    what: 'Apollo 11',
     alt: 'An astronaut on the grey surface beside the Apollo 11 seismometer, with the small laser reflector behind the seismometer and the lunar module in the distance.',
   },
   {
     slug: 'moon-a14-reflector',
-    what: 'The Apollo 14 reflector, set up among boot prints',
+    what: 'Apollo 14',
     alt: 'The Apollo 14 laser reflector on the grey surface, a tilted panel of glass corner cubes with boot prints around the panel.',
   },
   {
     slug: 'moon-a15-reflector',
-    what: 'The Apollo 15 reflector, still folded on the lunar module',
+    what: 'Apollo 15',
     alt: 'The side of the Apollo 15 lunar module, with the folded laser reflector on top of a foil wrapped storage bay and boot prints in front.',
   },
 ].map((m) => ({ ...m, meta: meta(m.slug) }));
@@ -35,7 +33,7 @@ const mirrors = [
   <header class="wrap page-head moon-hero">
     <div class="moon-hero-text">
       <h1>Moon</h1>
-      <p>Observatories still bounce lasers off mirrors the Apollo 11, 14 and 15 crews left behind.</p>
+      <p>Lasers still bounce off Apollo mirrors.</p>
     </div>
     <PlanetFigure
       slug="moon-laser-station"
@@ -43,23 +41,30 @@ const mirrors = [
       eager
       sizes="(max-width: 860px) 92vw, 36vw"
       alt="Two green laser beams rise from a laser ranging station and an observatory dome into a deep blue night sky, both pointed at the bright full Moon."
-    >
-      Goddard’s laser ranging facility firing at the Lunar Reconnaissance Orbiter, {dated(station.date!)}. {station.id}, {station.credit}.
-    </PlanetFigure>
+      what="Goddard lasers aimed at LRO"
+      date={station.date!}
+      credit={`${station.id}, ${station.credit}`}
+    />
   </header>
 
   <section class="wrap" aria-label="Laser ranging">
     <LaserShot client:load index={moonIndex} />
   </section>
 
-  <section class="moon-mirrors section" aria-labelledby="mirrors-h">
-    <h2 id="mirrors-h" class="wrap moon-h2">The three Apollo mirrors</h2>
+  <section class="moon-mirrors section" aria-label="The Apollo mirrors">
     <div class="moon-row">
       {
         mirrors.map((m) => (
-          <PlanetFigure slug={m.slug} class="moon-mirror" sizes="(max-width: 860px) 100vw, 33vw" widths={[640, 1080, 1800]} alt={m.alt}>
-            {m.what}, {dated(m.meta.date!)}. {m.meta.id.toUpperCase()}, {m.meta.credit}.
-          </PlanetFigure>
+          <PlanetFigure
+            slug={m.slug}
+            class="moon-mirror"
+            sizes="(max-width: 860px) 100vw, 33vw"
+            widths={[640, 800, 1080, 1800]}
+            alt={m.alt}
+            what={m.what}
+            date={m.meta.date!}
+            credit={`${m.meta.id.toUpperCase()}, ${m.meta.credit}`}
+          />
         ))
       }
     </div>
@@ -67,17 +72,17 @@ const mirrors = [
 
   <section class="moon-drift" aria-labelledby="drift-h">
     <div class="wrap moon-claim">
-      <h2 id="drift-h" class="big-claim"><span class="n mono">3.8 cm</span> a year</h2>
-      <p>More than 57 years of laser echoes show the Moon moving away from Earth.</p>
+      <h2 id="drift-h" class="big-claim"><span class="n mono">3.8 cm</span> farther every year</h2>
     </div>
     <PlanetFigure
       slug="moon-earthrise"
       class="moon-earthrise"
       sizes="100vw"
       alt="The blue and white Earth, partly in shadow, above the grey cratered horizon of the Moon against a black sky."
-    >
-      Earth over the Moon’s horizon, from Apollo 8 in lunar orbit, {dated(earthrise.date!)}. {earthrise.id.toUpperCase()}, {earthrise.credit}.
-    </PlanetFigure>
+      what="Earthrise, Apollo 8"
+      date={earthrise.date!}
+      credit={`${earthrise.id.toUpperCase()}, ${earthrise.credit}`}
+    />
   </section>
 </Base>
 
@@ -94,13 +99,6 @@ const mirrors = [
   .moon-hero :global(.moon-hero-photo) {
     --pf-ratio: 4 / 5;
     --pf-pos: 50% 0%;
-  }
-  .moon-h2 {
-    font-size: var(--fs-lg);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    margin-bottom: 24px;
   }
   .moon-row {
     display: grid;
@@ -122,11 +120,6 @@ const mirrors = [
     display: grid;
     gap: 14px;
     padding-bottom: clamp(24px, 4vw, 48px);
-  }
-  .moon-claim p {
-    max-width: 30rem;
-    font-size: var(--fs-md);
-    color: var(--muted);
   }
   .big-claim {
     font-size: var(--fs-lg);
