@@ -1,5 +1,13 @@
 .os {
+  display: flex;
+  flex-direction: column;
   gap: clamp(20px, 3vw, 36px);
+}
+
+.os-site {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .os-head {

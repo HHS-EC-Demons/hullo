@@ -75,7 +75,7 @@ export const HOME_SOURCES: Source[] = [
     url: 'https://ssd.jpl.nasa.gov/horizons/',
     dated: 'Fetched 2 Nov 2026 with pipeline/probe_history.py',
     license: 'NASA JPL data. Credit NASA/JPL-Caltech.',
-    used: 'The Deep space chart of distance from the Sun, the home chart of hours of light to Voyager 1 since 1977 and the birthday distance.',
+    used: 'The Deep space chart of distance from the Sun, the home chart of hours of light to Voyager 1 since 1977.',
     note: 'One geometric vector table per probe every calendar month, from the first time Horizons holds for each trajectory and for Voyager 1 from 5 Sep 1977, to 1 Jan 2028, centred on the Sun, body 500@10, and on Earth, body 500@399. The charts stop at today. The birthday distance reads the Sun table in a straight line between the two monthly samples on either side of noon UTC on the birthday and of the current moment, and subtracts. The result is how much farther from the Sun Voyager 1 is now, close to the distance flown because Voyager 1 moves almost straight away from the Sun.',
   },
   {

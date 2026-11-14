@@ -2,6 +2,10 @@ import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import photoMeta from '../data/photos.json';
 import lroMeta from '../data/lro.json';
+import homeMeta from '../data/home-images.json';
+import pageMeta from '../data/page-images.json';
+import silentMeta from '../data/silent-images.json';
+import probeMeta from '../data/probe-photos.json';
 
 export interface PhotoMeta {
   id: string;
@@ -58,6 +62,24 @@ export function lro(site: string): LroCrop {
   const hit = LRO.crops.find((c) => c.site === site);
   if (!hit) throw new Error(`missing LRO crop ${site}`);
   return hit;
+}
+
+type Loose = { id?: string; nasa_id?: string; credit?: string; date?: string | null };
+
+function lineOf(m: Loose | undefined): string | null {
+  if (!m) return null;
+  const id = m.id ?? m.nasa_id;
+  if (!id || !m.credit) return null;
+  const year = m.date ? m.date.slice(0, 4) : '';
+  return `${year ? `${year}. ` : ''}${id}, ${m.credit}`;
+}
+
+export function creditLine(slug: string): string | null {
+  const home = (homeMeta as Record<string, Loose>)[slug];
+  const page = (pageMeta as Record<string, Loose>)[slug];
+  const silent = (silentMeta as (Loose & { object: string })[]).find((m) => `silent-${m.object}` === slug);
+  const probe = (probeMeta as (Loose & { slug: string })[]).find((m) => m.slug === slug);
+  return lineOf(META[slug]) ?? lineOf(home) ?? lineOf(page) ?? lineOf(silent) ?? lineOf(probe);
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

@@ -1,5 +1,5 @@
 ---
-import { image, pic } from '../lib/photos';
+import { creditLine, image, pic } from '../lib/photos';
 
 interface Props {
   slug: string;
@@ -16,6 +16,7 @@ const src = image(slug);
 const native = Math.min(src.width, 2400);
 const list = [...widths.filter((w) => w < native), native];
 const p = await pic(slug, list, sizes);
+const source = creditLine(slug);
 ---
 
 <figure class:list={['pf', className]}>
@@ -35,6 +36,7 @@ const p = await pic(slug, list, sizes);
     </picture>
     {mark && <span class="pf-ring" aria-hidden="true" style={`left: ${mark[0] * 100}%; top: ${mark[1] * 100}%`} />}
   </div>
+  {source && <figcaption class="credit" data-credit>{source}</figcaption>}
 </figure>
 
 <style>

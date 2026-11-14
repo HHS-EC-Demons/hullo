@@ -3,7 +3,6 @@ import { ReactCompareSliderCssVars } from 'react-compare-slider';
 import { Handle, HandleRoot, Item, Provider, Root } from 'react-compare-slider/components';
 import { useReactCompareSlider } from 'react-compare-slider/hooks';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import SoundClip, { type SoundClipProps } from './SoundClip';
 import { groupInt } from '../lib/client';
@@ -22,6 +21,7 @@ export interface ViewProps {
   alt: string;
   when: string;
   by: string;
+  credit?: string;
   mark?: Mark;
 }
 
@@ -120,12 +120,17 @@ function View({ view, eager }: { view: ViewProps; eager?: boolean }) {
   return (
     <figure className="os-view">
       <p className="os-when">
-        <span className="mono">{view.when}</span> <span className="os-by">{view.by}</span>
+        <span className="mono">{view.when}</span>
       </p>
       <div className="os-frame ph" style={{ aspectRatio: `${view.pic.width} / ${view.pic.height}` }}>
         <Picture pic={view.pic} alt={view.alt} eager={eager} />
         {view.mark && <Overlay pic={view.pic} mark={view.mark} />}
       </div>
+      {view.credit && (
+        <figcaption className="credit" data-credit>
+          {view.credit}
+        </figcaption>
+      )}
     </figure>
   );
 }
@@ -136,10 +141,10 @@ function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
     <figure className="os-pairfig" onPointerDownCapture={onSlide} onKeyDownCapture={onSlide}>
       <div className="os-whenrow">
         <p className="os-when">
-          <span className="mono">{site.then.when}</span> <span className="os-by">{site.then.by}</span>
+          <span className="mono">{site.then.when}</span>
         </p>
         <p className="os-when os-right">
-          <span className="mono">{site.now.when}</span> <span className="os-by">{site.now.by}</span>
+          <span className="mono">{site.now.when}</span>
         </p>
       </div>
       <Provider {...slider}>
@@ -172,6 +177,11 @@ function Pair({ site, onSlide }: { site: SiteProps; onSlide: () => void }) {
           </HandleRoot>
         </Root>
       </Provider>
+      {(site.then.credit || site.now.credit) && (
+        <figcaption className="credit" data-credit>
+          {[site.then.credit, site.now.credit].filter(Boolean).join(' · ')}
+        </figcaption>
+      )}
     </figure>
   );
 }
@@ -234,32 +244,17 @@ export default function OrbitSites({ sites, maps, first, head, quake }: { sites:
 
   return (
     <TooltipProvider>
-      <Tabs value={active} onValueChange={open} className="os">
+      <div className="os">
         <div className="wrap os-head">
           <div className="os-intro">{head}</div>
           <div className="os-maps">
             {maps.map((m, i) => (
-              <div className="os-mapcol" key={m.body}>
-                <SiteMap map={m} active={active} onPick={open} eager={i === 0} />
-                {m.body === 'Moon' && (
-                  <p className="os-label" aria-hidden="true">
-                    Apollo
-                  </p>
-                )}
-                <TabsList aria-label={`${m.body} landing sites`} className="os-list">
-                  {sites
-                    .filter((s) => s.body === m.body)
-                    .map((s) => (
-                      <TabsTrigger key={s.id} value={s.id} aria-label={s.tab === s.name ? undefined : s.name}>
-                        {s.tab}
-                      </TabsTrigger>
-                    ))}
-                </TabsList>
-              </div>
+              <SiteMap key={m.body} map={m} active={active} onPick={open} eager={i === 0} />
             ))}
           </div>
           <div className="os-read">
             <div aria-live="polite" className="os-readtext">
+              <p className="os-site">{site.name}</p>
               <p className="os-days">
                 <span className="os-days-n mono">{now ? groupInt(Math.floor((now - Date.parse(`${site.landed}T00:00:00Z`)) / DAY)) : '\u2007'.repeat(6)}</span> days since landing
               </p>
@@ -270,19 +265,17 @@ export default function OrbitSites({ sites, maps, first, head, quake }: { sites:
             </div>
           </div>
         </div>
-        {sites.map((s) => (
-          <TabsContent key={s.id} value={s.id} className="wrap os-panel">
-            {s.pair ? (
-              <Pair site={s} onSlide={() => slide(s)} />
-            ) : (
-              <div className="os-pair">
-                <View view={s.then} />
-                <View view={s.now} />
-              </div>
-            )}
-          </TabsContent>
-        ))}
-      </Tabs>
+        <div className="wrap os-panel" role="region" aria-label={site.name}>
+          {site.pair ? (
+            <Pair key={site.id} site={site} onSlide={() => slide(site)} />
+          ) : (
+            <div className="os-pair" key={site.id}>
+              <View view={site.then} />
+              <View view={site.now} />
+            </div>
+          )}
+        </div>
+      </div>
     </TooltipProvider>
   );
 }

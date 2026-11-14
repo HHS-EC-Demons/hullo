@@ -12,7 +12,6 @@ import monoFont from '@fontsource-variable/spline-sans-mono/files/spline-sans-mo
 import { localCalDate } from '../lib/local-date';
 import './passport.css';
 
-const PassportChart = lazy(() => import('./PassportChart'));
 const VoyagerSince = lazy(() => import('./VoyagerSince'));
 
 const dayText = localCalDate;
@@ -101,9 +100,10 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
           }}
         >
           <div className="pp-field">
-            <label htmlFor={nameId}>Certificate name</label>
+            <label htmlFor={nameId} className="sr-only">Certificate name</label>
             <Input
               id={nameId}
+              placeholder="Your name"
               name="certificate-name"
               spellCheck={false}
               value={name}
@@ -119,20 +119,6 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
             Print certificate
           </Button>
         </form>
-        <section className="pp-chart" aria-labelledby="pp-chart-title">
-          <h2 id="pp-chart-title" className="pp-chart-title">
-            Stamps by page
-          </h2>
-          <div className="pp-chart-frame">
-            {live ? (
-              <Suspense fallback={<Skeleton className="absolute inset-0" />}>
-                <PassportChart byId={byId} dayText={dayText} />
-              </Suspense>
-            ) : (
-              <Skeleton className="absolute inset-0" />
-            )}
-          </div>
-        </section>
       </header>
 
       {GROUPS.map((g) => {
@@ -143,7 +129,7 @@ export default function PassportBook({ site, thumbs, title, line }: Props) {
           <section key={g.key} className="pp-group" aria-labelledby={`pp-${g.key}`}>
             <div className="pp-group-head">
               <h2 id={`pp-${g.key}`} className="pp-group-title">
-                <a className="press" href={href(objects[0].page)}>
+                <a className="pb-go" href={href(objects[0].page)}>
                   {g.title}
                 </a>
               </h2>
@@ -188,7 +174,7 @@ function Slot({ object, thumb, stamp }: { object: StampObject; thumb?: Thumb; st
           <img src={thumb.src} width={thumb.width} height={thumb.height} alt={thumb.alt} loading="lazy" decoding="async" />
         </picture>
       )}
-      <h3 className="pp-name">{object.name}</h3>
+      <h3 className="pp-name">{object.name.replace(/ (landing site|reflector)$/, '')}</h3>
     </article>
   );
 }

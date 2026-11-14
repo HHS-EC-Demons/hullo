@@ -71,11 +71,6 @@
   align-items: start;
 }
 
-.ps-hero.has-frame .ps-frame {
-  position: sticky;
-  top: 76px;
-}
-
 .ps-hero.has-frame .ps-stage {
   aspect-ratio: 1 / 1;
 }
