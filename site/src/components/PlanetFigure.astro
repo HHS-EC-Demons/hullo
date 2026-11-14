@@ -19,7 +19,7 @@ const p = await pic(slug, list, sizes);
 ---
 
 <figure class:list={['pf', className]}>
-  <div class="pf-frame" style={`--pf-native: ${p.width} / ${p.height}`}>
+  <div class="pf-frame ph" style={`--pf-native: ${p.width} / ${p.height}`}>
     <picture>
       <source type="image/avif" srcset={p.avif} sizes={sizes} />
       <source type="image/webp" srcset={p.webp} sizes={sizes} />
@@ -48,7 +48,6 @@ const p = await pic(slug, list, sizes);
     position: relative;
     aspect-ratio: var(--pf-ratio, var(--pf-native));
     overflow: hidden;
-    background: var(--raised);
   }
   .pf-frame img {
     display: block;
