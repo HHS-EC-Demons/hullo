@@ -1,0 +1,167 @@
+.ig {
+  display: grid;
+  gap: 28px;
+}
+
+.ig-read {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  gap: 8px 48px;
+  align-items: end;
+}
+
+.ig-flight {
+  grid-row: span 2;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  white-space: nowrap;
+}
+
+.ig-label {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.ig-n {
+  display: inline-block;
+  min-width: 2ch;
+  font-size: clamp(4rem, 13vw, 9rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+
+.ig-of {
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+}
+
+.ig-when {
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+  min-height: 1.55em;
+}
+
+.ig-when .mono {
+  color: var(--ink);
+}
+
+.ig-stats {
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  justify-content: start;
+  gap: 12px 28px;
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+.ig-stats div {
+  display: grid;
+  gap: 2px;
+}
+
+.ig-stats dt {
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
+}
+
+.ig-stats dd {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  white-space: nowrap;
+  min-width: 6.5ch;
+}
+
+.ig-map {
+  height: clamp(420px, 50vw, 600px);
+  background: var(--map-ground);
+  border-radius: 2px;
+  z-index: 0;
+}
+
+.ig-map:focus-visible {
+  outline: 3px solid var(--signal);
+  outline-offset: 3px;
+}
+
+.ig-control {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px 24px;
+}
+
+.ig-control label {
+  font-weight: 700;
+}
+
+.ig-control input[type='range'] {
+  width: 100%;
+  min-height: 44px;
+  accent-color: var(--signal);
+  cursor: pointer;
+}
+
+.ig-steps {
+  display: flex;
+  gap: 10px;
+}
+
+.ig .leaflet-container {
+  font-family: var(--sans);
+  background: var(--map-ground);
+}
+
+.ig .leaflet-bar {
+  border: 0;
+  box-shadow: none;
+}
+
+.ig .leaflet-bar a,
+.ig .leaflet-bar a:hover {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 20px;
+  background: var(--paper);
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+
+.ig .leaflet-bar a:first-child {
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.ig .leaflet-bar a:last-child {
+  border-radius: 0 0 var(--radius) var(--radius);
+  border-bottom: 0;
+}
+
+.ig .leaflet-bar a.leaflet-disabled {
+  color: var(--ink-3);
+  background: var(--paper-2);
+}
+
+@media (max-width: 860px) {
+  .ig-read {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ig-flight {
+    grid-row: auto;
+  }
+  .ig-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ig-control {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .ig-steps {
+    grid-column: 1 / -1;
+  }
+  .ig-steps .btn {
+    flex: 1;
+  }
+}
