@@ -14,7 +14,7 @@ import './orbit.css';
 export interface Mark {
   ring: [number, number];
   ringSize: number;
-  metersPerPx: number;
+  metersPerPx?: number;
 }
 
 export interface ViewProps {
@@ -116,9 +116,9 @@ function Overlay({ pic, mark }: { pic: Pic; mark: Mark }) {
         <span className="os-inset-img" style={insetStyle}>
           <Picture pic={pic} alt="" sizes={`${Math.round(ZOOM * 100)}vw`} />
         </span>
-        <ScaleBar widthPx={(pic.width * INSET) / ZOOM} metersPerPx={mark.metersPerPx} className="os-scale-in" />
+        {mark.metersPerPx && <ScaleBar widthPx={(pic.width * INSET) / ZOOM} metersPerPx={mark.metersPerPx} className="os-scale-in" />}
       </span>
-      <ScaleBar widthPx={pic.width} metersPerPx={mark.metersPerPx} className={`os-scale-main os-scale-${scaleSide}`} />
+      {mark.metersPerPx && <ScaleBar widthPx={pic.width} metersPerPx={mark.metersPerPx} className={`os-scale-main os-scale-${scaleSide}`} />}
     </>
   );
 }
