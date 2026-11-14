@@ -22,5 +22,29 @@
   "height": 599,
   "page": "https://images.nasa.gov/details/PIA24648",
   "cropped": true
+ },
+ {
+  "slug": "pale-blue-dot",
+  "nasa_id": "PIA23645",
+  "title": "Pale Blue Dot Revisited",
+  "date": "2020-02-12",
+  "center": "JPL",
+  "credit": "NASA/JPL-Caltech",
+  "width": 900,
+  "height": 1124,
+  "page": "https://images.nasa.gov/details/PIA23645",
+  "cropped": true
+ },
+ {
+  "slug": "apollo11-reflector",
+  "nasa_id": "as11-37-5551",
+  "title": "Components of the Early Apollo Scientific Experiments Package (EASEP)",
+  "date": "1969-07-20",
+  "center": "JSC",
+  "credit": "NASA",
+  "width": 900,
+  "height": 675,
+  "page": "https://images.nasa.gov/details/as11-37-5551",
+  "cropped": true
  }
 ]
