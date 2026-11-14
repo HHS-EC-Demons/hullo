@@ -4,6 +4,8 @@ import '@fontsource-variable/atkinson-hyperlegible-mono/wght.css';
 import '../styles/global.css';
 import { BRAND, BRAND_LINE, WORDMARK } from '../brand';
 import { href, asset } from '../lib/paths';
+import nextFont from '@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2?url';
+import monoFont from '@fontsource-variable/atkinson-hyperlegible-mono/files/atkinson-hyperlegible-mono-latin-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -32,6 +34,8 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <link rel="preload" href={nextFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={monoFont} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#f2f0e9" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#121315" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href={asset('favicon.svg?v=1')} type="image/svg+xml" />
@@ -76,7 +80,7 @@ const nav = [
     <a class="skip" href="#main">Skip to content</a>
     <header class="site-head">
       <div class="wrap head-row">
-        <a class="wordmark" href={href('')} aria-label={`${BRAND} home`}>{WORDMARK}</a>
+        <a class="wordmark" href={href('')} aria-label={`${BRAND} home`} translate="no">{WORDMARK}</a>
         <nav aria-label="Chapters">
           <ul>
             {
@@ -97,7 +101,7 @@ const nav = [
     </main>
     <footer class="site-foot">
       <div class="wrap foot-row">
-        <a class="wordmark small" href={href('')} aria-label={`${BRAND} home`}>{WORDMARK}</a>
+        <a class="wordmark small" href={href('')} aria-label={`${BRAND} home`} translate="no">{WORDMARK}</a>
         <p>Made for the NASA Space Apps Challenge 2026. Not endorsed by NASA. Every number has a <a href={href('sources/')}>source</a>.</p>
       </div>
     </footer>

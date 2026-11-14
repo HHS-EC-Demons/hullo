@@ -14,6 +14,8 @@
   display: grid;
   gap: 28px;
   justify-items: start;
+  align-content: start;
+  min-height: 350px;
 }
 
 .ls-controls .choice small {
@@ -136,5 +138,8 @@
   }
   .ls-readout {
     min-height: 0;
+  }
+  .ls-controls {
+    min-height: 422px;
   }
 }
