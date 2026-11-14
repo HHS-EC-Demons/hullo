@@ -8,7 +8,9 @@
   "credit": "NASA/JPL-Caltech",
   "width": 2400,
   "height": 1800,
-  "page": "https://images.nasa.gov/details/PIA25287"
+  "page": "https://images.nasa.gov/details/PIA25287",
+  "caption": "InSight’s final selfie",
+  "when": "24 Apr 2022"
  },
  {
   "object": "opportunity",
@@ -19,7 +21,9 @@
   "credit": "NASA/JPL-Caltech",
   "width": 1311,
   "height": 983,
-  "page": "https://images.nasa.gov/details/PIA22222"
+  "page": "https://images.nasa.gov/details/PIA22222",
+  "caption": "Opportunity’s first selfie",
+  "when": "Feb 2018"
  },
  {
   "object": "cassini",
@@ -30,7 +34,9 @@
   "credit": "NASA/JPL",
   "width": 1485,
   "height": 1114,
-  "page": "https://images.nasa.gov/details/PIA04603"
+  "page": "https://images.nasa.gov/details/PIA04603",
+  "caption": "Cassini in a JPL assembly room",
+  "when": "before Oct 1997"
  },
  {
   "object": "spirit",
@@ -41,7 +47,9 @@
   "credit": "NASA/JPL-Caltech",
   "width": 1024,
   "height": 768,
-  "page": "https://images.nasa.gov/details/PIA12007"
+  "page": "https://images.nasa.gov/details/PIA12007",
+  "caption": "Spirit’s wheels sunk in soft ground",
+  "when": "6 May 2009"
  },
  {
   "object": "lcross",
@@ -53,6 +61,8 @@
   "width": 2400,
   "height": 1800,
   "page": "https://images.nasa.gov/details/KSC-2009-1745",
+  "caption": "LCROSS at a payload facility in Florida",
+  "when": "20 Feb 2009",
   "alt": "LCROSS, wrapped in gold foil, on a stand in a clean room in Florida."
  },
  {
@@ -64,7 +74,9 @@
   "credit": "NASA/George Shelton",
   "width": 2052,
   "height": 1538,
-  "page": "https://images.nasa.gov/details/KSC-07PD-1090"
+  "page": "https://images.nasa.gov/details/KSC-07PD-1090",
+  "caption": "Phoenix inside its backshell before launch",
+  "when": "10 May 2007"
  },
  {
   "object": "galileo",
@@ -75,7 +87,9 @@
   "credit": "NASA",
   "width": 2192,
   "height": 1644,
-  "page": "https://images.nasa.gov/details/s34-72-070"
+  "page": "https://images.nasa.gov/details/s34-72-070",
+  "caption": "Galileo leaving the Space Shuttle Atlantis",
+  "when": "18 Oct 1989"
  },
  {
   "object": "pioneer10",
@@ -87,6 +101,8 @@
   "width": 2008,
   "height": 1506,
   "page": "https://images.nasa.gov/details/ARC-1972-AC72-2135",
+  "caption": "Pioneer 10 at Cape Kennedy before launch",
+  "when": "26 Feb 1972",
   "alt": "Pioneer 10 at Cape Kennedy before launch, a foil wrapped body under a wide silver dish, with a technician standing behind."
  },
  {
@@ -99,6 +115,8 @@
   "width": 694,
   "height": 520,
   "page": "https://images.nasa.gov/details/9701593",
+  "caption": "NEAR Shoemaker before launch at Kennedy Space Center",
+  "when": "13 Jan 1996",
   "alt": "NEAR Shoemaker before launch at Kennedy Space Center, a gold body with a white dish on top and solar panels on the sides."
  },
  {
@@ -111,6 +129,8 @@
   "width": 1901,
   "height": 1425,
   "page": "https://images.nasa.gov/details/KSC-97PC1803",
+  "caption": "Lunar Prospector prepared for launch in Florida",
+  "when": "18 Dec 1997",
   "alt": "Lunar Prospector, a dark drum covered in solar cells, with two technicians preparing the spacecraft."
  },
  {
@@ -123,6 +143,8 @@
   "width": 1276,
   "height": 957,
   "page": "https://images.nasa.gov/details/PIA01122",
+  "caption": "The Sojourner rover on Mars",
+  "when": "1997",
   "alt": "The Sojourner rover, small and six wheeled with a flat solar panel on top, on rocky Martian ground."
  },
  {
@@ -135,6 +157,8 @@
   "width": 2400,
   "height": 1800,
   "page": "https://images.nasa.gov/details/9139575",
+  "caption": "Pioneer 11 lifting off on an Atlas-Centaur",
+  "when": "5 Apr 1973, Florida time",
   "alt": "The Atlas-Centaur rocket carrying Pioneer 11 lifting off at night in a cloud of smoke."
  },
  {
@@ -146,7 +170,9 @@
   "credit": "NASA/JPL",
   "width": 683,
   "height": 512,
-  "page": "https://images.nasa.gov/details/PIA00381"
+  "page": "https://images.nasa.gov/details/PIA00381",
+  "caption": "Viking 1’s first photo from the surface of Mars",
+  "when": "20 Jul 1976"
  },
  {
   "object": "viking2",
@@ -157,7 +183,9 @@
   "credit": "NASA/JPL",
   "width": 626,
   "height": 470,
-  "page": "https://images.nasa.gov/details/PIA00568"
+  "page": "https://images.nasa.gov/details/PIA00568",
+  "caption": "Viking 2’s first color photo of its landing site",
+  "when": "1976"
  },
  {
   "object": "alsep",
@@ -168,7 +196,9 @@
   "credit": "NASA",
   "width": 2400,
   "height": 1800,
-  "page": "https://images.nasa.gov/details/as12-47-6919"
+  "page": "https://images.nasa.gov/details/as12-47-6919",
+  "caption": "Alan Bean sets up the Apollo 12 science station",
+  "when": "19 Nov 1969"
  },
  {
   "object": "surveyor3",
@@ -180,6 +210,8 @@
   "width": 2400,
   "height": 1800,
   "page": "https://images.nasa.gov/details/as12-48-7121",
+  "caption": "Surveyor 3 in its crater, from the Apollo 12 crew",
+  "when": "20 Nov 1969",
   "alt": "Surveyor 3 on the slope of its small crater, photographed by the Apollo 12 crew."
  }
 ]
