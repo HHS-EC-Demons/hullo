@@ -380,13 +380,3 @@ export const FACTS: Source[] = [
     used: 'The Apollo 12 central station, the first of the 5 stations, was turned on at 14:21 UT on 19 Nov 1969.',
   },
 ];
-
-export const TOOLS = [
-  { name: 'Astro 6 and React 19', note: 'MIT license' },
-  { name: 'Leaflet 1.9.4', note: 'BSD 2-clause license' },
-  { name: 'Gabarito and Spline Sans Mono', note: 'Naipe Foundry, and Eben Sorkin and Mirko Velimirović, SIL Open Font License, via Fontsource' },
-];
-
-export function sourceById(id: string): Source | undefined {
-  return [...DATASETS, ...FACTS].find((s) => s.id === id);
-}
