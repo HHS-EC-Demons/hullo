@@ -1,10 +1,40 @@
-import type { Source } from './sources';
+import type { PhotoCredit, Source } from './sources';
 import probePhotos from './probe-photos.json';
 import homeImages from './home-images.json';
+import photoMeta from './photos.json';
+import silentImages from './silent-images.json';
+import sounds from './sounds.json';
 
-const homeList = Object.values(homeImages as Record<string, { id: string; credit: string; caption: string; when: string; kind: string }>)
-  .map((m) => `${m.id} (${m.credit}), ${m.caption}, ${m.kind === 'released' ? 'released ' : ''}${m.when}`)
-  .join('. ');
+interface HomeImage {
+  id: string;
+  group: string;
+  credit: string;
+  page: string;
+}
+
+const HOME = Object.entries(homeImages as Record<string, HomeImage>);
+const META = photoMeta as Record<string, { id: string; credit: string; page: string }>;
+const SILENT = silentImages as { object?: string; nasa_id: string; credit: string; page: string }[];
+
+const fromHome = (page: string, pick: (slug: string, m: HomeImage) => boolean): PhotoCredit[] =>
+  HOME.filter(([slug, m]) => pick(slug, m)).map(([, m]) => ({ page, id: m.id, credit: m.credit, url: m.page }));
+const fromMeta = (page: string, slug: string): PhotoCredit[] => (META[slug] ? [{ page, id: META[slug].id, credit: META[slug].credit, url: META[slug].page }] : []);
+const fromSilent = (page: string, object: string): PhotoCredit[] =>
+  SILENT.filter((m) => m.object === object).map((m) => ({ page, id: m.nasa_id, credit: m.credit, url: m.page }));
+const plasma = sounds.find((x) => x.id === 'voyager-plasma');
+
+/** Every photo and sound on the home and Deep space pages, by page. */
+export const PHOTO_CREDITS: PhotoCredit[] = [
+  ...fromHome('Home', (_, m) => m.group === 'dsn' || m.group === 'dsn-eyes'),
+  ...fromHome('Home', (slug) => slug === 'deep-newhorizons'),
+  ...fromMeta('Home', 'moon-laser-station'),
+  ...fromMeta('Home', 'mars-two-years'),
+  ...fromHome('Home', (slug) => slug === 'home-orbit-apollo14'),
+  ...fromSilent('Home', 'surveyor3'),
+  ...fromHome('Deep space', (_, m) => m.group === 'deep' || m.group === 'eyes'),
+  ...fromSilent('Deep space', 'pioneer11'),
+  ...(plasma ? [{ page: 'Deep space', id: plasma.page.split('/').pop() ?? 'PIA17045', credit: plasma.credit, url: plasma.page }] : []),
+];
 
 export const GROUP_TITLE = 'Live data, the light-day and the message scale';
 
@@ -15,7 +45,7 @@ export const HOME_SOURCES: Source[] = [
     publisher: 'NASA/JPL-Caltech',
     url: 'https://eyes.nasa.gov/apps/dsn-now/',
     dated: 'Read live in the browser every 8 s from eyes.nasa.gov/dsn/data/dsn.xml, names and dish types from eyes.nasa.gov/dsn/config.xml',
-    license: 'Public NASA/JPL feed that any site may read (the feed sends Access-Control-Allow-Origin *). No license is stated on the feed. Shown live with the credit NASA/JPL-Caltech.',
+    license: 'Public NASA/JPL feed that any site may read, since the feed sends Access-Control-Allow-Origin *. No license is stated on the feed. Shown live with the credit NASA/JPL-Caltech.',
     used: 'What the dishes at Goldstone, Madrid and Canberra are doing this minute, and the feed time.',
     note: 'The feed lists every dish with its activity and its signals. For each complex the home page shows one dish with an active signal and the spacecraft on it, plus a count of the other dishes in contact. A complex with no active signal shows its dish numbers and the activity the feed gives them, such as Engineering Sustaining. When a spacecraft name runs past two words the page shows the feed code instead, such as KPLO for the Korea Pathfinder Lunar Orbiter. Voyager 1, Voyager 2 and New Horizons are listed first and marked with a lilac rule. The feed time is shown in the visitor’s own time zone.',
   },
@@ -46,7 +76,7 @@ export const HOME_SOURCES: Source[] = [
     dated: 'Fetched 2 Nov 2026 with pipeline/probe_history.py',
     license: 'NASA JPL data. Credit NASA/JPL-Caltech.',
     used: 'The Deep space chart of distance from the Sun, the home chart of hours of light to Voyager 1 since 1977 and the birthday distance.',
-    note: 'One geometric vector table per probe every calendar month, from the first time Horizons holds for each trajectory (Voyager 1 from 5 Sep 1977) to 1 Jan 2028, centred on the Sun (500@10) and on Earth (500@399). The charts stop at today. The birthday distance reads the Sun table in a straight line between the two monthly samples on either side of noon UTC on the birthday and of the current moment, and subtracts. The result is how much farther from the Sun Voyager 1 is now, close to the distance flown because Voyager 1 moves almost straight away from the Sun.',
+    note: 'One geometric vector table per probe every calendar month, from the first time Horizons holds for each trajectory and for Voyager 1 from 5 Sep 1977, to 1 Jan 2028, centred on the Sun, body 500@10, and on Earth, body 500@399. The charts stop at today. The birthday distance reads the Sun table in a straight line between the two monthly samples on either side of noon UTC on the birthday and of the current moment, and subtracts. The result is how much farther from the Sun Voyager 1 is now, close to the distance flown because Voyager 1 moves almost straight away from the Sun.',
   },
   {
     id: 'eyes-solar-system',
@@ -56,11 +86,11 @@ export const HOME_SOURCES: Source[] = [
     dated: 'Checked 2 Nov 2026',
     license: 'NASA web app shown in a frame only after a click. The app sends no header that forbids framing. Credit NASA/JPL-Caltech.',
     used: 'The 3D view of the picked probe on Deep space.',
-    note: 'The links for Voyager 1 (#/sc_voyager_1), Voyager 2 (#/sc_voyager_2) and New Horizons (#/sc_new_horizons) come from NASA’s own mission pages on science.nasa.gov. The Pioneer 10 (#/sc_pioneer_10) and Pioneer 11 (#/sc_pioneer_11) links were read from the app’s own address after picking each probe in its search. The display options after the question mark are the ones NASA’s New Horizons page uses for its embedded view, and they match the options in the app’s own embed settings.',
+    note: 'The links #/sc_voyager_1, #/sc_voyager_2 and #/sc_new_horizons come from NASA’s own mission pages on science.nasa.gov. The links #/sc_pioneer_10 and #/sc_pioneer_11 were read from the app’s own address after picking each Pioneer in its search. The display options after the question mark are the ones NASA’s New Horizons page uses for its embedded view, and they match the options in the app’s own embed settings.',
   },
   {
     id: 'eyes-dsn',
-    title: 'Eyes on the Deep Space Network (DSN Now)',
+    title: 'Eyes on the Deep Space Network, DSN Now',
     publisher: 'NASA/JPL-Caltech',
     url: 'https://eyes.nasa.gov/apps/dsn-now/dsn.html',
     dated: 'Checked 2 Nov 2026',
@@ -75,8 +105,8 @@ export const HOME_SOURCES: Source[] = [
     url: 'https://images.nasa.gov/',
     dated: 'Full resolution originals fetched by NASA ID on 2 Nov 2026',
     license: 'NASA content, generally not subject to US copyright. Credit as printed on each item page. No logos or insignia are shown.',
-    used: homeList + '.',
-    note: 'Each photo is scaled to at most 2400 px on its long edge and never enlarged. PIA00022 is cropped to the inside of the mosaic, ARC-1973-AC73-9253 to the dark frame without its grey scan border and KSC-73P-0116 to the spacecraft. The Voyager 2 month comes from the item’s note that the frame was taken 4 days and 20 hours before closest approach, and from NSSDCA’s Neptune flyby date of 25 Aug 1989. NASA’s library holds no frame from Pioneer 11’s own camera that this site could verify, so Deep space shows a photo of Pioneer 11 before launch. The Eyes poster for New Horizons is cropped to leave out a worker’s suit patch, and the Pioneer 10 poster to drop the grey scan border. The Pioneer 11 poster (9139575, NASA, the launch on 5 Apr 1973 Florida time) and the Silent tile on the home page (as12-48-7121, NASA, Surveyor 3 from the Apollo 12 crew on 20 Nov 1969) are the Silent page’s own copies.',
+    used: 'The DSN complex photos, the DSN Now poster, the chapter photos, the probe frames and the 3D view posters. Each ID and credit is listed by page under the photo credits.',
+    note: 'Each photo is scaled to at most 2400 px on its long edge and never enlarged. PIA00022 is cropped to the inside of the mosaic, ARC-1973-AC73-9253 to the dark frame without its grey scan border and KSC-73P-0116 to the spacecraft. The Voyager 2 month comes from the item’s note that the frame was taken 4 days and 20 hours before closest approach, and from NSSDCA’s Neptune flyby date of 25 Aug 1989. NASA’s library holds no frame from Pioneer 11’s own camera that this site could verify, so the Pioneer 11 frame is a photo of the spacecraft before launch. The New Horizons poster is cropped to leave out a worker’s suit patch, and the Pioneer 10 poster to drop the grey scan border.',
   },
   {
     id: 'nasa-images-probes',
@@ -85,7 +115,7 @@ export const HOME_SOURCES: Source[] = [
     url: 'https://images.nasa.gov/',
     dated: 'Fetched by NASA ID on 2 Nov 2026',
     license: 'NASA content, generally not subject to US copyright. Credit as printed on each item page.',
-    used: probePhotos.map((p) => `${p.nasa_id} (${p.credit}, ${p.center}), ${p.caption.replace(/\.$/, '')}`).join('. ') + '.',
+    used: probePhotos.map((p) => `${p.nasa_id}, ${p.credit}, ${p.center}, ${p.caption.replace(/\.$/, '')}`).join('. ') + '.',
     note: 'The New Horizons frame is cropped to the spacecraft.',
   },
   {
@@ -95,7 +125,7 @@ export const HOME_SOURCES: Source[] = [
     url: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html',
     dated: 'Read 2 Nov 2026',
     license: 'NASA NSSDCA page, generally not subject to US copyright. Credit NASA.',
-    used: 'The Moon’s mean distance of 384,400 km (semimajor axis 0.3844 million km), which light covers in 1.3 s, the first mark on each message line.',
+    used: 'The Moon’s mean distance of 384,400 km, a semimajor axis of 0.3844 million km, which light covers in 1.3 s, the first mark on each message line.',
   },
   {
     id: 'jpl-astro-par',

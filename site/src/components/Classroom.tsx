@@ -3,6 +3,7 @@ import { useReactToPrint } from 'react-to-print';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { C_KM_S, dailyHours, hmsText, lightTimeAt, type DeepSpaceData } from '../lib/lighttime';
 import { monthKey, nextMonthKey, nextWindow, shotAt, type MoonIndex, type MoonMonth } from '../lib/ranging';
 import { FlightSheet, MoonSheet, VoyagerSheet, int, one, six, type Flight, type MoonShot } from './Worksheets';
@@ -294,7 +295,7 @@ function Activity({ title, photo, head, facts, rows, chart, after, onPrint, chil
       {head}
       {photo && (
         <figure className="cr-photo">
-          <picture>
+          <picture className="ph">
             <source type="image/avif" srcSet={photo.avif} sizes={photo.sizes} />
             <source type="image/webp" srcSet={photo.webp} sizes={photo.sizes} />
             <img
@@ -314,16 +315,16 @@ function Activity({ title, photo, head, facts, rows, chart, after, onPrint, chil
         <h2 id={id}>{title}</h2>
         {children}
         <dl className="cr-facts">
-          {(facts ?? rows.map((k): [string, string] => [k, '…'])).map(([k, v]) => (
+          {(facts ?? rows.map((k): [string, string] => [k, ''])).map(([k, v]) => (
             <div key={k}>
               <dt>{k}</dt>
-              <dd className="mono">{v}</dd>
+              <dd className="mono">{facts ? v : <Skeleton className="inline-block h-[1.1em] w-[8rem] align-middle" />}</dd>
             </div>
           ))}
         </dl>
         {after}
         <div className="cr-chart">
-          <Suspense fallback={null}>{chart}</Suspense>
+          {chart ? <Suspense fallback={<Skeleton className="absolute inset-0" />}>{chart}</Suspense> : <Skeleton className="absolute inset-0" />}
         </div>
         <div className="cr-print">
           <Button variant="primary" onClick={onPrint} disabled={!facts}>

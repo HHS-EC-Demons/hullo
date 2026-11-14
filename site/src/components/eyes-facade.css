@@ -8,7 +8,6 @@
   position: relative;
   aspect-ratio: var(--eyes-ratio, 16 / 10);
   overflow: hidden;
-  background: #000;
   border-radius: 2px;
 }
 
@@ -29,10 +28,6 @@
   position: absolute;
   left: clamp(14px, 2vw, 28px);
   bottom: clamp(16px, 2.2vw, 30px);
-}
-
-.eyes .credit {
-  min-height: 1.45em;
 }
 
 .eyes-wide {
