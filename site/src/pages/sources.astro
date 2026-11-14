@@ -21,13 +21,12 @@ const software = Object.keys(readPkg('package.json').dependencies ?? {})
   .sort((a, b) => a.name.localeCompare(b.name));
 
 const groups = SOURCE_GROUPS.map((g) => ({ ...g, slug: `g-${g.key}` }));
-const count = groups.reduce((n, g) => n + g.items.length, 0);
 ---
 
 <Base title="Sources" current="sources" description={`Every dataset, page and tool ${BRAND} uses, with its license and credit.`}>
   <header class="wrap page-head">
     <h1>Sources</h1>
-    <p>The {count} datasets, pages and photo sets behind this site, with licenses and credits.</p>
+    <p>Every dataset, page and photo behind this site.</p>
   </header>
 
   <section class="wrap about" aria-labelledby="about">
@@ -39,11 +38,7 @@ const count = groups.reduce((n, g) => n + g.items.length, 0);
       </div>
       <div>
         <dt>Use of AI</dt>
-        <dd>Code and research made with help from Claude by Anthropic. Every number comes from a source below. No image is AI generated.</dd>
-      </div>
-      <div>
-        <dt>NASA</dt>
-        <dd>Made for the NASA Space Apps Challenge 2026. Not endorsed by NASA.</dd>
+        <dd>Made with help from Claude by Anthropic. No image is AI generated.</dd>
       </div>
       <div>
         <dt>Passport</dt>
@@ -64,12 +59,14 @@ const count = groups.reduce((n, g) => n + g.items.length, 0);
               <p class="title">
                 <a href={s.url} rel="external noopener">{s.title}</a>
               </p>
-              <p class="meta">
-                {s.publisher}. {s.dated}.
-              </p>
-              <p class="used">{s.used}</p>
-              {s.note && <p class="note">{s.note}</p>}
-              <p class="license">{s.license}</p>
+              <details>
+                <summary class="meta">
+                  {s.publisher}, {s.dated}
+                </summary>
+                <p class="used">{s.used}</p>
+                {s.note && <p class="note">{s.note}</p>}
+                <p class="license">{s.license}</p>
+              </details>
             </li>
           ))}
         </ul>
@@ -90,7 +87,7 @@ const count = groups.reduce((n, g) => n + g.items.length, 0);
             <p class="title">
               <a href={`https://www.npmjs.com/package/${t.name}`} rel="external noopener">{t.name}</a> <span class="mono version">{t.version}</span>
             </p>
-            <p class="license">{t.license} license</p>
+            <p class="license mono">{t.license}</p>
           </li>
         ))
       }
@@ -156,6 +153,29 @@ const count = groups.reduce((n, g) => n + g.items.length, 0);
   .license {
     color: var(--muted);
     font-size: var(--fs-sm);
+  }
+  details {
+    display: grid;
+    gap: 6px;
+  }
+  details[open] {
+    padding-bottom: 6px;
+  }
+  summary {
+    cursor: pointer;
+    width: fit-content;
+    text-underline-offset: 3px;
+  }
+  summary:hover {
+    color: var(--text);
+  }
+  summary:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  details > p {
+    margin-top: 6px;
   }
   .used,
   .note {

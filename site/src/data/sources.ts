@@ -15,8 +15,8 @@ export interface Source {
 const NASA_MEDIA = 'NASA content, generally not subject to US copyright. Credit NASA.';
 const photoList = SILENT_PHOTOS.map((p) => `${p.nasa_id} (${p.credit})`).join(', ');
 const pageList = Object.values(PAGE_PHOTOS)
-  .map((p) => `${p.nasa_id}, ${p.caption.charAt(0).toLowerCase()}${p.caption.slice(1)} (${p.credit})`)
-  .join('; ');
+  .map((p) => `${p.nasa_id} (${p.caption}, ${p.credit})`)
+  .join(', ');
 const NSSDCA = 'NASA NSSDCA page, generally not subject to US copyright. Credit NASA.';
 
 export const DATASETS: Source[] = [
@@ -25,21 +25,21 @@ export const DATASETS: Source[] = [
     title: 'Horizons System API',
     publisher: 'NASA JPL Solar System Dynamics',
     url: 'https://ssd.jpl.nasa.gov/horizons/',
-    dated: 'Queried 29 and 30 Oct 2026, one request at a time',
+    dated: 'Queried 29 and 30 Oct 2026',
     license: 'Public service under the SSD API fair use policy. Results are cached and shipped as files, never fetched from the browser.',
     used: 'Daily geometric distance for Voyager 1 and 2, New Horizons and Pioneer 10 and 11 from Earth, 2026 to 2027. Hourly range and elevation from Apache Point (site 705) and Caussols near Grasse (site 010) to five lunar reflectors. Daily astrometric right ascension, declination and constellation of the five probes, the Moon, Mars and Eros seen from Earth’s center, for the sky chart.',
-    note: 'Probe light time is the geometric distance from Earth’s center divided by the speed of light, the convention NASA uses for its one light-day date. Pioneer 10 and 11 positions are extrapolated from old tracking. The sky chart shows positions seen from Earth’s center at 00:00 UTC.',
+    note: 'Queried one request at a time, as the fair use policy asks. Probe light time is the geometric distance from Earth’s center divided by the speed of light, the convention NASA uses for its one light-day date. Pioneer 10 and 11 positions are extrapolated from old tracking. The sky chart shows positions seen from Earth’s center at 00:00 UTC.',
   },
   {
     id: 'bsc5',
     title: 'Bright Star Catalogue, 5th Revised Ed. (VizieR V/50)',
     publisher: 'D. Hoffleit and W. H. Warren Jr., Yale University Observatory and NASA Astronomical Data Center, 1991, via VizieR',
     url: 'https://vizier.cfa.harvard.edu/viz-bin/VizieR?-source=V/50',
-    dated: 'Downloaded 30 Oct 2026 from the VizieR mirror at the Center for Astrophysics',
+    dated: 'Downloaded 30 Oct 2026',
     license:
       'The catalogue ReadMe notes no copyright, and the VizieR usage rules tie rights to the origin of the data. Credit as CDS asks. This research has made use of the VizieR catalogue access tool, CDS, Strasbourg, France (DOI 10.26093/cds/vizier).',
     used: 'Position and brightness of all 2,847 stars brighter than magnitude 5.5 on the sky chart, at their J2000 catalog positions.',
-    note: 'Stars sit at their J2000 catalog positions. None has moved more than 3 arcminutes since, far less than a dot on the chart.',
+    note: 'Downloaded from the VizieR mirror at the Center for Astrophysics. Stars sit at their J2000 catalog positions. None has moved more than 3 arcminutes since, far less than a dot on the chart.',
   },
   {
     id: 'd3-celestial',
@@ -122,9 +122,10 @@ export const FACTS: Source[] = [
     title: 'Where are Voyager 1 and Voyager 2 now?',
     publisher: 'NASA',
     url: 'https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/',
-    dated: 'Instrument table updated 17 Apr 2026, page updated 15 Oct 2026',
+    dated: 'Page updated 15 Oct 2026',
     license: NASA_MEDIA,
     used: 'The one light-day date of 18 Nov 2026 at 10:16:07 UTC and which instruments are still on.',
+    note: 'Instrument table updated 17 Apr 2026.',
   },
   {
     id: 'nasa-new-horizons-wake',
