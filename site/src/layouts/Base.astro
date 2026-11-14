@@ -1,0 +1,180 @@
+---
+import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+import '@fontsource-variable/atkinson-hyperlegible-mono/wght.css';
+import '../styles/global.css';
+import { BRAND, BRAND_LINE, WORDMARK } from '../brand';
+import { href, asset } from '../lib/paths';
+
+interface Props {
+  title?: string;
+  description?: string;
+  current?: string;
+}
+
+const { title, description = BRAND_LINE, current = '' } = Astro.props;
+const pageTitle = title ? `${title} · ${BRAND}` : BRAND;
+const site = Astro.site ? new URL(import.meta.env.BASE_URL, Astro.site).toString() : '';
+const ogImage = site ? new URL('og.png?v=1', site).toString() : asset('og.png?v=1');
+
+const nav = [
+  { path: 'deep-space/', label: 'Deep space', key: 'deep-space' },
+  { path: 'moon/', label: 'Moon', key: 'moon' },
+  { path: 'mars/', label: 'Mars', key: 'mars' },
+  { path: 'silent/', label: 'Silent', key: 'silent' },
+  { path: 'sources/', label: 'Sources', key: 'sources' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f2f0e9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121315" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href={asset('favicon.svg?v=1')} type="image/svg+xml" />
+    <link rel="icon" href={asset('favicon-32.png?v=1')} sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href={asset('apple-touch-icon.png?v=1')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>
+      (function () {
+        try {
+          var raw = sessionStorage.getItem('hullo.wave');
+          if (!raw) return;
+          sessionStorage.removeItem('hullo.wave');
+          var w = JSON.parse(raw);
+          if (Date.now() - w.t > 4000) return;
+          var root = document.documentElement;
+          var x = w.x, y = w.y, vw = window.innerWidth, vh = window.innerHeight;
+          var r = Math.ceil(Math.hypot(Math.max(x, vw - x), Math.max(y, vh - y))) + 8;
+          root.style.setProperty('--wave-x', x + 'px');
+          root.style.setProperty('--wave-y', y + 'px');
+          root.style.setProperty('--wave-r', r + 'px');
+        } catch (e) {}
+      })();
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+        if (!a || a.target || a.origin !== location.origin) return;
+        try {
+          var box = a.getBoundingClientRect();
+          var x = e.clientX || box.left + box.width / 2;
+          var y = e.clientY || box.top + box.height / 2;
+          sessionStorage.setItem('hullo.wave', JSON.stringify({ x: Math.round(x), y: Math.round(y), t: Date.now() }));
+        } catch (err) {}
+      });
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-head">
+      <div class="wrap head-row">
+        <a class="wordmark" href={href('')} aria-label={`${BRAND} home`}>{WORDMARK}</a>
+        <nav aria-label="Chapters">
+          <ul>
+            {
+              nav.map((item) => (
+                <li>
+                  <a href={href(item.path)} aria-current={current === item.key ? 'page' : undefined}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-foot">
+      <div class="wrap foot-row">
+        <a class="wordmark small" href={href('')} aria-label={`${BRAND} home`}>{WORDMARK}</a>
+        <p>Made for the NASA Space Apps Challenge 2026. Not endorsed by NASA. Every number has a <a href={href('sources/')}>source</a>.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-head {
+    position: relative;
+    z-index: 5;
+  }
+  .head-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 32px;
+    min-height: 76px;
+    flex-wrap: wrap;
+  }
+  .wordmark {
+    font-weight: 800;
+    font-size: 1.875rem;
+    letter-spacing: -0.07em;
+    line-height: 1;
+    text-decoration: none;
+    padding-block: 6px 9px;
+    padding-right: 0.08em;
+  }
+  .wordmark.small {
+    font-size: 1.5rem;
+  }
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 26px;
+  }
+  nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    text-decoration: none;
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  nav a:hover {
+    color: var(--ink);
+  }
+  nav a[aria-current='page'] {
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: var(--signal);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.35em;
+  }
+  .site-foot {
+    margin-top: clamp(64px, 10vw, 140px);
+    border-top: 1px solid var(--rule);
+  }
+  .foot-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px 32px;
+    flex-wrap: wrap;
+    padding-block: 28px 40px;
+  }
+  .foot-row p {
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+    max-width: 44rem;
+  }
+  @media (max-width: 640px) {
+    .head-row {
+      padding-top: 10px;
+    }
+    nav ul {
+      gap: 0 18px;
+    }
+  }
+</style>
