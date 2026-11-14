@@ -128,7 +128,7 @@ const maps = [
 ---
 
 <Base title="Orbit" current="orbit" description="Apollo landing sites seen by LRO and Mars landers seen by HiRISE, each next to a photo from landing, picked from maps of the Moon and Mars.">
-  <OrbitSites client:load sites={sites} maps={maps} first="apollo11" quake={quakeClip}>
+  <OrbitSites client:idle sites={sites} maps={maps} first="apollo11" quake={quakeClip}>
     <Fragment slot="head">
       <h1 class="orbit-h1">Orbit</h1>
       <p class="orbit-line">Landing sites, seen later from orbit.</p>
