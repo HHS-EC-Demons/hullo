@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { useMemo } from 'react';
+import LineChart, { type Mark, type RefLine } from '@/components/ui/line-chart';
 import { dailyHours, hmsText, type DeepSpaceData } from '../lib/lighttime';
-import { utcDate } from '../lib/client';
+import { calDate, MONTHS } from '../lib/dates';
 
 interface Props {
   data: DeepSpaceData;
@@ -9,162 +10,65 @@ interface Props {
   now: number | null;
 }
 
-const H = 280;
-const PAD = { top: 26, right: 16, bottom: 34 };
 const DAY = 86400000;
-const DOT = 5;
-const CHAR_PX = 7.9;
+const Y0 = Date.UTC(2026, 0, 1);
+const Y1 = Date.UTC(2027, 0, 1);
+const Y2 = Date.UTC(2028, 0, 1);
+const TICKS = [2026, 2026.25, 2026.5, 2026.75, 2027, 2027.25, 2027.5, 2027.75, 2028];
 
-function niceStep(span: number): number {
-  const raw = span / 4;
-  const pow = 10 ** Math.floor(Math.log10(raw));
-  const n = raw / pow;
-  return (n < 1.5 ? 1 : n < 3.5 ? 2.5 : n < 7.5 ? 5 : 10) * pow;
+function toYear(ms: number): number {
+  return ms < Y1 ? 2026 + (ms - Y0) / (Y1 - Y0) : 2027 + (ms - Y1) / (Y2 - Y1);
 }
 
-function hoursLabel(h: number): string {
-  return `${Number.isInteger(h) ? h : h.toFixed(h * 10 === Math.round(h * 10) ? 1 : 2)} h`;
+function fromYear(x: number): number {
+  const ms = x < 2027 ? Y0 + (x - 2026) * (Y1 - Y0) : Y1 + (x - 2027) * (Y2 - Y1);
+  return Math.round(ms / DAY) * DAY;
 }
 
+function hoursTick(h: number): string {
+  return `${Number(h.toFixed(2))} h`;
+}
 
 export default function LightTimeChart({ data, probe, name, now }: Props) {
-  const box = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(0);
-  const [hover, setHover] = useState<number | null>(null);
+  const series = useMemo(() => dailyHours(data, probe).filter((p) => p.ms <= Y2), [data, probe]);
 
-  useEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => setWidth(Math.round(entry.contentRect.width)));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  const series = useMemo(() => {
-    const end = Date.parse('2028-01-01T00:00:00Z');
-    return dailyHours(data, probe).filter((p) => p.ms <= end);
-  }, [data, probe]);
-
-  const w = Math.max(width, 280);
-  const t0 = series[0].ms;
-  const t1 = series[series.length - 1].ms;
   const lo = Math.min(...series.map((p) => p.hours));
   const hi = Math.max(...series.map((p) => p.hours));
-  const step = niceStep(Math.max(hi - lo, 0.2));
-  let y0 = Math.floor(lo / step) * step;
-  let y1 = Math.ceil(hi / step) * step;
-  const showDay = probe === 'voyager1' && 24 >= y0 && 24 <= y1;
-  if (y1 - y0 < step * 2) y1 = y0 + step * 2;
-
-  const ticks: number[] = [];
-  for (let v = y0; v <= y1 + 1e-9; v += step) ticks.push(Number(v.toFixed(6)));
-  const left = Math.ceil(Math.max(...ticks.map((v) => hoursLabel(v).length)) * CHAR_PX) + 18;
-  const x = (ms: number) => left + ((ms - t0) / (t1 - t0)) * (w - left - PAD.right);
-  const y = (h: number) => PAD.top + (1 - (h - y0) / (y1 - y0)) * (H - PAD.top - PAD.bottom);
-
-  const path = series.map((p, i) => `${i ? 'L' : 'M'}${x(p.ms).toFixed(1)},${y(p.hours).toFixed(1)}`).join('');
-  const months: number[] = [];
-  const every = w - left - PAD.right < 520 ? 6 : 3;
-  for (let yr = 2026; yr <= 2027; yr++) for (let m = 0; m < 12; m += every) months.push(Date.UTC(yr, m, 1));
-  months.push(Date.UTC(2028, 0, 1));
+  const y0 = Math.floor(lo * 4) / 4;
+  const y1 = Math.max(Math.ceil(hi * 4) / 4, y0 + 0.5);
 
   const crossIso = data.probes[probe].light_day_utc;
-  const crossing = showDay && crossIso ? Date.parse(crossIso) : null;
-  const crossLabel = crossing ? utcDate(crossing) : '';
-  const nowIndex = now ? Math.round((now - t0) / DAY) : null;
-  const nowPoint = nowIndex !== null && nowIndex >= 0 && nowIndex < series.length ? series[nowIndex] : null;
-  const active = hover !== null ? series[hover] : null;
-
-  function pick(e: PointerEvent<SVGSVGElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const px = e.clientX - rect.left;
-    const f = (px - left) / (w - left - PAD.right);
-    setHover(Math.max(0, Math.min(series.length - 1, Math.round(f * (series.length - 1)))));
+  const crossing = probe === 'voyager1' && crossIso ? Date.parse(crossIso) : null;
+  const refLines: RefLine[] = crossing !== null ? [{ y: 24, label: 'One light-day' }] : [];
+  const marks: Mark[] = [];
+  if (crossing !== null) marks.push({ x: toYear(crossing), y: 24, label: calDate(crossing) });
+  if (now !== null) {
+    const i = Math.round((now - Y0) / DAY);
+    if (i >= 0 && i < series.length) marks.push({ x: toYear(series[i].ms), y: series[i].hours, label: 'Today', below: true });
   }
-
-  function key(e: KeyboardEvent<SVGSVGElement>) {
-    const base = hover ?? nowIndex ?? 0;
-    const moves: Record<string, number> = { ArrowLeft: -7, ArrowRight: 7, PageDown: -30, PageUp: 30 };
-    if (e.key === 'Home') setHover(0);
-    else if (e.key === 'End') setHover(series.length - 1);
-    else if (e.key in moves) setHover(Math.max(0, Math.min(series.length - 1, base + moves[e.key])));
-    else if (e.key === 'Escape') setHover(null);
-    else return;
-    e.preventDefault();
-  }
-
-  const tipLeft = active ? Math.min(Math.max(x(active.ms) - 90, 0), w - 180) : 0;
 
   return (
     <figure className="ltc">
       <figcaption>
         <span className="ltc-title">Hours of light to {name}, 2026 to 2027</span>
       </figcaption>
-      <div className="ltc-plot" ref={box}>
-        {width > 0 && (
-          <svg
-            width={w}
-            height={H}
-            role="img"
-            aria-label={`Line chart of light time from Earth to ${name} from January 2026 to January 2028, between ${hoursLabel(Number(lo.toFixed(2)))} and ${hoursLabel(Number(hi.toFixed(2)))}. Use the arrow keys to read values.`}
-            tabIndex={0}
-            onPointerMove={pick}
-            onPointerDown={pick}
-            onPointerLeave={() => setHover(null)}
-            onFocus={() => setHover((h) => h ?? nowIndex ?? 0)}
-            onBlur={() => setHover(null)}
-            onKeyDown={key}
-          >
-            {ticks.map((v) => (
-              <g key={v}>
-                <line className="ltc-grid" x1={left} x2={w - PAD.right} y1={y(v)} y2={y(v)} />
-                <text className="ltc-tick" x={left - 10} y={y(v)} dy="0.32em" textAnchor="end">
-                  {String(v)}
-                </text>
-              </g>
-            ))}
-            {months
-              .filter((m) => new Date(m).getUTCMonth() === 0)
-              .map((m) => (
-                <text key={m} className="ltc-tick" x={x(m)} y={H - 10} textAnchor="middle">
-                  {new Date(m).getUTCFullYear()}
-                </text>
-              ))}
-            {showDay && (
-              <g>
-                <line className="ltc-ref" x1={left} x2={w - PAD.right} y1={y(24)} y2={y(24)} />
-                <text className="ltc-reflabel" x={w - PAD.right} y={y(24) - 7} textAnchor="end">
-                  1 light-day
-                </text>
-              </g>
-            )}
-            {active && <line className="ltc-cross" x1={x(active.ms)} x2={x(active.ms)} y1={PAD.top} y2={H - PAD.bottom} />}
-            <path className="ltc-line" d={path} />
-            {crossing !== null && (
-              <g>
-                <circle className="ltc-mark" cx={x(crossing)} cy={y(24)} r={DOT} />
-                <text className="ltc-marklabel" x={x(crossing)} y={y(24) - 12} textAnchor="middle">
-                  {crossLabel}
-                </text>
-              </g>
-            )}
-            {nowPoint && (
-              <g>
-                <circle className="ltc-now" cx={x(nowPoint.ms)} cy={y(nowPoint.hours)} r={DOT} />
-                <text className="ltc-nowlabel" x={x(nowPoint.ms)} y={y(nowPoint.hours) + 22} textAnchor="middle">
-                  Today
-                </text>
-              </g>
-            )}
-            {active && <circle className="ltc-now" cx={x(active.ms)} cy={y(active.hours)} r={DOT} />}
-          </svg>
-        )}
-        {active && (
-          <div className="ltc-tip" style={{ left: tipLeft }} aria-live="polite">
-            <strong className="mono">{hmsText(active.hours * 3600)}</strong>
-            <span>{utcDate(active.ms)}</span>
-          </div>
-        )}
+      <div className="ltc-plot">
+        <LineChart
+          series={[{ key: probe, label: name, points: series.map((p) => ({ x: toYear(p.ms), y: p.hours })) }]}
+          label={`Light time from Earth to ${name} each day from January 2026 to January 2028, in hours`}
+          xTitle="Date"
+          yTitle="Hours of light"
+          tickX={(x) => (Number.isInteger(x) ? String(x) : MONTHS[Math.round((x % 1) * 12)])}
+          tickY={hoursTick}
+          readX={(x) => calDate(fromYear(x))}
+          readY={(h) => hmsText(h * 3600)}
+          xDomain={[2026, 2028]}
+          yDomain={[y0, y1]}
+          xTickValues={TICKS}
+          yTicks={5}
+          refLines={refLines}
+          marks={marks}
+        />
       </div>
       <details className="ltc-table">
         <summary>Show table</summary>
@@ -180,7 +84,7 @@ export default function LightTimeChart({ data, probe, name, now }: Props) {
               .filter((p) => new Date(p.ms).getUTCDate() === 1)
               .map((p) => (
                 <tr key={p.ms}>
-                  <td>{utcDate(p.ms)}</td>
+                  <td>{calDate(p.ms)}</td>
                   <td className="mono">{hmsText(p.hours * 3600)}</td>
                 </tr>
               ))}
