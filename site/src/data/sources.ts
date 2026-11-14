@@ -281,7 +281,7 @@ export const FACTS: Source[] = [
 export const TOOLS = [
   { name: 'Astro 6 and React 19', note: 'MIT license' },
   { name: 'Leaflet 1.9.4', note: 'BSD 2-clause license' },
-  { name: 'Atkinson Hyperlegible Next and Mono', note: 'Braille Institute, SIL Open Font License, via Fontsource' },
+  { name: 'Gabarito and Spline Sans Mono', note: 'Naipe Foundry, and Eben Sorkin and Mirko Velimirović, SIL Open Font License, via Fontsource' },
 ];
 
 export function sourceById(id: string): Source | undefined {
