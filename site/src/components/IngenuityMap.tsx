@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import type { GeoJSONSource, LngLatBoundsLike, Map as MapLibreMap, StyleSpecification } from 'maplibre-gl';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -79,6 +79,7 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   const [near, setNear] = useState(false);
+  const picksId = useId();
   const box = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   const first = useRef(true);
@@ -328,7 +329,10 @@ export default function IngenuityMap({ photos }: { photos: FlightPhoto[] }) {
             )}
           </div>
           <p className="credit ig-caption">{shot ? shot.caption : blank}</p>
-          <div className="ig-picks" role="group" aria-label="Flights with a photo">
+          <p id={picksId} className="ig-picks-label">
+            Flights with a photo from Ingenuity’s cameras
+          </p>
+          <div className="ig-picks" role="group" aria-labelledby={picksId}>
             {photos.map((p) => (
               <Button key={p.n} type="button" size="sm" variant={p.n === n ? 'line' : 'ghost'} aria-pressed={p.n === n} aria-label={`Flight ${p.n}`} onClick={() => pick(p.n)} className="mono">
                 {p.n}
