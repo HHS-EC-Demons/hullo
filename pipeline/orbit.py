@@ -10,7 +10,18 @@ HTTP range request, then cropped, stretched to 8 bits between the 0.5 and
 The product ID, acquisition time, pixel scale and center go to
 site/src/data/lro.json.
 
-Run with .venv/bin/python orbit.py
+maps() writes the two site maps at the top of the Orbit page. The Moon map
+is the Apollo region cut from NASA SVS's CGI Moon Kit color map (SVS 4720,
+lroc_color_poles_8k.tif, an equirectangular LROC WAC mosaic centered on 0
+degrees longitude, public domain per the SVS help page). The Mars map is the
+USGS Astrogeology Viking MDIM 2.1 colorized global mosaic at 1 km per pixel
+(equirectangular, centered on 0 degrees, public domain per its Astropedia
+page), turned so 240 degrees east sits in the middle and every lander is
+away from the edges, then scaled to 2400 px wide. The bounds of each map go
+to site/src/data/orbit-maps.json, so the page can place each site from its
+latitude and longitude.
+
+Run with .venv/bin/python orbit.py, or .venv/bin/python orbit.py maps
 """
 
 from __future__ import annotations
@@ -28,6 +39,8 @@ import numpy as np
 from PIL import Image
 
 import net
+
+Image.MAX_IMAGE_PIXELS = None
 
 ROOT = Path(__file__).resolve().parent
 CACHE = ROOT / "cache" / "lroc"
@@ -124,6 +137,68 @@ def crop(item: dict, out_dir: Path) -> dict:
     }
 
 
+MOSAICS = ROOT / "cache" / "mosaics"
+MOON_KIT = "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_poles_8k.tif"
+MARS_MDIM = ("https://astrogeology.usgs.gov/ckan/dataset/7131d503-cdc9-45a5-8f83-5126c0fd397e/resource/"
+             "5ea881c6-01b3-41fa-a7af-42d2131b54f1/download/mars_viking_mdim21_clrmosaic_1km.jpg")
+MOON_BOX = {"west": -34.0, "east": 44.0, "north": 32.0, "south": -16.0}
+MARS_WEST = 60.0
+MAP_WIDTH = 2400
+
+
+def fetch(url: str, path: Path) -> Path:
+    if not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": net.AGENT}), timeout=900, context=CTX) as resp:
+            path.write_bytes(resp.read())
+    return path
+
+
+def moon_map(out_dir: Path) -> dict:
+    img = Image.open(fetch(MOON_KIT, MOSAICS / "lroc_color_poles_8k.tif")).convert("RGB")
+    per_deg = img.width / 360
+    box = MOON_BOX
+    left = round((box["west"] + 180) * per_deg)
+    right = round((box["east"] + 180) * per_deg)
+    top = round((90 - box["north"]) * per_deg)
+    bottom = round((90 - box["south"]) * per_deg)
+    crop = img.crop((left, top, right, bottom))
+    crop.save(out_dir / "orbit-map-moon.jpg", "JPEG", quality=85, optimize=True, progressive=True)
+    return {
+        "file": "orbit-map-moon.jpg",
+        "west": left / per_deg - 180, "east": right / per_deg - 180,
+        "north": 90 - top / per_deg, "south": 90 - bottom / per_deg,
+        "width": crop.width, "height": crop.height,
+        "id": "SVS 4720", "year": 2019, "credit": "NASA's Scientific Visualization Studio",
+        "page": "https://svs.gsfc.nasa.gov/4720/", "file_url": MOON_KIT,
+    }
+
+
+def mars_map(out_dir: Path) -> dict:
+    img = Image.open(fetch(MARS_MDIM, MOSAICS / "mars_viking_mdim21_clrmosaic_1km.jpg")).convert("RGB")
+    cut = round((MARS_WEST + 180) / 360 * img.width)
+    turned = Image.new("RGB", img.size)
+    turned.paste(img.crop((cut, 0, img.width, img.height)), (0, 0))
+    turned.paste(img.crop((0, 0, cut, img.height)), (img.width - cut, 0))
+    out = turned.resize((MAP_WIDTH, round(img.height * MAP_WIDTH / img.width)), Image.LANCZOS)
+    out.save(out_dir / "orbit-map-mars.jpg", "JPEG", quality=85, optimize=True, progressive=True)
+    west = cut / img.width * 360 - 180
+    return {
+        "file": "orbit-map-mars.jpg",
+        "west": west, "east": west + 360, "north": 90.0, "south": -90.0,
+        "width": out.width, "height": out.height,
+        "id": "MDIM 2.1", "year": 2009, "credit": "USGS Astrogeology Science Center, NASA Ames",
+        "page": "https://astrogeology.usgs.gov/search/map/mars_viking_colorized_global_mosaic_232m", "file_url": MARS_MDIM,
+    }
+
+
+def maps(out_dir: Path, meta_path: Path) -> dict:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    meta = {"moon": moon_map(out_dir), "mars": mars_map(out_dir)}
+    meta_path.write_text(json.dumps(meta, indent=1) + "\n")
+    return meta
+
+
 def build(out_dir: Path, meta_path: Path) -> list[dict]:
     out_dir.mkdir(parents=True, exist_ok=True)
     meta = [crop(item, out_dir) for item in SITES]
@@ -133,5 +208,11 @@ def build(out_dir: Path, meta_path: Path) -> list[dict]:
 
 
 if __name__ == "__main__":
+    import sys
+
+    if sys.argv[1:] == ["maps"]:
+        for body, m in maps(SITE / "src" / "assets" / "img", SITE / "src" / "data" / "orbit-maps.json").items():
+            print(body, m["width"], m["height"], round(m["west"], 3), round(m["east"], 3))
+        raise SystemExit
     for row in build(SITE / "src" / "assets" / "img", SITE / "src" / "data" / "lro.json"):
         print(row["site"], row["product"], row["acquired"], f"{row['scale_m']} m/px", row["width"], row["lm_px"])
