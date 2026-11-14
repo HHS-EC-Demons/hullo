@@ -105,6 +105,8 @@ export default function PassportBook({ site, thumbs }: Props) {
         </form>
       </div>
 
+      {earned.length === 0 && <p className="pp-empty">No stamps yet.</p>}
+
       {GROUPS.map((g) => {
         const objects = STAMP_OBJECTS.filter((o) => o.group === g.key);
         if (objects.length === 0) return null;
@@ -113,14 +115,16 @@ export default function PassportBook({ site, thumbs }: Props) {
           <section key={g.key} className="pp-group" aria-labelledby={`pp-${g.key}`}>
             <div className="pp-group-head">
               <h2 id={`pp-${g.key}`} className="pp-group-title">
-                {g.title}
+                <a className="press" href={href(objects[0].page)}>
+                  {g.title}
+                </a>
               </h2>
-              <span className="pp-group-count mono">
-                {got} of {objects.length}
+              <span className="pp-group-count">
+                <span className="mono">
+                  {got} of {objects.length}
+                </span>{' '}
+                stamped
               </span>
-              <Button asChild variant="secondary" size="sm">
-                <a href={href(objects[0].page)}>Open {g.title}</a>
-              </Button>
             </div>
             <ul className="pp-grid">
               {objects.map((o) => (
@@ -140,9 +144,13 @@ export default function PassportBook({ site, thumbs }: Props) {
   );
 }
 
+function year(when: string): string {
+  return when.match(/\d{4}/)?.[0] ?? '';
+}
+
 function Slot({ object, thumb, stamp }: { object: StampObject; thumb?: Thumb; stamp?: Stamp }) {
   return (
-    <article className={stamp ? 'pp-slot stamped' : 'pp-slot'}>
+    <article className={stamp ? 'pp-slot stamped' : 'pp-slot'} aria-label={stamp ? `${object.name}, stamped ${dayText(stamp.at)}` : `${object.name}, not stamped yet`}>
       <figure className="pp-thumb">
         {thumb && (
           <picture>
@@ -153,8 +161,10 @@ function Slot({ object, thumb, stamp }: { object: StampObject; thumb?: Thumb; st
         )}
         {thumb && (
           <figcaption className="pp-cap">
-            {thumb.nasaId}
-            {thumb.when ? `, ${thumb.when}` : ''}, {thumb.credit}
+            {year(thumb.when) && <span className="mono">{year(thumb.when)} </span>}
+            <span data-credit>
+              {thumb.nasaId}, {thumb.credit}
+            </span>
           </figcaption>
         )}
       </figure>
@@ -163,12 +173,10 @@ function Slot({ object, thumb, stamp }: { object: StampObject; thumb?: Thumb; st
         <div className="pp-stamp" style={{ '--tilt': `${tilt(object.id)}deg` } as CSSProperties}>
           {stamp.detail && <p className="pp-stamp-detail mono">{stamp.detail}</p>}
           <p className="pp-stamp-date mono">
-            Stamped <time dateTime={new Date(stamp.at).toISOString()}>{dayText(stamp.at)}</time>
+            <time dateTime={new Date(stamp.at).toISOString()}>{dayText(stamp.at)}</time>
           </p>
         </div>
-      ) : (
-        <p className="sr-only">Not stamped yet</p>
-      )}
+      ) : null}
     </article>
   );
 }

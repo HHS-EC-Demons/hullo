@@ -51,6 +51,12 @@
   font-size: var(--fs-xs);
 }
 
+.pp-empty {
+  margin-top: -24px;
+  color: var(--muted);
+  font-size: var(--fs-md);
+}
+
 .pp-group-head {
   display: flex;
   flex-wrap: wrap;
@@ -63,6 +69,11 @@
   font-size: var(--fs-lg);
   font-weight: 800;
   letter-spacing: -0.02em;
+}
+.pp-group-title .press {
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
 }
 .pp-group-count {
   color: var(--muted);
@@ -248,12 +259,7 @@
 }
 
 .pp-cert-wrap {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  display: none;
 }
 .pp-cert-wrap .cert {
   width: 273mm;
@@ -283,12 +289,7 @@
     display: block;
   }
   .pp-cert-wrap {
-    position: static;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    clip-path: none;
-    white-space: normal;
+    display: block;
   }
   .pp-cert-wrap .cert {
     width: 100%;
