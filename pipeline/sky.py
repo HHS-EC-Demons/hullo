@@ -5,7 +5,8 @@ Stars come from the Yale Bright Star Catalogue, 5th revised edition
 magnitude 5.5, at its J2000 catalog position.
 
 Constellation lines come from d3-celestial by Olaf Frohn (BSD 3-Clause),
-whose line figures join catalog stars at their J2000 positions.
+whose line figures join catalog stars at their J2000 positions. Its licence
+ships next to the data, as the licence asks.
 
 Spacecraft positions come from JPL Horizons observer tables seen from
 Earth's center (500@399): quantity 1, astrometric right ascension and
@@ -31,6 +32,7 @@ VIZIER = (
 )
 LINES = "https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/constellations.lines.json"
 NAMES = "https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/constellations.json"
+LINES_LICENSE = "https://raw.githubusercontent.com/ofrohn/d3-celestial/master/LICENSE"
 MAG_LIMIT = 5.5
 START = "2026-01-01"
 STOP = "2028-01-01"
@@ -161,6 +163,7 @@ def build(out_dir: Path) -> dict:
         "stars": star_list,
         "lines": lines(),
     }, separators=(",", ":")))
+    (out_dir / "d3-celestial-LICENSE.txt").write_bytes(cached(LINES_LICENSE, "d3-celestial-LICENSE.txt"))
     used = sorted({c for _, _, _, cons in tracks.values() for c in cons})
     return {
         "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
