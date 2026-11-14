@@ -3,6 +3,7 @@ import { WORDMARK } from '../brand';
 import { NASA_LIGHT_DAY_UTC } from './LightDay';
 import { C_KM_S, splitHms } from '../lib/lighttime';
 import type { Shot } from '../lib/ranging';
+import { groupInt, utcDate, utcTime } from '../lib/client';
 import './worksheet.css';
 
 export const AU_KM = 149597870.7;
@@ -25,17 +26,22 @@ export interface MoonShot {
   reflectorName: string;
 }
 
-const fmt = (digits: number) => new Intl.NumberFormat('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+/** Number text with thousands commas and a fixed count of decimals, without Intl. */
+export function fixed(n: number, digits: number): string {
+  const [whole, frac] = Math.abs(n).toFixed(digits).split('.');
+  return `${n < 0 ? '-' : ''}${groupInt(Number(whole))}${frac ? `.${frac}` : ''}`;
+}
+
+const fmt = (digits: number) => ({ format: (n: number) => fixed(n, digits) });
 export const int = fmt(0);
 export const one = fmt(1);
 const two = fmt(2);
 const three = fmt(3);
 export const six = fmt(6);
-export const dayFmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
-const timeFmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23', timeZone: 'UTC' });
+export const dayFmt = { format: utcDate };
 
 export function stamp(ms: number): string {
-  return `${timeFmt.format(ms)} UTC on ${dayFmt.format(ms)}`;
+  return `${utcTime(ms)} on ${utcDate(ms)}`;
 }
 
 function Sheet({ title, printedAt, intro, numbers, questions, answers, source }: { title: string; printedAt: number; intro: string; numbers: string[]; questions: string[]; answers: ReactNode[]; source: string }) {

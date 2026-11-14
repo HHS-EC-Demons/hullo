@@ -10,7 +10,12 @@ import sansFont from '@fontsource-variable/gabarito/files/gabarito-latin-wght-no
 import monoFont from '@fontsource-variable/spline-sans-mono/files/spline-sans-mono-latin-wght-normal.woff2?url';
 import './passport.css';
 
-const dayFmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function dayText(ms: number): string {
+  const d = new Date(ms);
+  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
 
 function tilt(id: string): number {
   let h = 0;
@@ -117,12 +122,12 @@ const GROUP_TITLE = new Map(GROUPS.map((g) => [g.key, g.title]));
 
 function StampMark({ object, stamp }: { object: StampObject; stamp: Stamp }) {
   return (
-    <article className="pp-stamp" style={{ '--tilt': `${tilt(object.id)}deg` } as CSSProperties} aria-label={`${object.name}, stamped ${dayFmt.format(stamp.at)}`}>
+    <article className="pp-stamp" style={{ '--tilt': `${tilt(object.id)}deg` } as CSSProperties} aria-label={`${object.name}, stamped ${dayText(stamp.at)}`}>
       <p className="pp-stamp-where mono">{GROUP_TITLE.get(object.group)}</p>
       <h3 className="pp-stamp-name">{object.name}</h3>
       {stamp.detail && <p className="pp-stamp-detail mono">{stamp.detail}</p>}
       <p className="pp-stamp-date mono">
-        <time dateTime={new Date(stamp.at).toISOString()}>{dayFmt.format(stamp.at)}</time>
+        <time dateTime={new Date(stamp.at).toISOString()}>{dayText(stamp.at)}</time>
       </p>
     </article>
   );
@@ -150,7 +155,7 @@ const Certificate = forwardRef<HTMLDivElement, CertificateProps>(function Certif
     <div ref={ref} className="cert">
       <header className="cert-head">
         <p className="cert-mark" translate="no">{WORDMARK}</p>
-        <p className="cert-date">Printed {dayFmt.format(printedAt)}</p>
+        <p className="cert-date">Printed {dayText(printedAt)}</p>
       </header>
       <p className="cert-title">
         {name ? `${name} reached ${earned.length} of the ${STAMP_OBJECTS.length} objects on ${BRAND}` : `Reached ${earned.length} of the ${STAMP_OBJECTS.length} objects on ${BRAND}`}
@@ -163,7 +168,7 @@ const Certificate = forwardRef<HTMLDivElement, CertificateProps>(function Certif
             <li key={o.id} className="cert-stamp" style={{ transform: `rotate(${tilt(o.id) * 0.6}deg)` }}>
               <p className="cert-stamp-name">{o.name}</p>
               {s.detail && <p className="cert-stamp-detail">{s.detail}</p>}
-              <p className="cert-stamp-date">{dayFmt.format(s.at)}</p>
+              <p className="cert-stamp-date">{dayText(s.at)}</p>
             </li>
           );
         })}

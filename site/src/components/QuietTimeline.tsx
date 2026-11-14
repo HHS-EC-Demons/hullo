@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import { scaleUtc } from 'd3-scale';
-import { motion, useReducedMotion } from 'motion/react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { scaleLinear } from 'd3-scale';
 import { dayMs, span, spanText, TIMELINE_START, type Lifeline } from '../data/timeline';
 import { getStamp, stamp } from '../lib/passport';
 import { href } from '../lib/paths';
+import { useReducedMotion, utcDate } from '../lib/client';
 import './quiet.css';
 
 export interface TimelinePhoto {
@@ -25,7 +25,8 @@ interface Props {
   first: string;
 }
 
-const dateFmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const QuietPulse = lazy(() => import('./QuietPulse'));
+
 const SIZES = '(max-width: 640px) 128px, 288px';
 
 function year(iso: string): string {
@@ -42,8 +43,12 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
 
   useEffect(() => setNow(Date.now()), []);
 
-  const x = useMemo(() => scaleUtc().domain([dayMs(TIMELINE_START), now]).range([0, 100]).clamp(true), [now]);
-  const ticks = useMemo(() => x.ticks(8).filter((d) => d.getUTCFullYear() % 10 === 0), [x]);
+  const x = useMemo(() => scaleLinear().domain([dayMs(TIMELINE_START), now]).range([0, 100]).clamp(true), [now]);
+  const ticks = useMemo(() => {
+    const out: Date[] = [];
+    for (let y = 1970; dayMs(`${y}-01-01`) <= now; y += 10) out.push(new Date(dayMs(`${y}-01-01`)));
+    return out;
+  }, [now]);
 
   const shown = lines.find((l) => l.id === (hover ?? picked ?? first)) ?? lines[0];
 
@@ -103,8 +108,8 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
             const e = l.end ? x(dayMs(l.end)) : 100;
             const f = figures(l);
             const label = l.answers
-              ? `${l.name}, ${l.startKind.toLowerCase()} ${dateFmt.format(dayMs(l.start))}, still answers after ${f.on}`
-              : `${l.name}, ${l.startKind.toLowerCase()} ${dateFmt.format(dayMs(l.start))}, answered for ${f.on}, silent since ${dateFmt.format(dayMs(l.end as string))}`;
+              ? `${l.name}, ${l.startKind.toLowerCase()} ${utcDate(dayMs(l.start))}, still answers after ${f.on}`
+              : `${l.name}, ${l.startKind.toLowerCase()} ${utcDate(dayMs(l.start))}, answered for ${f.on}, silent since ${utcDate(dayMs(l.end as string))}`;
             return (
               <li key={l.id}>
                 <button
@@ -130,13 +135,9 @@ export default function QuietTimeline({ lines, photos, builtMs, first }: Props) 
                     )}
                     {picked === l.id && !reduce && (
                       <span className="qt-run" style={{ left: `${s}%`, width: `${Math.max(e - s, 0.4)}%` }}>
-                        <motion.span
-                          key={pulse}
-                          className="qt-pulse"
-                          initial={{ x: '-100%', opacity: 1 }}
-                          animate={{ x: ['-100%', '0%', '0%'], opacity: [1, 1, 0] }}
-                          transition={{ duration: 1.5, times: [0, 0.78, 1], ease: 'easeInOut' }}
-                        />
+                        <Suspense fallback={null}>
+                          <QuietPulse key={pulse} />
+                        </Suspense>
                       </span>
                     )}
                   </span>
@@ -172,8 +173,8 @@ function Readout({ line, photo, figures, picked, stamped }: { line: Lifeline; ph
       <div className="qt-text">
         <h3 className="qt-title">{line.name}</h3>
         <p className="qt-dates">
-          {line.startKind} {dateFmt.format(dayMs(line.start))}.{' '}
-          {line.end ? `Last heard ${dateFmt.format(dayMs(line.end))}.` : `${line.endKind}.`}
+          {line.startKind} {utcDate(dayMs(line.start))}.{' '}
+          {line.end ? `Last heard ${utcDate(dayMs(line.end))}.` : `${line.endKind}.`}
         </p>
         <dl className="qt-figs">
           <div>
