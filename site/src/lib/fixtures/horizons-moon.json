@@ -1,0 +1,37 @@
+{
+ "source": "JPL Horizons API, OBSERVER, quantities 4 and 20, RANGE_UNITS KM",
+ "checks": [
+  {
+   "station": "apache",
+   "reflector": "a15",
+   "utc": "2026-11-20T03:17:00Z",
+   "elevation_deg": 58.438376544,
+   "range_km": 376191.14456,
+   "round_trip_s": 2.5096771751342724
+  },
+  {
+   "station": "apache",
+   "reflector": "a11",
+   "utc": "2027-02-11T05:41:00Z",
+   "elevation_deg": -11.471124434,
+   "range_km": 388782.12848,
+   "round_trip_s": 2.5936751783128584
+  },
+  {
+   "station": "grasse",
+   "reflector": "a14",
+   "utc": "2026-12-03T22:08:00Z",
+   "elevation_deg": -41.588224324,
+   "range_km": 392877.44432,
+   "round_trip_s": 2.6209961847672636
+  },
+  {
+   "station": "grasse",
+   "reflector": "l2",
+   "utc": "2027-05-19T01:52:00Z",
+   "elevation_deg": 8.453758218,
+   "range_km": 386744.80673,
+   "round_trip_s": 2.5800836305895327
+  }
+ ]
+}
