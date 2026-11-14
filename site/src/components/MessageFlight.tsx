@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, LazyMotion, domAnimation, m } from 'motion/react';
 import { hmsText, lightTimeAt, type DeepSpaceData } from '../lib/lighttime';
 import { localDate, localTime, longDate, utcDay, utcTime } from '../lib/client';
@@ -47,6 +47,35 @@ function shortTime(t: number): string {
   return `${h} h ${String(Math.round((t % 3600) / 60)).padStart(2, '0')} min`;
 }
 
+const LABEL_TOP = 22;
+const LABEL_ROW = 21;
+const LABEL_GAP = 14;
+
+/** Places each landmark label under its mark, clamped inside the track, on the first row where it overlaps no other label. */
+function placeLabels(track: HTMLElement) {
+  const box = track.getBoundingClientRect();
+  const width = track.clientWidth;
+  const ends: number[] = [];
+  track.querySelectorAll<HTMLElement>('.fl-mark').forEach((mark) => {
+    const label = mark.querySelector<HTMLElement>('.fl-mark-l');
+    if (!label) return;
+    const at = mark.getBoundingClientRect().left - box.left;
+    const w = label.offsetWidth;
+    const left = Math.max(0, Math.min(at - w / 2, width - w));
+    let row = ends.findIndex((end) => left >= end + LABEL_GAP);
+    if (row < 0) {
+      row = ends.length;
+      ends.push(0);
+    }
+    ends[row] = left + w;
+    const top = LABEL_TOP + row * LABEL_ROW;
+    label.style.left = `${(left - at).toFixed(1)}px`;
+    label.style.top = `${top - 4}px`;
+    mark.style.height = `${top - 7}px`;
+  });
+  track.style.paddingBottom = `${LABEL_TOP + Math.max(ends.length, 1) * LABEL_ROW - 10}px`;
+}
+
 function yearsSince(iso: string, now: number): number {
   const then = new Date(`${iso}T12:00:00Z`);
   const n = new Date(now);
@@ -77,12 +106,29 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
   shareLabel: string;
 }) {
   const root = useRef<HTMLLIElement>(null);
+  const track = useRef<HTMLDivElement>(null);
   const pulse = useRef<HTMLSpanElement>(null);
   const left = useRef<HTMLSpanElement>(null);
   const [done, setDone] = useState(() => Date.now() >= msg.arrives);
   const info = probeInfo(msg.probe);
   const total = (msg.arrives - msg.sent) / 1000;
   const marks = landmarks(data, msg);
+  const markKey = marks.map((k) => `${k.label}${k.t.toFixed(1)}`).join();
+
+  useLayoutEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    let live = true;
+    const place = () => live && placeLabels(el);
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(el);
+    document.fonts?.ready.then(place).catch(() => undefined);
+    return () => {
+      live = false;
+      ro.disconnect();
+    };
+  }, [markKey, total]);
 
   useFrames(
     root,
@@ -117,16 +163,11 @@ function Flight({ data, msg, first, onShare, sharing, shareLabel }: {
         <span className="fl-msg">{msg.text}</span>
       </p>
 
-      <div className="fl-track" aria-hidden="true">
+      <div className="fl-track" ref={track} aria-hidden="true">
         <span className="fl-end">Earth</span>
         <span className="fl-line">
-          {marks.map((k, i) => (
-            <span
-              key={k.label}
-              className={`fl-mark${i % 2 ? ' low' : ''}`}
-              data-edge={i === marks.length - 1 ? 'end' : i === 0 ? 'start' : undefined}
-              style={{ left: `${(trackX(k.t, total) * 100).toFixed(2)}%` }}
-            >
+          {marks.map((k) => (
+            <span key={k.label} className="fl-mark" style={{ left: `${(trackX(k.t, total) * 100).toFixed(2)}%` }}>
               <span className="fl-mark-l">
                 {k.label} <span className="mono">{shortTime(k.t)}</span>
               </span>

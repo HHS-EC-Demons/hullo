@@ -235,13 +235,14 @@
 }
 
 .fl-track {
+  position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: start;
   gap: 12px;
   font-size: var(--fs-xs);
   color: var(--muted);
-  padding-bottom: 48px;
+  padding-bottom: 53px;
 }
 
 .fl-end {
@@ -267,34 +268,17 @@
   position: absolute;
   top: 4px;
   width: 1px;
-  height: 11px;
+  height: 15px;
   background: var(--lilac);
 }
 
 .fl-mark-l {
   position: absolute;
-  top: 16px;
+  top: 18px;
   left: 0;
-  transform: translateX(-50%);
   white-space: nowrap;
   font-size: 0.875rem;
   line-height: 1.3;
-}
-
-.fl-mark.low {
-  height: 27px;
-}
-
-.fl-mark.low .fl-mark-l {
-  top: 30px;
-}
-
-.fl-mark[data-edge='end'] .fl-mark-l {
-  transform: translateX(calc(-100% + 1px));
-}
-
-.fl-mark[data-edge='start'] .fl-mark-l {
-  transform: translateX(-20%);
 }
 
 .fl-run {
