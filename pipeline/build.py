@@ -14,6 +14,7 @@ import deep_space
 import images
 import mars
 import moon
+import sky
 
 ROOT = Path(__file__).resolve().parent
 SITE = ROOT.parent / "site"
@@ -32,11 +33,13 @@ def write(path: Path, payload: dict | list, compact: bool = True) -> None:
 
 
 def main(steps: list[str]) -> None:
-    run = set(steps) or {"deep", "moon", "mars", "images", "fixtures", "brand"}
+    run = set(steps) or {"deep", "moon", "sky", "mars", "images", "fixtures", "brand"}
     if "deep" in run:
         write(DATA / "deep-space.json", deep_space.build())
     if "moon" in run:
         write(DATA / "moon" / "index.json", moon.build(DATA / "moon"), compact=False)
+    if "sky" in run:
+        write(DATA / "sky" / "index.json", sky.build(DATA / "sky"), compact=False)
     if "mars" in run:
         print(mars.build(PUBLIC))
     if "images" in run:
