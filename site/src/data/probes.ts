@@ -5,6 +5,7 @@ export interface ProbeInfo {
   status: string;
   statusDate: string;
   source: string;
+  lastContact?: string;
 }
 
 export const PROBES: ProbeInfo[] = [
@@ -39,6 +40,7 @@ export const PROBES: ProbeInfo[] = [
     status: 'Signal last detected',
     statusDate: '2003-01-23',
     source: 'nssdca-pioneer-10',
+    lastContact: 'signal was last detected',
   },
   {
     key: 'pioneer11',
@@ -47,6 +49,7 @@ export const PROBES: ProbeInfo[] = [
     status: 'Science and daily telemetry ceased',
     statusDate: '1995-09-30',
     source: 'nssdca-pioneer-11',
+    lastContact: 'science and daily telemetry ceased',
   },
 ];
 
