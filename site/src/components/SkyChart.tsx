@@ -213,6 +213,7 @@ export default function SkyChart({ highlight, now }: Props) {
               const r = (world ? (m.key === 'moon' ? 6.5 : 4.5) : 6) * (narrow ? 0.8 : 1);
               return (
                 <g key={m.key} className={`sky-mark${on ? ' on' : ''}${world ? ' world' : ' probe'}`}>
+                  <title>{`${m.body.name}, in ${index?.constellations[m.con] ?? m.con}, RA ${raText(m.ra)}, Dec ${decText(m.dec)}`}</title>
                   {world ? (
                     <circle className="sky-world" cx={m.x} cy={m.y} r={r} />
                   ) : (
