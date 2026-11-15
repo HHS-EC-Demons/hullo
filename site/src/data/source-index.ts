@@ -52,7 +52,7 @@ function isCredit(x: unknown): x is PhotoCredit {
   return typeof v.page === 'string' && typeof v.id === 'string' && typeof v.credit === 'string' && typeof v.url === 'string' && !('title' in v);
 }
 
-const PAGE_ORDER = ['Home', 'Deep space', 'Moon', 'Mars', 'Orbit', 'Silent', 'Passport', 'Classroom', '404'];
+const PAGE_ORDER = ['Home', 'Live', 'Deep space', 'Moon', 'Mars', 'Orbit', 'Silent', 'Passport', 'Classroom', '404'];
 
 const credits: PhotoCredit[] = [
   ...Object.values(modules)

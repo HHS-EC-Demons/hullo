@@ -64,7 +64,7 @@ const chapters = await Promise.all(
 );
 ---
 
-<Base preload={['data/deep-space.json']}>
+<Base title="Live" current="live" description="Voyager 1's light time this second, the countdown to one light-day and what the Deep Space Network dishes are doing now." preload={['data/deep-space.json']}>
   <section class="wrap hero">
     <ProbeSignal client:load headline="h1" countdown home />
   </section>

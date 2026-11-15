@@ -23,14 +23,14 @@ const fromSilent = (page: string, object: string): PhotoCredit[] =>
   SILENT.filter((m) => m.object === object).map((m) => ({ page, id: m.nasa_id, credit: m.credit, url: m.page }));
 const plasma = sounds.find((x) => x.id === 'voyager-plasma');
 
-/** Every photo and sound on the home and Deep space pages, by page. */
+/** Every photo and sound on the Live and Deep space pages, by page. */
 export const PHOTO_CREDITS: PhotoCredit[] = [
-  ...fromHome('Home', (_, m) => m.group === 'dsn' || m.group === 'dsn-eyes'),
-  ...fromHome('Home', (slug) => slug === 'deep-newhorizons'),
-  ...fromMeta('Home', 'moon-laser-station'),
-  ...fromMeta('Home', 'mars-two-years'),
-  ...fromHome('Home', (slug) => slug === 'home-orbit-apollo14'),
-  ...fromSilent('Home', 'surveyor3'),
+  ...fromHome('Live', (_, m) => m.group === 'dsn' || m.group === 'dsn-eyes'),
+  ...fromHome('Live', (slug) => slug === 'deep-newhorizons'),
+  ...fromMeta('Live', 'moon-laser-station'),
+  ...fromMeta('Live', 'mars-two-years'),
+  ...fromHome('Live', (slug) => slug === 'home-orbit-apollo14'),
+  ...fromSilent('Live', 'surveyor3'),
   ...fromHome('Deep space', (_, m) => m.group === 'deep' || m.group === 'eyes'),
   ...fromSilent('Deep space', 'pioneer11'),
   ...(plasma ? [{ page: 'Deep space', id: plasma.page.split('/').pop() ?? 'PIA17045', credit: plasma.credit, url: plasma.page }] : []),
@@ -47,7 +47,7 @@ export const HOME_SOURCES: Source[] = [
     dated: 'Read live in the browser every 8 s from eyes.nasa.gov/dsn/data/dsn.xml, names and dish types from eyes.nasa.gov/dsn/config.xml',
     license: 'Public NASA/JPL feed that any site may read, since the feed sends Access-Control-Allow-Origin *. No license is stated on the feed. Shown live with the credit NASA/JPL-Caltech.',
     used: 'What the dishes at Goldstone, Madrid and Canberra are doing this minute, and the feed time.',
-    note: 'The feed lists every dish with its activity and its signals. For each complex the home page shows one dish with an active signal and the spacecraft on it, plus a count of the other dishes in contact. A complex with no active signal shows its dish numbers and the activity the feed gives them, such as Engineering Sustaining. When a spacecraft name runs past two words the page shows the feed code instead, such as KPLO for the Korea Pathfinder Lunar Orbiter. Voyager 1, Voyager 2 and New Horizons are listed first and marked with a lilac rule. The feed time is shown in the visitor’s own time zone.',
+    note: 'The feed lists every dish with its activity and its signals. For each complex the Live page shows one dish with an active signal and the spacecraft on it, plus a count of the other dishes in contact. A complex with no active signal shows its dish numbers and the activity the feed gives them, such as Engineering Sustaining. When a spacecraft name runs past two words the page shows the feed code instead, such as KPLO for the Korea Pathfinder Lunar Orbiter. Voyager 1, Voyager 2 and New Horizons are listed first and marked with a lilac rule. The feed time is shown in the visitor’s own time zone.',
   },
   {
     id: 'light-time-method',
@@ -56,7 +56,7 @@ export const HOME_SOURCES: Source[] = [
     url: 'https://ssd.jpl.nasa.gov/horizons/manual.html',
     dated: 'Checked 2 Nov 2026',
     license: 'A calculation from the Horizons data listed above.',
-    used: 'The live light time on the home and Deep space pages, the light-day countdown, the message arrival and reply times and the clock of when the light reaching Earth now left the probe.',
+    used: 'The live light time on the Live and Deep space pages, the light-day countdown, the message arrival and reply times and the clock of when the light reaching Earth now left the probe.',
     note: 'Light time here is the straight-line distance from Earth’s center at this instant, divided by the speed of light. NASA’s one light-day date uses the same convention. Horizons observer tables print a few seconds less, because they give the probe’s position when the light now arriving left the probe. A message takes a few seconds more, because the probe keeps moving while the message travels. The departure clock on Deep space solves for the moment a signal must leave the probe to reach Earth’s center now, using the downlink light time from the same table. Pioneer 10 and 11 positions are extrapolated from old tracking, so a message to either Pioneer is timed to where that probe should be. At the light-day second Voyager 1’s light time reads exactly 24 h. On the message line each equal step is ten times the travel time of the step before.',
   },
   {
@@ -75,7 +75,7 @@ export const HOME_SOURCES: Source[] = [
     url: 'https://ssd.jpl.nasa.gov/horizons/',
     dated: 'Fetched 2 Nov 2026 with pipeline/probe_history.py',
     license: 'NASA JPL data. Credit NASA/JPL-Caltech.',
-    used: 'The Deep space chart of distance from the Sun, the home chart of hours of light to Voyager 1 since 1977.',
+    used: 'The Deep space chart of distance from the Sun, the Live chart of hours of light to Voyager 1 since 1977.',
     note: 'One geometric vector table per probe every calendar month, from the first time Horizons holds for each trajectory and for Voyager 1 from 5 Sep 1977, to 1 Jan 2028, centred on the Sun, body 500@10, and on Earth, body 500@399. The charts stop at today. The birthday distance reads the Sun table in a straight line between the two monthly samples on either side of noon UTC on the birthday and of the current moment, and subtracts. The result is how much farther from the Sun Voyager 1 is now, close to the distance flown because Voyager 1 moves almost straight away from the Sun.',
   },
   {
@@ -95,12 +95,12 @@ export const HOME_SOURCES: Source[] = [
     url: 'https://eyes.nasa.gov/apps/dsn-now/dsn.html',
     dated: 'Checked 2 Nov 2026',
     license: 'NASA web app shown in a frame only after a click. The app sends no header that forbids framing. Credit NASA/JPL-Caltech.',
-    used: 'The live view of every dish beside the DSN section on the home page.',
+    used: 'The live view of every dish beside the DSN section on the Live page.',
     note: 'NASA’s Voyager and DSN pages link to eyes.nasa.gov/dsn/dsn.html, which now redirects to the app’s start page. The address used here is the one the app opens after its Enter button.',
   },
   {
     id: 'nasa-images-home',
-    title: 'Photos on the home and Deep space pages',
+    title: 'Photos on the Live and Deep space pages',
     publisher: 'NASA Image and Video Library',
     url: 'https://images.nasa.gov/',
     dated: 'Full resolution originals fetched by NASA ID on 2 Nov 2026',

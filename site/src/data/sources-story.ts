@@ -73,7 +73,7 @@ export const STORY_SOURCES: Source[] = [
     url: 'https://ssd.jpl.nasa.gov/horizons/',
     dated: 'Daily values for 2026 and 2027, fetched 12 Nov 2026 by pipeline/mars_range.py',
     license: 'JPL Horizons output, public',
-    used: 'How many minutes a radio hullo takes to reach Mars on the home ladder and the Mars next stop.',
+    used: 'How many minutes a radio hullo takes to reach Mars on the Live ladder and the Mars next stop.',
     note: 'Observer table for Mars (499) from Earth’s center (500@399), quantity 21, one way light time at 00:00 UT each day.',
   },
 ];

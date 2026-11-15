@@ -25,6 +25,7 @@ const pageFiles = Object.keys(import.meta.glob('../pages/**/*.astro'));
 const has = (name: string) => pageFiles.some((f) => f === `../pages/${name}.astro` || f === `../pages/${name}/index.astro`);
 
 const items: NavItem[] = [
+  ...(has('live') ? [{ key: 'live', href: href('live/'), label: 'Live' }] : []),
   { key: 'moon', href: href('moon/'), label: 'Moon' },
   { key: 'mars', href: href('mars/'), label: 'Mars' },
   ...(has('orbit') ? [{ key: 'orbit', href: href('orbit/'), label: 'Orbit' }] : []),
