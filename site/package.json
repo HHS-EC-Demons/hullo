@@ -51,16 +51,12 @@
     "@types/d3-scale": "^4.0.9",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "shadcn": "^4.23.0",
     "typescript": "^5.9.0",
     "vitest": "^4.1.12"
   },
   "overrides": {
     "vite": "^8.3.6",
     "sharp": "^0.35.5",
-    "esbuild": "^0.28.1",
-    "@ts-morph/common": {
-      "minimatch": "^11.0.1"
-    }
+    "esbuild": "^0.28.1"
   }
 }
