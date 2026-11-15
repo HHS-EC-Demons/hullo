@@ -2,7 +2,7 @@
 
 Hardware left in space that still answers. Space Apps 2026, Abandoned but not Forgotten.
 
-[hhs-ec-demons.github.io/hullo](https://hhs-ec-demons.github.io/hullo/)
+[sayhullo.netlify.app](https://sayhullo.netlify.app/), mirrored at [hhs-ec-demons.github.io/hullo](https://hhs-ec-demons.github.io/hullo/)
 
 ## Pages
 
@@ -27,6 +27,6 @@ npx vitest run
 npx astro build
 ```
 
-Pushes to `main` deploy to GitHub Pages. Data scripts are in `pipeline/`. Astro 6, React, Tailwind 4, Node 22.
+Pushes to `main` deploy to GitHub Pages. `netlify deploy --build --prod` from the repo root publishes to Netlify. Data scripts are in `pipeline/`. Astro 6, React, Tailwind 4, Node 22.
 
 Not endorsed by NASA. Photos are NASA public domain.

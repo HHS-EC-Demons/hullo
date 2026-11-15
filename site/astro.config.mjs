@@ -13,7 +13,7 @@ const directives = {
 };
 
 export default defineConfig({
-  site: 'https://hhs-ec-demons.github.io',
+  site: process.env.URL ?? 'https://hhs-ec-demons.github.io',
   base: process.env.BASE_PATH ?? '/',
   trailingSlash: 'ignore',
   integrations: [react(), directives],
