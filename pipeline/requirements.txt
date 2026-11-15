@@ -1,7 +1,7 @@
-brotli==1.1.0
-certifi==2025.10.5
-fonttools==4.60.1
+brotli==1.2.1
+certifi==2026.10.18
+fonttools==4.60.2
 imageio-ffmpeg==0.6.0
 numpy==2.3.4
-pillow==12.0.0
-pypdf==6.1.3
+pillow==13.0.0
+pypdf==6.21.4
