@@ -2,6 +2,8 @@ import SILENT_PHOTOS from './silent-images.json';
 import PAGE_PHOTOS from './page-images.json';
 import PHOTOS from './photos.json';
 import PROBE_PHOTOS from './probe-photos.json';
+import HOME_PHOTOS from './home-images.json';
+import { TRAIL_PHOTOS } from './trail';
 import IMAGES from '../../public/data/images.json';
 import type { PhotoCredit } from './sources';
 
@@ -24,13 +26,23 @@ function fromPages(page: string, slug: string): PhotoCredit | null {
   return m ? { page, id: m.nasa_id, credit: m.credit, url: m.page } : null;
 }
 
+const home = HOME_PHOTOS as Record<string, Library>;
+
+function fromHome(page: string, slug: string): PhotoCredit | null {
+  const m = home[slug];
+  return m ? { page, id: m.id, credit: m.credit, url: m.page } : null;
+}
+
+const bySlug = (page: string, slug: string): PhotoCredit | null => fromLibrary(page, slug) ?? fromPages(page, slug) ?? fromHome(page, slug);
+
 const a11 = (IMAGES as { slug: string; nasa_id: string; credit: string; page: string }[]).find((p) => p.slug === 'apollo11-reflector');
 const reflector11 = (page: string): PhotoCredit | null => (a11 ? { page, id: a11.nasa_id, credit: a11.credit, url: a11.page } : null);
 const silentPhotos = (page: string): PhotoCredit[] => SILENT_PHOTOS.map((m) => ({ page, id: m.nasa_id, credit: m.credit, url: m.page }));
 const probePhotos = (page: string): PhotoCredit[] => PROBE_PHOTOS.map((p) => ({ page, id: p.nasa_id, credit: p.credit, url: p.page }));
 
-/** Every photo shown on the Silent, Passport, Classroom and 404 pages, by page. */
+/** Every photo shown on the home, Silent, Passport, Classroom and 404 pages, by page. */
 export const STORY_CREDITS: PhotoCredit[] = [
+  ...TRAIL_PHOTOS.map((slug) => bySlug('Home', slug)),
   fromPages('Silent', 'silent-hero'),
   ...silentPhotos('Silent'),
   reflector11('Silent'),

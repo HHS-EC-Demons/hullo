@@ -1,0 +1,270 @@
+---
+import Base from '../layouts/Base.astro';
+import PlanetFigure from '../components/PlanetFigure.astro';
+import { buttonVariants } from '../components/ui/button';
+import { href } from '../lib/paths';
+import { image } from '../lib/photos';
+import { TRAIL, TRAIL_NOW, TRAIL_OPEN, yearsLater } from '../data/trail';
+
+const DESK_VW = 70;
+const DESK_PX = 930;
+const WIDE = [640, 960, 1280, 1600, 1920];
+
+const aspect = (ratio: string): number => {
+  const [w, h] = ratio.split('/').map(Number);
+  return w / h;
+};
+
+function sizesFor(slug: string, ratio: string, phoneRatio: string): string {
+  const src = image(slug);
+  const native = src.width / src.height;
+  const desk = Math.max(1, native / aspect(ratio));
+  const phone = Math.max(1, native / aspect(phoneRatio));
+  return `(max-width: 859px) calc(${Math.ceil(100 * phone)}vw - ${Math.floor(32 * phone)}px), min(${Math.ceil(DESK_VW * desk)}vw, ${Math.ceil(DESK_PX * desk)}px)`;
+}
+
+const nb = (text: string): string => text.replace(/ (?=\d)/g, '\u00a0');
+
+const stops = TRAIL.map((s, i) => ({
+  ...s,
+  name: nb(s.name),
+  did: nb(s.did),
+  status: nb(s.status),
+  gap: i > 0 ? yearsLater(TRAIL[i - 1].year, s.year) : null,
+  sizes: sizesFor(s.slug, s.ratio, s.phoneRatio),
+}));
+const nowGap = yearsLater(TRAIL[TRAIL.length - 1].year, new Date().getUTCFullYear());
+---
+
+<Base>
+  <section class="stage open" aria-labelledby="open-h">
+    <div class="stage-text">
+      <h1 id="open-h">NASA left hardware across the solar system.</h1>
+      <p>Some is still active.</p>
+    </div>
+    <PlanetFigure slug={TRAIL_OPEN.slug} class="stage-photo" eager sizes="(max-width: 519px) 223vw, 100vw" widths={WIDE} alt={TRAIL_OPEN.alt} />
+  </section>
+
+  <ol class="wrap trail" aria-label={`Hardware NASA left, ${TRAIL[0].year} to ${TRAIL[TRAIL.length - 1].year}`}>
+    {
+      stops.map((s) => (
+        <li class="stop">
+          {s.gap && <p class="gap mono">{s.gap}</p>}
+          <div class="stop-head">
+            <h2 class="when">
+              <span class="year mono">{s.year}</span>
+              <span class="name">{s.name}</span>
+            </h2>
+            <p class="stop-place">{s.place}</p>
+          </div>
+          <div class="stop-photo" style={`--ratio: ${s.ratio}; --ratio-phone: ${s.phoneRatio}; --pf-pos: ${s.focus}`}>
+            <PlanetFigure slug={s.slug} sizes={s.sizes} alt={s.alt} />
+          </div>
+          <div class="stop-body">
+            <p class="stop-did">{s.did}</p>
+            <p class:list={['stop-status', s.active ? 'status-on' : 'status-off']}>{s.status}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+
+  <section class="close" aria-labelledby="close-h">
+    <div class="wrap">
+      <div class="close-rule">
+        <p class="gap mono">{nowGap}</p>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-text">
+        <h2 class="when" id="close-h">
+          <span class="year mono">Now</span>
+          <span class="name">Your turn</span>
+        </h2>
+        <a class={buttonVariants({ variant: 'primary' })} href={href('live/')}>Say hullo</a>
+      </div>
+      <PlanetFigure slug={TRAIL_NOW.slug} class="stage-photo" sizes="(max-width: 519px) 150vw, 113vw" widths={WIDE} alt={TRAIL_NOW.alt} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .stage {
+    position: relative;
+    max-width: 2400px;
+    margin-inline: auto;
+    --stage-left: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
+  }
+  .stage-text {
+    padding: clamp(24px, 6vw, 40px) var(--gutter) clamp(20px, 5vw, 32px);
+  }
+  .stage :global(.stage-photo) {
+    gap: 8px;
+  }
+  .stage :global(.stage-photo .credit) {
+    margin-top: 0;
+    padding-inline: var(--stage-left);
+  }
+  .open :global(.stage-photo) {
+    --pf-ratio: 4 / 5;
+    --pf-pos: 62% 50%;
+  }
+  .close :global(.stage-photo) {
+    --pf-ratio: 1;
+    --pf-pos: 74% 50%;
+  }
+  .open h1 {
+    font-size: clamp(2.5rem, 4.3vw, 4.5rem);
+    line-height: 0.98;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .open p {
+    margin-top: clamp(14px, 1.4vw, 20px);
+    max-width: 26ch;
+    font-size: var(--fs-md);
+    color: var(--muted);
+    text-wrap: balance;
+  }
+  @media (min-width: 520px) {
+    .open :global(.stage-photo) {
+      --pf-ratio: 16 / 9;
+      --pf-pos: 50% 50%;
+    }
+    .close :global(.stage-photo) {
+      --pf-ratio: 16 / 9;
+      --pf-pos: 50% 62%;
+    }
+  }
+  @media (min-width: 860px) {
+    .stage-text {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      width: 47%;
+      padding: clamp(28px, 4.6vw, 72px) 0 0 var(--stage-left);
+    }
+    .open h1 {
+      max-width: 7.6em;
+    }
+    .stage :global(.stage-photo .pf-frame) {
+      aspect-ratio: auto;
+      height: clamp(min(42vw, 1008px), calc(100svh - 170px), min(56.25vw, 1350px));
+    }
+    .open :global(.stage-photo) {
+      --pf-pos: 50% 70%;
+    }
+  }
+
+  .trail {
+    list-style: none;
+    margin-block: 0;
+  }
+  .stop {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding-block: clamp(40px, 5.5vw, 80px);
+    border-top: 1px solid var(--rule);
+  }
+  .stop:first-child {
+    border-top: 0;
+    padding-top: clamp(28px, 3vw, 40px);
+  }
+  .gap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-50%);
+    padding-right: 14px;
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 0.875rem;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .when {
+    display: grid;
+    gap: clamp(10px, 1.4vw, 18px);
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  .year {
+    font-size: clamp(4rem, 7.6vw, 6.75rem);
+    font-weight: 600;
+    letter-spacing: -0.06em;
+    line-height: 0.8;
+    margin-left: -0.04em;
+  }
+  .name {
+    font-size: clamp(1.5rem, 2.3vw, 2.125rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  .stop-head {
+    display: grid;
+    gap: 6px;
+  }
+  .stop-place {
+    color: var(--muted);
+    font-size: var(--fs-md);
+  }
+  .stop-photo {
+    --pf-ratio: var(--ratio-phone);
+  }
+  .stop-body {
+    display: grid;
+    gap: 4px;
+  }
+  .stop-did {
+    font-size: var(--fs-md);
+    text-wrap: balance;
+  }
+  .stop-status {
+    font-size: var(--fs-sm);
+  }
+  @media (min-width: 860px) {
+    .stop {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+      grid-template-rows: auto 1fr;
+      gap: 24px clamp(24px, 4vw, 64px);
+    }
+    .stop-head {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .stop-photo {
+      --pf-ratio: var(--ratio);
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+    .stop-body {
+      grid-column: 1;
+      grid-row: 2;
+      align-self: end;
+      padding-bottom: 30px;
+    }
+  }
+
+  .close-rule {
+    position: relative;
+    border-top: 1px solid var(--rule);
+    height: clamp(40px, 5.5vw, 80px);
+  }
+  .close .stage-text {
+    display: grid;
+    justify-items: start;
+    gap: clamp(20px, 2.4vw, 32px);
+    padding-top: 0;
+  }
+  @media (min-width: 860px) {
+    .close .stage-text {
+      padding-top: clamp(28px, 4.6vw, 72px);
+    }
+  }
+</style>
