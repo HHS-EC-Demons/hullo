@@ -4,7 +4,7 @@ Hardware left in space that still answers. Space Apps 2026, Abandoned but not Fo
 
 [sayhullo.netlify.app](https://sayhullo.netlify.app/)
 
-Demo slides, [Google Slides](https://docs.google.com/presentation/d/1XSqOVfQ2k8iq8_ocyOnnWxGFxZo_AFoXaMIe2rHyIRk/edit?usp=sharing)
+Demo slides, [Google Slides](https://docs.google.com/presentation/d/1-YgTneql2-uV0mP9j_sJOZrGEBmkSSWSng8LQcRtARY/edit?usp=sharing)
 
 ## Pages
 
@@ -29,6 +29,6 @@ npx vitest run
 npx astro build
 ```
 
-`netlify deploy --build --prod` from the repo root publishes the site to Netlify. Data scripts are in `pipeline/`. The slides are drawn in `deck/slides.html` at 1920 by 1080 px, and each one goes into the Google Slides deck as an image. Astro 6, React, Tailwind 4, Node 22.
+`netlify deploy --build --prod` from the repo root publishes the site to Netlify. Data scripts are in `pipeline/`. The slides are drawn in `deck/slides.html` at 1920 by 1080 px and rebuilt in Google Slides with the same text, photos and screenshots. Astro 6, React, Tailwind 4, Node 22.
 
 Not endorsed by NASA. Photos are NASA public domain. The code is under the Apache 2.0 license.
