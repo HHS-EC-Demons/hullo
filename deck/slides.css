@@ -191,28 +191,17 @@ a {
   max-width: 1040px;
   font-size: 92px;
 }
-.s2 .lede {
-  position: absolute;
-  top: 112px;
-  right: 96px;
-  width: 560px;
-}
-.lede p {
-  font-size: 32px;
-  line-height: 1.24;
-  color: var(--text);
-}
-.lede .for {
-  margin-top: 22px;
-  font-family: var(--mono);
-  font-size: 20px;
+.sub {
+  margin-top: 30px;
+  font-size: 38px;
+  line-height: 1.15;
   color: var(--muted);
 }
 .stops {
   position: absolute;
   left: 96px;
   right: 96px;
-  top: 384px;
+  top: 424px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 24px;
@@ -221,16 +210,9 @@ a {
 .stops img {
   display: block;
   width: 100%;
-  height: 270px;
+  height: 320px;
   object-fit: cover;
   border-radius: 6px;
-}
-.stops .cr {
-  margin-top: 8px;
-  font-family: var(--mono);
-  font-size: 13.5px;
-  color: var(--muted);
-  white-space: nowrap;
 }
 .stops .year {
   display: block;
@@ -248,18 +230,10 @@ a {
   line-height: 1.05;
   letter-spacing: -0.03em;
 }
-.stops .did {
-  margin-top: 8px;
-  min-height: 60px;
-  font-size: 24px;
-  line-height: 1.22;
-  color: var(--muted);
-  text-wrap: balance;
-}
 .stops .status {
-  margin-top: 10px;
+  margin-top: 12px;
   font-family: var(--mono);
-  font-size: 19px;
+  font-size: 21px;
   color: var(--muted);
 }
 .stops .on {
@@ -277,8 +251,9 @@ a {
 }
 .s3 .what {
   margin-top: 40px;
-  font-size: 32px;
-  line-height: 1.24;
+  font-size: 36px;
+  line-height: 1.2;
+  color: var(--muted);
 }
 .rows {
   margin-top: 44px;
@@ -317,82 +292,44 @@ a {
   position: absolute;
   left: 96px;
   right: 96px;
-  top: 246px;
+  top: 290px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
   list-style: none;
 }
-.where {
-  margin-top: 26px;
-  font-family: var(--mono);
-  font-size: 20px;
-  color: var(--lilac);
-}
 .do {
-  margin-top: 10px;
-  max-width: 500px;
+  margin-top: 28px;
+  max-width: 520px;
   font-weight: 700;
-  font-size: 36px;
+  font-size: 40px;
   line-height: 1.1;
   letter-spacing: -0.025em;
   text-wrap: balance;
-}
-.route {
-  position: absolute;
-  left: 96px;
-  right: 96px;
-  bottom: 122px;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  border-top: 1px solid var(--rule);
-  list-style: none;
-}
-.route li {
-  position: relative;
-  padding-top: 20px;
-  font-family: var(--mono);
-  font-size: 20px;
-  color: var(--muted);
-}
-.route li::before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  left: 0;
-  width: 2px;
-  height: 11px;
-  background: var(--edge);
-}
-.route .shown {
-  color: var(--text);
-}
-.route .shown::before {
-  background: var(--lilac);
 }
 
 .s5 .table {
   position: absolute;
   top: 246px;
   left: 96px;
-  width: 900px;
+  width: 820px;
   border-top: 1px solid var(--rule);
 }
 .s5 .table div {
   display: grid;
-  grid-template-columns: 310px 1fr;
+  grid-template-columns: 350px 1fr;
   align-items: baseline;
   column-gap: 20px;
-  padding: 25px 0 24px;
+  padding: 27px 0 26px;
   border-bottom: 1px solid var(--rule);
 }
 .s5 .table dt {
   font-weight: 700;
-  font-size: 32px;
+  font-size: 36px;
   letter-spacing: -0.02em;
 }
 .s5 .table dd {
-  font-size: 28px;
+  font-size: 30px;
   line-height: 1.2;
   color: var(--muted);
 }
@@ -400,7 +337,7 @@ a {
   position: absolute;
   top: 246px;
   right: 96px;
-  width: 770px;
+  width: 840px;
 }
 .s5 .live .now {
   margin-top: 26px;
@@ -413,8 +350,8 @@ a {
 .s5 .all {
   position: absolute;
   left: 96px;
-  bottom: 118px;
-  font-size: 28px;
+  bottom: 100px;
+  font-size: 30px;
 }
 .s5 .all a,
 .s7 .meta a {
@@ -423,7 +360,7 @@ a {
 
 .s6 .pair {
   position: absolute;
-  top: 246px;
+  top: 290px;
   left: 96px;
   width: 1290px;
   display: grid;
@@ -433,33 +370,19 @@ a {
 }
 .s6 .facts {
   position: absolute;
-  top: 246px;
+  top: 290px;
   right: 96px;
   width: 394px;
   border-top: 1px solid var(--rule);
   list-style: none;
 }
 .s6 .facts li {
-  padding: 22px 0 21px;
+  padding: 28px 0 27px;
   border-bottom: 1px solid var(--rule);
-  font-size: 29px;
+  font-size: 34px;
   line-height: 1.18;
   letter-spacing: -0.01em;
   text-wrap: balance;
-}
-.s6 .next {
-  position: absolute;
-  left: 96px;
-  bottom: 118px;
-  display: flex;
-  align-items: baseline;
-  gap: 28px;
-  font-size: 28px;
-}
-.s6 .next span {
-  font-family: var(--mono);
-  font-size: 20px;
-  color: var(--lilac);
 }
 
 .s7 .close {
@@ -543,4 +466,7 @@ a {
 }
 .s7 .meta dd b {
   font-weight: 700;
+}
+.s7 .meta dd span {
+  display: block;
 }
