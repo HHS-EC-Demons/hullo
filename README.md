@@ -31,4 +31,4 @@ npx astro build
 
 `netlify deploy --build --prod` from the repo root publishes the site to Netlify. Data scripts are in `pipeline/`. The slides are drawn in `deck/slides.html` at 1920 by 1080 px, and each one goes into the Google Slides deck as an image. Astro 6, React, Tailwind 4, Node 22.
 
-Not endorsed by NASA. Photos are NASA public domain.
+Not endorsed by NASA. Photos are NASA public domain. The code is under the Apache 2.0 license.
