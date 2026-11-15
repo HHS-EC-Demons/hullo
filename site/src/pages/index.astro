@@ -40,7 +40,6 @@ const nowGap = yearsLater(TRAIL[TRAIL.length - 1].year, new Date().getUTCFullYea
   <section class="stage open" aria-labelledby="open-h">
     <div class="stage-text">
       <h1 id="open-h">NASA left hardware across the solar system.</h1>
-      <p>Some is still active.</p>
     </div>
     <PlanetFigure slug={TRAIL_OPEN.slug} class="stage-photo" eager sizes="(max-width: 519px) 223vw, 100vw" widths={WIDE} alt={TRAIL_OPEN.alt} />
   </section>
@@ -79,7 +78,7 @@ const nowGap = yearsLater(TRAIL[TRAIL.length - 1].year, new Date().getUTCFullYea
       <div class="stage-text">
         <h2 class="when" id="close-h">
           <span class="year mono">Now</span>
-          <span class="name">Your turn</span>
+          <span class="name">it’s your turn</span>
         </h2>
         <a class={buttonVariants({ variant: 'primary' })} href={href('live/')}>Say hullo</a>
       </div>
@@ -118,13 +117,6 @@ const nowGap = yearsLater(TRAIL[TRAIL.length - 1].year, new Date().getUTCFullYea
     line-height: 0.98;
     font-weight: 800;
     letter-spacing: -0.035em;
-    text-wrap: balance;
-  }
-  .open p {
-    margin-top: clamp(14px, 1.4vw, 20px);
-    max-width: 26ch;
-    font-size: var(--fs-md);
-    color: var(--muted);
     text-wrap: balance;
   }
   @media (min-width: 520px) {
