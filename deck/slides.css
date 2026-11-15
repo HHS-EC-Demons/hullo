@@ -292,7 +292,7 @@ a {
   position: absolute;
   left: 96px;
   right: 96px;
-  top: 290px;
+  top: 250px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
@@ -360,7 +360,7 @@ a {
 
 .s6 .pair {
   position: absolute;
-  top: 290px;
+  top: 250px;
   left: 96px;
   width: 1290px;
   display: grid;
@@ -370,7 +370,7 @@ a {
 }
 .s6 .facts {
   position: absolute;
-  top: 290px;
+  top: 250px;
   right: 96px;
   width: 394px;
   border-top: 1px solid var(--rule);
