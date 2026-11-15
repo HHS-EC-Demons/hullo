@@ -4,7 +4,7 @@ Hardware left in space that still answers. Space Apps 2026, Abandoned but not Fo
 
 [sayhullo.netlify.app](https://sayhullo.netlify.app/)
 
-Demo slides, [Google Slides](https://docs.google.com/presentation/d/1J4qK0WzlwKeLVp20aKu_410M5IYhS7MUMqGIfLFvf00/edit?usp=sharing)
+Demo slides, [Google Slides](https://docs.google.com/presentation/d/1XSqOVfQ2k8iq8_ocyOnnWxGFxZo_AFoXaMIe2rHyIRk/edit?usp=sharing)
 
 ## Pages
 
