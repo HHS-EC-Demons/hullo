@@ -1,6 +1,6 @@
 import { NASA_MEDIA, type Source } from './sources';
 
-export const GROUP_TITLE = 'Mission stories, takeaways and the journey';
+export const GROUP_TITLE = 'Mission stories, takeaways and the Live ladder';
 
 export const STORY_SOURCES: Source[] = [
   {
