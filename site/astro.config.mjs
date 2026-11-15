@@ -13,7 +13,7 @@ const directives = {
 };
 
 export default defineConfig({
-  site: process.env.URL ?? 'https://hhs-ec-demons.github.io',
+  site: process.env.URL ?? 'https://sayhullo.netlify.app',
   base: process.env.BASE_PATH ?? '/',
   trailingSlash: 'ignore',
   integrations: [react(), directives],
