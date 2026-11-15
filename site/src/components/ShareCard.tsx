@@ -18,7 +18,7 @@ function stamp(ms: number): string {
   return `${clock(ms)} ${calDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)}`;
 }
 
-const SITE = 'hhs-ec-demons.github.io/hullo';
+const SITE = 'sayhullo.netlify.app';
 
 export default function ShareCard({ msg, ref }: { msg: CardMessage; ref: Ref<HTMLDivElement> }) {
   const trip = hmsText((msg.arrives - msg.sent) / 1000);
