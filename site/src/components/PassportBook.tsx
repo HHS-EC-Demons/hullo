@@ -46,13 +46,14 @@ interface Props {
 export default function PassportBook({ site, thumbs, title, line }: Props) {
   const stamps = useSyncExternalStore(subscribeStamps, getStamps, getServerStamps);
   const [name, setName] = useState('');
-  const [printedAt, setPrintedAt] = useState(() => Date.now());
+  const [printedAt, setPrintedAt] = useState<number | null>(null);
   const [live, setLive] = useState(false);
   const sheet = useRef<HTMLDivElement>(null);
   const nameId = useId();
 
   useEffect(() => {
     setName(getHolder());
+    setPrintedAt(Date.now());
     setLive(true);
   }, []);
 
@@ -183,7 +184,7 @@ interface CertificateProps {
   name: string;
   earned: StampObject[];
   byId: Map<string, Stamp>;
-  printedAt: number;
+  printedAt: number | null;
   site: string;
 }
 
@@ -192,7 +193,7 @@ const Certificate = forwardRef<HTMLDivElement, CertificateProps>(function Certif
     <div ref={ref} className="cert">
       <header className="cert-head">
         <p className="cert-mark" translate="no">{WORDMARK}</p>
-        <p className="cert-date">Printed {dayText(printedAt)}</p>
+        {printedAt !== null && <p className="cert-date">Printed {dayText(printedAt)}</p>}
       </header>
       <p className="cert-title">
         {name ? `${name} reached ${earned.length} of the ${STAMP_OBJECTS.length} objects on ${BRAND}` : `Reached ${earned.length} of the ${STAMP_OBJECTS.length} objects on ${BRAND}`}
