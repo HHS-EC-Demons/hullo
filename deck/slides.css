@@ -78,16 +78,9 @@ a {
 .body {
   position: absolute;
   inset: 0 0 80px 0;
-  padding: 76px 96px 0;
-}
-.eyebrow {
-  font-family: var(--mono);
-  font-size: 22px;
-  line-height: 1;
-  color: var(--lilac);
+  padding: 104px 96px 0;
 }
 .h {
-  margin-top: 26px;
   font-weight: 800;
   font-size: 80px;
   line-height: 0.98;
@@ -150,18 +143,18 @@ a {
 
 .s1 .title {
   position: absolute;
-  top: 76px;
+  top: 88px;
   left: 96px;
 }
 .s1 .wordmark {
-  margin: 30px 0 0 -14px;
+  margin: 0 0 0 -14px;
   font-weight: 800;
   font-size: 300px;
   line-height: 0.8;
   letter-spacing: -0.06em;
 }
 .s1 .tag {
-  margin-top: 62px;
+  margin-top: 50px;
   max-width: 700px;
   font-weight: 600;
   font-size: 52px;
@@ -190,7 +183,8 @@ a {
   letter-spacing: -0.01em;
 }
 .s1 .meta {
-  margin-top: 56px;
+  margin-top: 44px;
+  gap: 12px;
 }
 
 .s2 .h {
@@ -199,7 +193,7 @@ a {
 }
 .s2 .lede {
   position: absolute;
-  top: 122px;
+  top: 112px;
   right: 96px;
   width: 560px;
 }
@@ -218,7 +212,7 @@ a {
   position: absolute;
   left: 96px;
   right: 96px;
-  top: 404px;
+  top: 384px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 24px;
@@ -227,7 +221,7 @@ a {
 .stops img {
   display: block;
   width: 100%;
-  height: 250px;
+  height: 270px;
   object-fit: cover;
   border-radius: 6px;
 }
@@ -274,7 +268,7 @@ a {
 
 .s3 .copy {
   position: absolute;
-  top: 76px;
+  top: 104px;
   left: 96px;
   width: 530px;
 }
