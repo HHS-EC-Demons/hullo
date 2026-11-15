@@ -99,11 +99,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px 16px;
-  align-items: start;
-}
-.pp-print button {
-  margin-top: 31px;
-  align-self: start;
+  align-items: center;
 }
 .pp-field {
   display: grid;
@@ -194,7 +190,6 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .pp-print button {
-    margin-top: 0;
     width: 100%;
   }
   .pp-grid {
