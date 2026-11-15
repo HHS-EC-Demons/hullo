@@ -56,6 +56,11 @@
     "vitest": "^4.1.12"
   },
   "overrides": {
-    "vite": "^7.3.7"
+    "vite": "^7.3.7",
+    "sharp": "^0.35.5",
+    "esbuild": "^0.28.1",
+    "@ts-morph/common": {
+      "minimatch": "^11.0.1"
+    }
   }
 }
