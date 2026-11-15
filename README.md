@@ -29,6 +29,6 @@ npx vitest run
 npx astro build
 ```
 
-`netlify deploy --build --prod` from the repo root publishes the site to Netlify. Data scripts are in `pipeline/`. The slides are drawn in `deck/slides.html` at 1920 by 1080 px and rebuilt in Google Slides with the same text, photos and screenshots. Astro 6, React, Tailwind 4, Node 22.
+`netlify deploy --build --prod` from the repo root publishes the site to Netlify. Data scripts are in `pipeline/`. The slides are drawn in `deck/slides.html` at 1920 by 1080 px and rebuilt in Google Slides with the same text, photos and screenshots. Astro 7, React, Tailwind 4, Node 22.23 or newer.
 
 Not endorsed by NASA. Photos are NASA public domain. The code is under the Apache 2.0 license.

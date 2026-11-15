@@ -16,6 +16,7 @@ export default defineConfig({
   site: process.env.URL ?? 'https://sayhullo.netlify.app',
   base: process.env.BASE_PATH ?? '/',
   trailingSlash: 'ignore',
+  compressHTML: true,
   integrations: [react(), directives],
   vite: {
     plugins: [tailwindcss()],
