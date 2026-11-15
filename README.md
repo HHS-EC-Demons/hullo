@@ -4,7 +4,7 @@ Hardware left in space that still answers. Space Apps 2026, Abandoned but not Fo
 
 [sayhullo.netlify.app](https://sayhullo.netlify.app/), mirrored at [hhs-ec-demons.github.io/hullo](https://hhs-ec-demons.github.io/hullo/)
 
-Demo slides, [Google Slides](https://docs.google.com/presentation/d/1TaniBWFODEc4YSg4HLZmRUi1YNiI6KbbYhQF5J2-MVw/edit?usp=sharing)
+Demo slides, [Google Slides](https://docs.google.com/presentation/d/1hSuzFr6TgyT6Wu1cRcC-9cmTgtcdLAvAxKjeW-e42wY/edit?usp=sharing)
 
 ## Pages
 
