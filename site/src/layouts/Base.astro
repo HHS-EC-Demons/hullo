@@ -31,12 +31,10 @@ const items: NavItem[] = [
   ...(has('orbit') ? [{ key: 'orbit', href: href('orbit/'), label: 'Orbit' }] : []),
   { key: 'deep-space', href: href('deep-space/'), label: 'Deep space' },
   { key: 'silent', href: href('silent/'), label: 'Silent' },
+  ...(has('classroom') ? [{ key: 'classroom', href: href('classroom/'), label: 'Classroom' }] : []),
 ];
 const passport: NavItem | null = has('passport') ? { key: 'passport', href: href('passport/'), label: 'Passport' } : null;
-const extra = [
-  ...(has('classroom') ? [{ href: href('classroom/'), label: 'Classroom' }] : []),
-  { href: href('sources/'), label: 'Sources' },
-];
+const extra = [{ href: href('sources/'), label: 'Sources' }];
 ---
 
 <!doctype html>
