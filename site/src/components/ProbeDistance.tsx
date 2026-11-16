@@ -8,7 +8,7 @@ export default function ProbeDistance() {
   const [picked, setLocal] = useState(getPicked);
   useEffect(() => onPicked(setLocal), []);
   return (
-    <ChartFrame className="h-[300px] md:h-[380px]">
+    <ChartFrame className="h-[380px] md:h-[600px]">
       <Chart picked={picked} onPick={setPicked} />
     </ChartFrame>
   );
