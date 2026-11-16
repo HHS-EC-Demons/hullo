@@ -216,6 +216,9 @@
 
 .ig .maplibregl-cooperative-gesture-screen:not(.maplibregl-show) {
   visibility: hidden;
+  transition:
+    opacity 0.4s ease 1s,
+    visibility 0s linear 1.4s;
 }
 
 .ig .maplibregl-cooperative-gesture-screen {

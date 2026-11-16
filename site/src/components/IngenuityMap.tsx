@@ -178,6 +178,7 @@ export default function IngenuityMap({
         sources: {
           base: { type: 'raster', tiles: [`${root}{z}/{x}/{y}.jpg`], tileSize: 256, minzoom: data.zooms[0], maxzoom: data.zooms[1], bounds: data.bbox },
           deep: { type: 'raster', tiles: ['jezero://{z}/{x}/{y}'], tileSize: 256, minzoom: data.deep_zooms[0], maxzoom: data.deep_zooms[1], bounds: data.bbox },
+          route: { type: 'geojson', data: collection(data.flights.filter((f) => f.path.length > 1).map((f) => line(f.path))) },
           past: { type: 'geojson', data: collection([]) },
           now: { type: 'geojson', data: collection([]) },
           stop: { type: 'geojson', data: collection([]) },
@@ -187,6 +188,7 @@ export default function IngenuityMap({
           { id: 'bg', type: 'background', paint: { 'background-color': css('--violet-raised', '#151026') } },
           { id: 'base', type: 'raster', source: 'base', paint: { 'raster-fade-duration': 150 } },
           { id: 'deep', type: 'raster', source: 'deep', minzoom: 15.5, paint: { 'raster-fade-duration': 150 } },
+          { id: 'route', type: 'line', source: 'route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': lilac, 'line-width': 1.5, 'line-opacity': 0.45 } },
           { id: 'past', type: 'line', source: 'past', paint: { 'line-color': lilac, 'line-width': 1.5, 'line-opacity': 0.9 } },
           { id: 'now-casing', type: 'line', source: 'now', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': violet, 'line-width': 6, 'line-opacity': 0.85 } },
           { id: 'now', type: 'line', source: 'now', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': laser, 'line-width': 3 } },
