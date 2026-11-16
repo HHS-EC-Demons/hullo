@@ -609,7 +609,10 @@
   }
 
   .hl-tip {
-    z-index: 5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 30;
     pointer-events: none;
     display: grid;
     gap: 3px;
